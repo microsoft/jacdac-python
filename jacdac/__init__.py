@@ -1,10 +1,12 @@
-import busio
-from micropython import const
-import time
+import threading
+import random
 
-import tasko
-
+from . import taskq
 from . import util
+now = util.now
+
+
+def const(v: int): return v
 
 
 JD_SERIAL_HEADER_SIZE = const(16)
@@ -98,11 +100,6 @@ def log(msg: str, *args):
         if len(args):
             msg = msg.format(*args)
         print("JD: " + msg)
-
-
-def now():
-    # TODO implement this in C for half-decent precision
-    return int(time.monotonic() * 1000)
 
 
 class JDPacket:
@@ -243,18 +240,10 @@ class JDPacket:
         return "<JDPacket {}>".format(self.to_string())
 
 
-def _execute(fn, args):
-    async def later():
-        if hasattr(fn, "__await__"):
-            await fn
-        else:
-            res = fn(*args)
-            if hasattr(res, "__await__"):
-                await res
-    tasko.add_task(later())
-
-
 class EventEmitter:
+    def __init__(self, bus: 'Bus') -> None:
+        self.bus = bus
+
     def emit(self, id: str, *args):
         if not hasattr(self, "_listeners"):
             return
@@ -269,7 +258,11 @@ class EventEmitter:
                     idx -= 1
             idx += 1
         for fn in fns:
-            _execute(fn, args)
+            t0 = now()
+            fn(*args)
+            d = now() - t0
+            if d > 100:
+                log("long running handler for '{}'; {}ms", id, d)
 
     def _init_emitter(self):
         if not hasattr(self, "_listeners"):
@@ -292,11 +285,6 @@ class EventEmitter:
                 return
         raise ValueError("no matching on() for off()")
 
-    async def event(self, id: str):
-        suspend, resume = tasko.suspend()
-        self.once(id, resume)
-        await suspend
-
 
 def _service_matches(dev: 'Device', serv: bytearray):
     ds = dev.services
@@ -308,39 +296,50 @@ def _service_matches(dev: 'Device', serv: bytearray):
     return True
 
 
+class Transport:
+    def receive(self, timeout_ms: int) -> bytes:
+        return None
+
+    def send(self, pkt: bytes) -> None:
+        pass
+
+
 class Bus(EventEmitter):
-    def __init__(self, pin) -> None:
+    def __init__(self, transport: Transport, devid: str = None) -> None:
+        super().__init__(self)
         self.devices: list['Device'] = []
         self.unattached_clients: list['Client'] = []
         self.all_clients: list['Client'] = []
         self.servers: list['Server'] = []
-        self.busio = busio.JACDAC(pin)
-        self.self_device = Device(
-            self, util.buf2hex(self.busio.uid()), bytearray(4))
+        self.taskq = taskq.TaskQ()
+        if devid is None:
+            devid = random.randbytes(8).hex()
+        self.self_device = Device(self, devid, bytearray(4))
+        self.process_thread = threading.Thread(target=self._process_task)
+        self.transport = transport
 
         from . import ctrl
         ctrls = ctrl.CtrlServer(self)  # attach control server
 
-        async def announce():
+        def announce():
             self.emit(EV_SELF_ANNOUNCE)
             self._gc_devices()
             ctrls.queue_announce()
-        tasko.schedule(2, announce)
+        self.taskq.recurring(500, announce)
 
-        async def process_packets():
-            while True:
-                pkt = self.busio.receive()
-                if not pkt:
-                    break
-                self.process_packet(JDPacket(frombytes=pkt))
-        tasko.schedule(100, process_packets)
+        # self.taskq.recurring(2000, self.debug_dump)
 
-        # async def debug_info():
-        #     self.debug_dump()
-        # tasko.schedule(0.5, debug_info)
+        self.process_thread.start()
 
         from . import sample
         sample.acc_sample(self)
+
+    def _process_task(self):
+        while True:
+            self.taskq.execute()
+            pkt = self.transport.receive(timeout_ms=self.taskq.sleeptime())
+            if pkt:
+                self.process_packet(JDPacket(frombytes=pkt))
 
     def debug_dump(self):
         print("Devices:")
@@ -369,7 +368,7 @@ class Bus(EventEmitter):
 
     def _send_core(self, pkt: JDPacket):
         assert len(pkt._data) == pkt._header[12]
-        self.busio.send(pkt._header + pkt._data)
+        self.transport.send(pkt._header + pkt._data)
         self.process_packet(pkt)  # handle loop-back packet
 
     def clear_attach_cache(self):
@@ -498,15 +497,9 @@ class Bus(EventEmitter):
             dev.process_packet(pkt)
 
 
-def delayed_callback(seconds, fn):
-    async def task():
-        await tasko.sleep(seconds)
-        fn()
-    tasko.add_task(task())
-
-
 class RawRegisterClient(EventEmitter):
     def __init__(self, client: 'Client', code: int) -> None:
+        super().__init__(client.bus)
         self.code = code
         self._data: bytearray = None
         self._refreshed_at = 0
@@ -523,7 +516,7 @@ class RawRegisterClient(EventEmitter):
 
     def refresh(self):
         if self._refreshed_at < 0:
-            return # already in progress
+            return  # already in progress
         prev_data = self._data
         self._refreshed_at = -1
 
@@ -537,15 +530,15 @@ class RawRegisterClient(EventEmitter):
         def second_refresh():
             if prev_data is self._data:
                 self._query()
-                delayed_callback(0.100, final_check)
+                self.bus.taskq.delay(100, final_check)
 
         def first_refresh():
             if prev_data is self._data:
                 self._query()
-                delayed_callback(0.050, second_refresh)
+                self.bus.taskq.delay(50, second_refresh)
 
         self._query()
-        delayed_callback(0.020, first_refresh)
+        self.bus.taskq.delay(20, first_refresh)
 
     async def query(self, refresh_ms=500):
         curr = self.current(refresh_ms)
@@ -567,10 +560,10 @@ class RawRegisterClient(EventEmitter):
 
 class Server(EventEmitter):
     def __init__(self, bus: Bus, service_class: int) -> None:
+        super().__init__(bus)
         self.service_class = service_class
         self.instance_name: str = None
         self.service_index = None
-        self.bus = bus
         self._status_code = 0  # u16, u16
         self.service_index = len(self.bus.servers)
         self.bus.servers.append(self)
@@ -658,7 +651,7 @@ class Server(EventEmitter):
 
 class Client(EventEmitter):
     def __init__(self, bus: Bus, service_class: int, role: str) -> None:
-        self.bus = bus
+        super().__init__(bus)
         self.broadcast = False
         self.service_class = service_class
         self.service_index = None
@@ -739,7 +732,7 @@ _JD_CONTROL_ANNOUNCE_FLAGS_RESTART_COUNTER_STEADY = const(0xf)
 
 class Device(EventEmitter):
     def __init__(self, bus: Bus, device_id: str, services: bytearray) -> None:
-        self.bus = bus
+        super().__init__(bus)
         self.device_id = device_id
         self.services = services
         self.clients: list[Client] = []

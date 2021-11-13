@@ -1,9 +1,12 @@
 import struct
-import busio
 import binascii
-
+import time
 
 _hex = "0123456789abcdef"
+
+
+def now():
+    return int(time.monotonic() * 1000)
 
 
 def hex_num(n: int, len=8):
@@ -58,7 +61,21 @@ def pack(fmt: str, *args):
 
 
 def hash(buf: bytes, bits=30):
-    return busio.JACDAC.__dict__["hash"](buf, bits)
+    # return busio.JACDAC.__dict__["hash"](buf, bits)
+    if bits < 1:
+        return 0
+    h = fnv1(buf)
+    if bits >= 32:
+        return h >> 0
+    else:
+        return ((h ^ (h >> bits)) & ((1 << bits) - 1))
+
+
+def fnv1(data: bytes):
+    h = 0x811c9dc5
+    for i in range(len(data)):
+        h = ((h * 0x1000193) & 0xffff_ffff) ^ data[i]
+    return h
 
 
 def short_id(longid: bytes):

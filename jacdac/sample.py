@@ -1,4 +1,4 @@
-from . import *
+from .bus import *
 
 _JD_SERVICE_CLASS_BUTTON = const(0x1473a263)
 _JD_BUTTON_REG_PRESSURE = const(0x101)
@@ -29,16 +29,16 @@ _JD_ACCELEROMETER_EV_FORCE_8G = const(0x8a)
 def acc_sample(bus: Bus):
     acc = Client(bus, _JD_SERVICE_CLASS_ACCELEROMETER, "acc")
 
-    async def acc_ev(pkt: JDPacket):
+    def acc_ev(pkt: JDPacket):
         print("acc", pkt.event_code)
-        v = await acc.register(_JD_ACCELEROMETER_REG_FORCES).query()
+        v = acc.register(_JD_ACCELEROMETER_REG_FORCES).query_no_wait()
         print(v)
     acc.on(EV_EVENT, acc_ev)
 
     btn = Client(bus, _JD_SERVICE_CLASS_BUTTON, "btn")
 
-    async def btn_ev(pkt: JDPacket):
+    def btn_ev(pkt: JDPacket):
         print("btn", pkt.event_code, len(pkt.data) and pkt.unpack("I"))
-        v = await btn.register(13).query()
+        v = btn.register(13).query_no_wait()
         print(v)
     btn.on(EV_EVENT, btn_ev)

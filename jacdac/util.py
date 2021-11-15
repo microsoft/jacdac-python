@@ -3,11 +3,19 @@ import binascii
 import time
 from typing import Union
 
+logging = False
 _hex = "0123456789abcdef"
 
 
 def now():
     return int(time.monotonic() * 1000)
+
+
+def log(msg: str, *args: object):
+    if logging:
+        if len(args):
+            msg = msg.format(*args)
+        print("JD: " + msg)
 
 
 def hex_num(n: int, len: int = 8):
@@ -57,7 +65,7 @@ def unpack(buf: bytes, fmt: str):
 
 def pack(fmt: str, *args: object):
     if len(args) == 1 and isinstance(args[0], (tuple, list)):
-        args = args[0] # type: ignore
+        args = args[0]  # type: ignore
     return struct.pack("<" + fmt, *args)
 
 

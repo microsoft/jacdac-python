@@ -2,9 +2,10 @@ from typing import List
 from websocket import WebSocketApp
 from transport import Transport
 
-# TODO import Transport
-# use pylance 3.10 for union type notation
 class WebSocketTransport(Transport):
+    # A websocket-based transport
+    #
+
     url: str
     ws: WebSocketApp
     pkts: List[bytes]

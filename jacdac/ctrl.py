@@ -1,7 +1,7 @@
 import time
 import sys
 
-from . import *
+from .bus import *
 
 _JD_SERVICE_CLASS_CONTROL = const(0x0)
 _JD_CONTROL_ANNOUNCE_FLAGS_RESTART_COUNTER_STEADY = const(0xf)

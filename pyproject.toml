@@ -13,7 +13,7 @@ strictSetInference = true
 strictParameterNoneValue = false
 
 reportFunctionMemberAccess = "warning"
-reportImportCycles = "warning"
+#reportImportCycles = "warning"
 reportUnusedImport = "warning"
 reportUnusedClass = "warning"
 reportUnusedFunction = "warning"

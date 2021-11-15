@@ -1,7 +1,7 @@
 import functools
 import heapq
 from typing import Callable
-from . import util
+from .util import now
 
 class TaskQ:
     def __init__(self) -> None:
@@ -14,7 +14,7 @@ class TaskQ:
 
     def execute(self):
         while True:
-            n = util.now()
+            n = now()
             t = self._toptask()
             if not t or t.when > n:
                 break
@@ -29,16 +29,16 @@ class TaskQ:
         d = 100
         t = self._toptask()
         if t:
-            d = t.when - util.now()
+            d = t.when - now()
             if d < 0:
                 d = 0
         return d
 
     def delay(self, delta_ms: int, fn: Callable[[], None]):
-        heapq.heappush(self.tasks, ProcessTask(util.now() + delta_ms, fn))
+        heapq.heappush(self.tasks, ProcessTask(now() + delta_ms, fn))
 
     def recurring(self, delta_ms: int, fn: Callable[[], None]):
-        t = ProcessTask(util.now() + delta_ms, fn)
+        t = ProcessTask(now() + delta_ms, fn)
         t.repeat = delta_ms
         heapq.heappush(self.tasks, t)
 

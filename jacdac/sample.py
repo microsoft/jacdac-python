@@ -1,4 +1,4 @@
-from . import *
+from .bus import *
 
 _JD_SERVICE_CLASS_BUTTON = const(0x1473a263)
 _JD_BUTTON_REG_PRESSURE = const(0x101)

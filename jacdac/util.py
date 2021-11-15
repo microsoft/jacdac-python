@@ -1,6 +1,7 @@
 import struct
 import binascii
 import time
+from typing import Union
 
 _hex = "0123456789abcdef"
 
@@ -48,9 +49,9 @@ def u32(buf: bytes, off: int):
 
 
 # TODO would we want the "u32 u16" kind of format strings?
-def unpack(buf: bytes, fmt: str = None):
-    if fmt is None or buf is None:
-        return None
+def unpack(buf: bytes, fmt: str):
+    if fmt is None:
+        raise ValueError()
     return struct.unpack("<" + fmt, buf)
 
 
@@ -78,7 +79,7 @@ def fnv1(data: bytes):
     return h
 
 
-def short_id(longid: bytes):
+def short_id(longid: Union[bytes, str]):
     if isinstance(longid, str):
         longid = hex2buf(longid)
     h = hash(longid)

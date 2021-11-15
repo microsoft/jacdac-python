@@ -1,6 +1,5 @@
 import time
-import microcontroller
-from micropython import const
+import sys
 
 from . import *
 
@@ -100,4 +99,4 @@ class CtrlServer(Server):
                 self.log("identify")
                 self.bus.emit(EV_IDENTIFY)
             elif cmd == _JD_CONTROL_CMD_RESET:
-                microcontroller.reset()
+                sys.exit() # TODO?

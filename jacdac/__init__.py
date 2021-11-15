@@ -1,5 +1,6 @@
 import threading
 import random
+from typing import Optional
 
 from . import taskq
 from . import util
@@ -103,11 +104,11 @@ def log(msg: str, *args):
 
 
 class JDPacket:
-    def __init__(self, *, cmd: int = None, size: int = 0, frombytes: bytes = None, data: bytearray = None) -> None:
+    def __init__(self, *, cmd: int = None, size: int = 0, frombytes: bytes = None, data: bytes = None) -> None:
         self.timestamp = now()
         if frombytes is None:
             self._header = bytearray(JD_SERIAL_HEADER_SIZE)
-            self.data = data or bytearray(size)
+            self.data = bytearray(data or size)
         else:
             self._header = bytearray(frombytes[0:JD_SERIAL_HEADER_SIZE])
             self.data = bytearray(frombytes[JD_SERIAL_HEADER_SIZE:])
@@ -148,6 +149,8 @@ class JDPacket:
     def multicommand_class(self):
         if self.packet_flags & JD_FRAME_FLAG_IDENTIFIER_IS_SERVICE_CLASS:
             return util.u32(self._header, 4)
+        else:
+            return None
 
     @property
     def size(self):
@@ -166,8 +169,12 @@ class JDPacket:
     def service_index(self):
         return self._header[13] & JD_SERVICE_INDEX_MASK
 
+    @property
+    def is_regular_service(self):
+        return self.service_index <= 58
+
     @service_index.setter
-    def service_index(self, val: int):
+    def service_index(self, val:  Optional[int]):
         if val is None:
             raise ValueError("service_index not set")
         self._header[13] = (self._header[13] & JD_SERVICE_INDEX_INV_MASK) | val
@@ -178,27 +185,25 @@ class JDPacket:
 
     @property
     def is_event(self):
-        return self.is_report and (self.service_command & CMD_EVENT_MASK) != 0
+        return self.is_report and self.is_regular_service and (self.service_command & CMD_EVENT_MASK) != 0
 
     @property
     def event_code(self):
-        if self.is_event:
-            return self.service_command & CMD_EVENT_CODE_MASK
-        return None
+        assert self.is_event
+        return self.service_command & CMD_EVENT_CODE_MASK
 
     @property
     def event_counter(self):
-        if self.is_event:
-            return (self.service_command >> CMD_EVENT_COUNTER_POS) & CMD_EVENT_COUNTER_MASK
-        return None
+        assert self.is_event
+        return (self.service_command >> CMD_EVENT_COUNTER_POS) & CMD_EVENT_COUNTER_MASK
 
     @property
     def is_reg_set(self):
-        return self.service_command >> 12 == CMD_SET_REG >> 12
+        return self.is_regular_service and self.service_command >> 12 == CMD_SET_REG >> 12
 
     @property
     def is_reg_get(self):
-        return self.service_command >> 12 == CMD_GET_REG >> 12
+        return self.is_regular_service and self.service_command >> 12 == CMD_GET_REG >> 12
 
     @property
     def reg_code(self):
@@ -298,7 +303,7 @@ def _service_matches(dev: 'Device', serv: bytearray):
 
 class Transport:
     def receive(self, timeout_ms: int) -> bytes:
-        return None
+        raise NotImplementedError
 
     def send(self, pkt: bytes) -> None:
         pass
@@ -397,6 +402,7 @@ class Bus(EventEmitter):
                 c._detach()
                 continue  # will re-attach
 
+            assert c.service_index is not None
             new_class = dev.service_class_at(c.service_index)
             if new_class == c.service_class and dev.matches_role_at(c.role, c.service_index):
                 new_clients.append(c)
@@ -501,7 +507,7 @@ class RawRegisterClient(EventEmitter):
     def __init__(self, client: 'Client', code: int) -> None:
         super().__init__(client.bus)
         self.code = code
-        self._data: bytearray = None
+        self._data: Optional[bytearray] = None
         self._refreshed_at = 0
         self.client = client
 
@@ -562,14 +568,11 @@ class Server(EventEmitter):
     def __init__(self, bus: Bus, service_class: int) -> None:
         super().__init__(bus)
         self.service_class = service_class
-        self.instance_name: str = None
+        self.instance_name: Optional[str] = None
         self.service_index = None
         self._status_code = 0  # u16, u16
         self.service_index = len(self.bus.servers)
         self.bus.servers.append(self)
-
-    def handle_packet(self, pkt: JDPacket):
-        pass
 
     def status_code(self):
         return self._status_code
@@ -598,12 +601,12 @@ class Server(EventEmitter):
         pkt.device_identifier = self.bus.self_device.device_id
         self.bus._send_core(pkt)
 
-    def send_event(self, event_code: int, data: bytearray = None):
+    def send_event(self, event_code: int, data: bytes = None):
         pkt = JDPacket(cmd=self.bus.mk_event_cmd(event_code), data=data)
         def resend(): self.send_report(pkt)
         resend()
-        delayed_callback(0.020, resend)
-        delayed_callback(0.100, resend)
+        self.bus.taskq.delay(20, resend)
+        self.bus.taskq.delay(100, resend)
 
     def send_change_event(self):
         self.send_event(_JD_EV_CHANGE)
@@ -641,7 +644,7 @@ class Server(EventEmitter):
 
     def handle_instance_name(self, pkt: JDPacket):
         self.send_report(JDPacket(cmd=pkt.service_command,
-                         data=bytearray(self.instance_name, "utf-8")))
+                         data=bytearray(self.instance_name or "", "utf-8")))
 
     def log(self, text: str, *args):
         prefix = "{}.{}>".format(self.bus.self_device,
@@ -655,8 +658,8 @@ class Client(EventEmitter):
         self.broadcast = False
         self.service_class = service_class
         self.service_index = None
-        self.device: 'Device' = None
-        self.current_device: 'Device' = None
+        self.device: Optional['Device'] = None
+        self.current_device:  Optional['Device'] = None
         self.role = role
         self._registers: list[RawRegisterClient] = []
         bus.unattached_clients.append(self)
@@ -737,8 +740,8 @@ class Device(EventEmitter):
         self.services = services
         self.clients: list[Client] = []
         self.last_seen = now()
-        self._event_counter: int = None
-        self._ctrl_client: Client = None
+        self._event_counter: Optional[int] = None
+        self._ctrl_client: Optional[Client] = None
         bus.devices.append(self)
 
     @property
@@ -774,7 +777,9 @@ class Device(EventEmitter):
     def debug_info(self):
         r = "Device: " + self.short_id + "; "
         for i in range(self.num_service_classes):
-            r += util.hex_num(self.service_class_at(i)) + ", "
+            s = self.service_class_at(i)
+            assert s is not None
+            r += util.hex_num(s) + ", "
         return r
 
     def service_class_at(self, idx: int):
@@ -798,7 +803,7 @@ class Device(EventEmitter):
         log("destroy " + self.short_id)
         for c in self.clients:
             c._detach()
-        self.clients = None
+        self.clients = None # type: ignore
 
     def process_packet(self, pkt: JDPacket):
         self.last_seen = now()

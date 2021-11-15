@@ -1,4 +1,4 @@
-from typing import List, Union
+from typing import List
 from websocket import WebSocketApp
 from transport import Transport
 
@@ -6,7 +6,7 @@ from transport import Transport
 # use pylance 3.10 for union type notation
 class WebSocketTransport(Transport):
     url: str
-    ws: Union[WebSocketApp, None]
+    ws: WebSocketApp
     pkts: List[bytes]
 
     def __init__(self, url: str):
@@ -24,7 +24,7 @@ class WebSocketTransport(Transport):
 
     def receive(self, timeout_ms: int) -> bytes:
         # TODO: concurrency
-        return self.pop(0)
+        return self.pkts.pop(0)
 
     def send(self, pkt: bytes) -> None:
         self.ws.send(pkt)

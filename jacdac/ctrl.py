@@ -41,7 +41,7 @@ class CtrlServer(Server):
         self.restart_counter = 0
 
     def queue_announce(self):
-        log("announce: %d " % self.restart_counter)
+        logv("announce: %d " % self.restart_counter)
         self.restart_counter += 1
         ids = [s.service_class for s in self.bus. servers]
         rest = self.restart_counter
@@ -90,7 +90,7 @@ class CtrlServer(Server):
         if pkt.is_reg_get:
             if pkt.reg_code == _JD_CONTROL_REG_UPTIME:
                 self.send_report(JDPacket.packed(
-                    CMD_GET_REG | _JD_CONTROL_REG_UPTIME, "Q",  time.monotonic_ns() // 1000))
+                    JD_GET(_JD_CONTROL_REG_UPTIME), "Q",  time.monotonic_ns() // 1000))
         else:
             cmd = pkt.service_command
             if cmd == _JD_CONTROL_CMD_SERVICES:
@@ -99,4 +99,4 @@ class CtrlServer(Server):
                 self.log("identify")
                 self.bus.emit(EV_IDENTIFY)
             elif cmd == _JD_CONTROL_CMD_RESET:
-                sys.exit() # TODO?
+                sys.exit()  # TODO?

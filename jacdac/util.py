@@ -3,7 +3,8 @@ import binascii
 import time
 from typing import Union
 
-logging = False
+logging = True
+loggingv = False
 _hex = "0123456789abcdef"
 
 
@@ -13,6 +14,13 @@ def now():
 
 def log(msg: str, *args: object):
     if logging:
+        if len(args):
+            msg = msg.format(*args)
+        print("JD: " + msg)
+
+
+def logv(msg: str, *args: object):
+    if loggingv:
         if len(args):
             msg = msg.format(*args)
         print("JD: " + msg)

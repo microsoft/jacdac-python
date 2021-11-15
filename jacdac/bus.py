@@ -11,7 +11,7 @@ from .packet import *
 from .transport import Transport
 
 import jacdac.util as util
-from .util import now, log
+from .util import now, log, logv
 
 
 EV_CHANGE = "change"
@@ -60,6 +60,8 @@ class Bus(EventEmitter):
         self.transport = transport
         self._sendq: queue.Queue[bytes] = queue.Queue()
 
+        self.loop = asyncio.new_event_loop()
+
         self.sender_thread = threading.Thread(target=self._sender)
         self.sender_thread.start()
 
@@ -73,8 +75,8 @@ class Bus(EventEmitter):
             self.transport.send(pkt)
 
     def _process_task(self):
-        self.loop: asyncio.AbstractEventLoop = asyncio.get_running_loop()
         loop = self.loop
+        asyncio.set_event_loop(loop)
 
         from . import ctrl
         ctrls = ctrl.CtrlServer(self)  # attach control server
@@ -187,7 +189,7 @@ class Bus(EventEmitter):
                         break
 
     def process_packet(self, pkt: JDPacket):
-        log("route: {}", pkt)
+        logv("route: {}", pkt)
         dev_id = pkt.device_identifier
         multi_command_class = pkt.multicommand_class
 
@@ -278,7 +280,7 @@ class RawRegisterClient(EventEmitter):
         return None
 
     def _query(self):
-        pkt = JDPacket(cmd=(CMD_GET_REG | self.code))
+        pkt = JDPacket(cmd=JD_GET(self.code))
         self.client.send_cmd(pkt)
 
     def refresh(self):
@@ -354,9 +356,9 @@ class Server(EventEmitter):
 
     def handle_packet_outer(self, pkt: JDPacket):
         cmd = pkt.service_command
-        if cmd == _JD_REG_STATUS_CODE | CMD_GET_REG:
+        if cmd == JD_GET(JD_REG_STATUS_CODE):
             self.handle_status_code(pkt)
-        elif cmd == _JD_REG_INSTANCE_NAME | CMD_GET_REG:
+        elif cmd == JD_GET(JD_REG_INSTANCE_NAME):
             self.handle_instance_name(pkt)
         else:
             # self.state_updated = False
@@ -378,11 +380,11 @@ class Server(EventEmitter):
         self.bus.loop.call_later(0.100, resend)
 
     def send_change_event(self):
-        self.send_event(_JD_EV_CHANGE)
+        self.send_event(JD_EV_CHANGE)
         self.emit(EV_CHANGE)
 
     def handle_status_code(self, pkt: JDPacket):
-        self.handle_reg_u32(pkt, _JD_REG_STATUS_CODE, self._status_code)
+        self.handle_reg_u32(pkt, JD_REG_STATUS_CODE, self._status_code)
 
     def handle_reg_u32(self, pkt: JDPacket, register: int, current: int):
         return self.handle_reg(pkt, register, "I", current)

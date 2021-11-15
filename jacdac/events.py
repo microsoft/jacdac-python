@@ -1,3 +1,4 @@
+import threading
 from typing import Callable, TYPE_CHECKING
 from .util import now, log
 
@@ -51,3 +52,19 @@ class EventEmitter:
                 del self._listeners[i]
                 return
         raise ValueError("no matching on() for off()")
+
+    def wait_for(self, id: str):
+        assert threading.current_thread() is not self.bus.process_thread
+        cv = threading.Condition()
+        happened = False
+
+        def poke(*args: object):
+            nonlocal happened
+            with cv:
+                happened = True
+                cv.notify()
+
+        self.once(id, poke)
+        with cv:
+            while not happened:
+                cv.wait()

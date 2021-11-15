@@ -281,15 +281,23 @@ class RawRegisterClient(EventEmitter):
         self._query()
         self.bus.taskq.delay(20, first_refresh)
 
-    async def query(self, refresh_ms: int = 500):
+    # can't be called from event handlers!
+    def query(self, refresh_ms: int = 500):
         curr = self.current(refresh_ms)
         if curr:
             return curr
         self.refresh()
-        await self.event(EV_CHANGE)
+        self.wait_for(EV_CHANGE)
         if self._data is None:
             raise RuntimeError(
                 "Can't read reg #{} (from {})".format(self.code, self.client))
+        return self._data
+
+    def query_no_wait(self, refresh_ms: int = 500):
+        curr = self.current(refresh_ms)
+        if curr:
+            return curr
+        self.refresh()
         return self._data
 
     def handle_packet(self, pkt: JDPacket):

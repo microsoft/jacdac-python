@@ -1,5 +1,5 @@
 from websocket import WebSocketApp
-from transport import Transport
+from ..transport import Transport
 
 
 class WebSocketTransport(Transport):

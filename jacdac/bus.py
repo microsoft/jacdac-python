@@ -1,6 +1,7 @@
 import threading
 import random
 import asyncio
+import queue
 
 from typing import Optional, TypeVar, Union, cast
 
@@ -57,10 +58,19 @@ class Bus(EventEmitter):
         self.self_device = Device(self, devid, bytearray(4))
         self.process_thread = threading.Thread(target=self._process_task)
         self.transport = transport
+        self._sendq: queue.Queue[bytes] = queue.Queue()
+
+        self.sender_thread = threading.Thread(target=self._sender)
+        self.sender_thread.start()
 
         # self.taskq.recurring(2000, self.debug_dump)
 
         self.process_thread.start()
+
+    def _sender(self):
+        while True:
+            pkt = self._sendq.get()
+            self.transport.send(pkt)
 
     def _process_task(self):
         self.loop: asyncio.AbstractEventLoop = asyncio.get_running_loop()

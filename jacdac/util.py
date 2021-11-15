@@ -10,7 +10,7 @@ def now():
     return int(time.monotonic() * 1000)
 
 
-def hex_num(n: int, len=8):
+def hex_num(n: int, len: int = 8):
     r = "0x"
     for i in range(len):
         r += _hex[(n >> ((len - 1 - i) * 4)) & 0xf]
@@ -55,13 +55,13 @@ def unpack(buf: bytes, fmt: str):
     return struct.unpack("<" + fmt, buf)
 
 
-def pack(fmt: str, *args):
+def pack(fmt: str, *args: object):
     if len(args) == 1 and isinstance(args[0], (tuple, list)):
-        args = args[0]
+        args = args[0] # type: ignore
     return struct.pack("<" + fmt, *args)
 
 
-def hash(buf: bytes, bits=30):
+def hash(buf: bytes, bits: int = 30):
     # return busio.JACDAC.__dict__["hash"](buf, bits)
     if bits < 1:
         return 0

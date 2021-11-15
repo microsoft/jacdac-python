@@ -1,3 +1,42 @@
 [build-system]
 requires = ["setuptools", "wheel"]
 build-backend = "setuptools.build_meta"
+
+[tool.pyright]
+include = ["jacdac"]
+pythonVersion = 3.9
+typeCheckingMode = "basic"
+
+strictListInference = true
+strictDictionaryInference = true
+strictSetInference = true
+strictParameterNoneValue = false
+
+reportFunctionMemberAccess = "warning"
+reportImportCycles = "warning"
+reportUnusedImport = "warning"
+reportUnusedClass = "warning"
+reportUnusedFunction = "warning"
+#reportUnusedVariable = "warning"
+reportDuplicateImport = "warning"
+reportUntypedFunctionDecorator = "warning"
+reportUntypedClassDecorator = "warning"
+reportUntypedBaseClass = "warning"
+reportUntypedNamedTuple = "warning"
+#reportPrivateUsage = "warning"
+reportConstantRedefinition = "warning"
+reportIncompatibleMethodOverride = "warning"
+reportIncompatibleVariableOverride = "warning"
+reportOverlappingOverload = "warning"
+reportUnknownParameterType = "warning"
+reportUnknownArgumentType = "warning"
+reportUnknownLambdaType = "warning"
+reportUnknownVariableType = "warning"
+reportUnknownMemberType = "warning"
+reportMissingParameterType = "warning"
+reportMissingTypeArgument = "warning"
+reportUnnecessaryIsInstance = "warning"
+reportUnnecessaryCast = "warning"
+reportUnnecessaryComparison = "warning"
+reportInvalidStubStatement = "warning"
+reportIncompleteStub = "warning"

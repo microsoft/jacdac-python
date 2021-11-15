@@ -1,6 +1,6 @@
 import threading
 import random
-from typing import Optional
+from typing import Callable, Optional, TypeVar, Union, cast
 
 from . import taskq
 from . import util
@@ -94,9 +94,10 @@ _ACK_RETRIES = const(4)
 _ACK_DELAY = const(40)
 
 logging = False
+RegType = TypeVar('RegType', bound=Union[int, tuple[int, ...]])
 
 
-def log(msg: str, *args):
+def log(msg: str, *args: object):
     if logging:
         if len(args):
             msg = msg.format(*args)
@@ -116,7 +117,7 @@ class JDPacket:
             self.service_command = cmd
 
     @staticmethod
-    def packed(cmd: int, fmt: str, *args):
+    def packed(cmd: int, fmt: str, *args: object):
         return JDPacket(cmd=cmd, data=util.pack(fmt, *args))
 
     def unpack(self, fmt: str):
@@ -245,14 +246,17 @@ class JDPacket:
         return "<JDPacket {}>".format(self.to_string())
 
 
+HandlerFn = Callable[..., None]
+
+
 class EventEmitter:
     def __init__(self, bus: 'Bus') -> None:
         self.bus = bus
 
-    def emit(self, id: str, *args):
+    def emit(self, id: str, *args: object):
         if not hasattr(self, "_listeners"):
             return
-        fns = []
+        fns: list[HandlerFn] = []
         idx = 0
         while idx < len(self._listeners):
             lid, fn, once = self._listeners[idx]
@@ -271,20 +275,20 @@ class EventEmitter:
 
     def _init_emitter(self):
         if not hasattr(self, "_listeners"):
-            self._listeners: list = []
+            self._listeners: list[tuple[str, HandlerFn, bool]] = []
 
-    def on(self, id: str, fn):
+    def on(self, id: str, fn: HandlerFn):
         self._init_emitter()
         self._listeners.append((id, fn, False))
 
-    def once(self, id: str, fn):
+    def once(self, id: str, fn: HandlerFn):
         self._init_emitter()
         self._listeners.append((id, fn, True))
 
-    def off(self, id: str, fn):
+    def off(self, id: str, fn: HandlerFn):
         self._init_emitter()
         for i in range(len(self._listeners)):
-            id2, fn2 = self._listeners[i]
+            id2, fn2, _ign = self._listeners[i]
             if id == id2 and fn is fn2:
                 del self._listeners[i]
                 return
@@ -360,7 +364,7 @@ class Bus(EventEmitter):
         cutoff = now_ - 2000
         self.self_device.last_seen = now_  # make sure not to gc self
 
-        newdevs = []
+        newdevs: list['Device'] = []
         for dev in self.devices:
             if dev.last_seen < cutoff:
                 dev._destroy()
@@ -395,7 +399,7 @@ class Bus(EventEmitter):
         dev.last_seen = now()
         log("reattaching services to {}; {}/{} to attach", dev,
             len(self.unattached_clients), len(self.all_clients))
-        new_clients = []
+        new_clients: list['Client'] = []
         occupied = bytearray(dev.num_service_classes)
         for c in dev.clients:
             if c.broadcast:
@@ -511,7 +515,7 @@ class RawRegisterClient(EventEmitter):
         self._refreshed_at = 0
         self.client = client
 
-    def current(self, refresh_ms=500):
+    def current(self, refresh_ms: int = 500):
         if self._refreshed_at + refresh_ms >= now():
             return self._data
         return None
@@ -546,7 +550,7 @@ class RawRegisterClient(EventEmitter):
         self._query()
         self.bus.taskq.delay(20, first_refresh)
 
-    async def query(self, refresh_ms=500):
+    async def query(self, refresh_ms: int = 500):
         curr = self.current(refresh_ms)
         if curr:
             return curr
@@ -621,7 +625,7 @@ class Server(EventEmitter):
     def handle_reg_i32(self, pkt: JDPacket, register: int, current: int):
         return self.handle_reg(pkt, register, "i", current)
 
-    def handle_reg(self, pkt: JDPacket, register: int, fmt: str, current):
+    def handle_reg(self, pkt: JDPacket, register: int, fmt: str, current: RegType) -> RegType:
         getset = pkt.service_command >> 12
         if getset == 0 or getset > 2:
             return current
@@ -639,14 +643,14 @@ class Server(EventEmitter):
                 v = v[0]
             if v != current:
                 self.state_updated = True
-                current = v
+                current = cast(RegType, v)
         return current
 
     def handle_instance_name(self, pkt: JDPacket):
         self.send_report(JDPacket(cmd=pkt.service_command,
                          data=bytearray(self.instance_name or "", "utf-8")))
 
-    def log(self, text: str, *args):
+    def log(self, text: str, *args: object):
         prefix = "{}.{}>".format(self.bus.self_device,
                                  self.instance_name or self.service_index)
         log(prefix + text, *args)
@@ -803,7 +807,7 @@ class Device(EventEmitter):
         log("destroy " + self.short_id)
         for c in self.clients:
             c._detach()
-        self.clients = None # type: ignore
+        self.clients = None  # type: ignore
 
     def process_packet(self, pkt: JDPacket):
         self.last_seen = now()

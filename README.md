@@ -21,6 +21,32 @@ The rest of this page is for developers of the `jacdac-python` library.
 
 This section explains how to develop this library locally.
 
+### WSL setup
+
+```
+sudo apt update
+sudo apt upgrade
+sudo apt install python3 python3-pip ipython3 python3-venv
+sudo apt-get install python3-venv
+
+pip3 install --upgrade serial
+```
+
+### Build package
+
+Install the build tools
+
+```
+pip install --upgrade setuptools
+pip install --upgrade build
+```
+
+Create the library bundle
+
+```
+python3 -m build
+```
+
 ### Devtools
 
 The devtools script allows to run a Jacdac dashboard connected through a websocket. This allows

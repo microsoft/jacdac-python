@@ -1,6 +1,5 @@
 import threading
 from typing import Callable, TYPE_CHECKING
-from .util import now, log
 
 if TYPE_CHECKING:
     from .bus import Bus
@@ -13,24 +12,18 @@ class EventEmitter:
         self.bus = bus
 
     def emit(self, id: str, *args: object):
+        self.bus.force_jd_thread()
         if not hasattr(self, "_listeners"):
             return
-        fns: list[HandlerFn] = []
         idx = 0
         while idx < len(self._listeners):
             lid, fn, once = self._listeners[idx]
             if lid == id:
-                fns.append(fn)
+                self.bus.loop.call_soon(fn, *args)
                 if once:
                     del self._listeners[idx]
                     idx -= 1
             idx += 1
-        for fn in fns:
-            t0 = now()
-            fn(*args)
-            d = now() - t0
-            if d > 100:
-                log("long running handler for '{}'; {}ms", id, d)
 
     def _init_emitter(self):
         if not hasattr(self, "_listeners"):
@@ -53,8 +46,14 @@ class EventEmitter:
                 return
         raise ValueError("no matching on() for off()")
 
+    # usage: await x.event("...")
+    async def event(self, id: str):
+        f = self.bus.loop.create_future()
+        self.once(id, lambda: f.set_result(None))
+        await f
+
     def wait_for(self, id: str):
-        assert threading.current_thread() is not self.bus.process_thread
+        self.bus.force_non_jd_thread()
         cv = threading.Condition()
         happened = False
 

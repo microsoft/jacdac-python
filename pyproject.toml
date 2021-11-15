@@ -4,8 +4,10 @@ build-backend = "setuptools.build_meta"
 
 [tool.pyright]
 include = ["jacdac"]
-pythonVersion = 3.9
+pythonVersion = 3.7
 typeCheckingMode = "basic"
+
+useLibraryCodeForTypes = true
 
 strictListInference = true
 strictDictionaryInference = true

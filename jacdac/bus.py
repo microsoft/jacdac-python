@@ -1,15 +1,16 @@
 import threading
 import random
+import asyncio
+
 from typing import Optional, TypeVar, Union, cast
 
 from .jdconstants import *
 from .events import *
 from .packet import *
 from .transport import Transport
-from .taskq import TaskQ
 
 import jacdac.util as util
-from .util import now
+from .util import now, log
 
 
 EV_CHANGE = "change"
@@ -51,12 +52,19 @@ class Bus(EventEmitter):
         self.unattached_clients: list['Client'] = []
         self.all_clients: list['Client'] = []
         self.servers: list['Server'] = []
-        self.taskq = TaskQ()
         if devid is None:
             devid = random.randbytes(8).hex()
         self.self_device = Device(self, devid, bytearray(4))
         self.process_thread = threading.Thread(target=self._process_task)
         self.transport = transport
+
+        # self.taskq.recurring(2000, self.debug_dump)
+
+        self.process_thread.start()
+
+    def _process_task(self):
+        self.loop: asyncio.AbstractEventLoop = asyncio.get_running_loop()
+        loop = self.loop
 
         from . import ctrl
         ctrls = ctrl.CtrlServer(self)  # attach control server
@@ -65,21 +73,29 @@ class Bus(EventEmitter):
             self.emit(EV_SELF_ANNOUNCE)
             self._gc_devices()
             ctrls.queue_announce()
-        self.taskq.recurring(500, announce)
-
-        # self.taskq.recurring(2000, self.debug_dump)
-
-        self.process_thread.start()
+            loop.call_later(0.500, announce)
+        loop.call_later(0.500, announce)
 
         from . import sample
         sample.acc_sample(self)
 
-    def _process_task(self):
-        while True:
-            self.taskq.execute()
-            pkt = self.transport.receive(timeout_ms=self.taskq.sleeptime())
-            if pkt:
-                self.process_packet(JDPacket(frombytes=pkt))
+        def process_bytes(pkt: bytes):
+            self.process_packet(JDPacket(frombytes=pkt))
+        def process_later(pkt: bytes):
+            loop.call_soon_threadsafe(process_bytes, pkt)
+        self.transport.on_receive = process_later
+
+        try:
+            loop.run_forever()
+        finally:
+            loop.run_until_complete(loop.shutdown_asyncgens())
+            loop.close()
+
+    def force_jd_thread(self):
+        assert threading.current_thread() is self.process_thread
+
+    def force_non_jd_thread(self):
+        assert threading.current_thread() is not self.process_thread
 
     def debug_dump(self):
         print("Devices:")
@@ -271,15 +287,15 @@ class RawRegisterClient(EventEmitter):
         def second_refresh():
             if prev_data is self._data:
                 self._query()
-                self.bus.taskq.delay(100, final_check)
+                self.bus.loop.call_later(0.100, final_check)
 
         def first_refresh():
             if prev_data is self._data:
                 self._query()
-                self.bus.taskq.delay(50, second_refresh)
+                self.bus.loop.call_later(0.050, second_refresh)
 
         self._query()
-        self.bus.taskq.delay(20, first_refresh)
+        self.bus.loop.call_later(0.020, first_refresh)
 
     # can't be called from event handlers!
     def query(self, refresh_ms: int = 500):
@@ -348,8 +364,8 @@ class Server(EventEmitter):
         pkt = JDPacket(cmd=self.bus.mk_event_cmd(event_code), data=data)
         def resend(): self.send_report(pkt)
         resend()
-        self.bus.taskq.delay(20, resend)
-        self.bus.taskq.delay(100, resend)
+        self.bus.loop.call_later(0.020, resend)
+        self.bus.loop.call_later(0.100, resend)
 
     def send_change_event(self):
         self.send_event(_JD_EV_CHANGE)

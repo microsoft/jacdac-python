@@ -16,6 +16,8 @@ jobs:
         runs-on: ubuntu-latest
         steps:
             - uses: actions/checkout@v2
+              with:
+                fetch-depth: 0
             - uses: actions/setup-python@v2
               with:
                   python-version: "3.x" # Version range or exact version of a Python version to use, using SemVer's version range syntax
@@ -43,8 +45,9 @@ jobs:
               with:
                   password: ${{ secrets.TEST_PYPI_API_TOKEN }}
                   repository_url: https://test.pypi.org/legacy/
-            - name: Publish distribution 📦 to PyPI
-              if: startsWith(github.ref, 'refs/tags')
-              uses: pypa/gh-action-pypi-publish@master
+            - name: Publish semantic release 📦 to PyPI
+              if: ${{ github.ref == 'refs/heads/main' }}
+              uses: relekang/python-semantic-release@master
               with:
-                  password: ${{ secrets.PYPI_API_TOKEN }}
+                github_token: ${{ secrets.GITHUB_TOKEN }}
+                pypi_token: ${{ secrets.PYPI_TOKEN }}

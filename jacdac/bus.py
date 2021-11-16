@@ -60,6 +60,7 @@ class Bus(EventEmitter):
         self.process_thread = threading.Thread(target=self._process_task)
         self.transport = transport
         self._sendq: queue.Queue[bytes] = queue.Queue()
+        self.pending_tasks: list[asyncio.Task[None]] = []
 
         self.loop = asyncio.new_event_loop()
 
@@ -75,6 +76,8 @@ class Bus(EventEmitter):
 
         self.process_thread.start()
 
+        log("starting bus, self={}", self.self_device)
+
     def _sender(self):
         while True:
             pkt = self._sendq.get()
@@ -87,10 +90,17 @@ class Bus(EventEmitter):
         from . import ctrl
         ctrls = ctrl.CtrlServer(self)  # attach control server
 
+        def keep_task(t: asyncio.Task[None]):
+            if t.done():
+                t.result() # throw exception if needed
+                return False
+            return True
+
         def announce():
             self.emit(EV_SELF_ANNOUNCE)
             self._gc_devices()
             ctrls.queue_announce()
+            self.pending_tasks = [x for x in self.pending_tasks if keep_task(x)]
             loop.call_later(0.500, announce)
         loop.call_later(0.500, announce)
 

@@ -31,7 +31,7 @@ def acc_sample(bus: Bus):
 
     async def acc_ev(pkt: JDPacket):
         print("acc 0x%x" % pkt.event_code)
-        v = await acc.register(_JD_ACCELEROMETER_REG_FORCES).query_async()
+        v = await acc.register(_JD_ACCELEROMETER_REG_FORCES).query_async(refresh_ms=50)
         print(v.hex())
     acc.on(EV_EVENT, acc_ev)
 

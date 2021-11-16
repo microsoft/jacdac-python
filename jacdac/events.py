@@ -12,6 +12,17 @@ class EventEmitter:
         self.bus = bus
 
     def emit(self, id: str, *args: object):
+        def add_cb(fn: HandlerFn):
+            def cb():
+                r = fn(*args)
+                if r is None:
+                    return
+                # print(r)
+                t = self.bus.loop.create_task(r)
+                self.bus.pending_tasks.append(t)
+                # print(t)
+            self.bus.loop.call_soon(cb)
+
         self.bus.force_jd_thread()
         if not hasattr(self, "_listeners"):
             return
@@ -19,12 +30,8 @@ class EventEmitter:
         while idx < len(self._listeners):
             lid, fn, once = self._listeners[idx]
             if lid == id:
-                def cb():
-                    r = fn(*args)
-                    if r is None:
-                        return
-                    self.bus.loop.create_task(r)
-                self.bus.loop.call_soon(cb)
+                # note that add_cb() can't be inlined here due to lack of block scope in Python
+                add_cb(fn)
                 if once:
                     del self._listeners[idx]
                     idx -= 1

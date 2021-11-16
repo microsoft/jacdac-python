@@ -1,0 +1,2 @@
+class ButtonServer:
+    pass

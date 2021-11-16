@@ -6,7 +6,7 @@ import os
 
 from typing import Optional, TypeVar, Union, cast
 
-from .jdconstants import *
+from .constants import *
 from .events import *
 from .packet import *
 from .transport import Transport
@@ -48,15 +48,15 @@ def _service_matches(dev: 'Device', serv: bytearray):
 
 
 class Bus(EventEmitter):
-    def __init__(self, transport: Transport, devid: str = None) -> None:
+    def __init__(self, transport: Transport, *, device_id: str = None) -> None:
         super().__init__(self)
         self.devices: list['Device'] = []
         self.unattached_clients: list['Client'] = []
         self.all_clients: list['Client'] = []
         self.servers: list['Server'] = []
-        if devid is None:
-            devid = random.randbytes(8).hex()
-        self.self_device = Device(self, devid, bytearray(4))
+        if device_id is None:
+            device_id = random.randbytes(8).hex()
+        self.self_device = Device(self, device_id, bytearray(4))
         self.process_thread = threading.Thread(target=self._process_task)
         self.transport = transport
         self._sendq: queue.Queue[bytes] = queue.Queue()
@@ -64,10 +64,10 @@ class Bus(EventEmitter):
 
         self.loop = asyncio.new_event_loop()
 
-        def handler(loop, context): # type: ignore
-            self.loop.default_exception_handler(context) # type: ignore
+        def handler(loop, context):  # type: ignore
+            self.loop.default_exception_handler(context)  # type: ignore
             os._exit(10)
-        self.loop.set_exception_handler(handler) # type: ignore
+        self.loop.set_exception_handler(handler)  # type: ignore
 
         self.sender_thread = threading.Thread(target=self._sender)
         self.sender_thread.start()
@@ -87,12 +87,17 @@ class Bus(EventEmitter):
         loop = self.loop
         asyncio.set_event_loop(loop)
 
+        # TODO: what's the best way to import these things
         from . import ctrl
         ctrls = ctrl.CtrlServer(self)  # attach control server
 
+        # TODO: make this optional.
+        from .unique_brain.server import BrainServer
+        brain = BrainServer(self)
+
         def keep_task(t: asyncio.Task[None]):
             if t.done():
-                t.result() # throw exception if needed
+                t.result()  # throw exception if needed
                 return False
             return True
 
@@ -100,7 +105,8 @@ class Bus(EventEmitter):
             self.emit(EV_SELF_ANNOUNCE)
             self._gc_devices()
             ctrls.queue_announce()
-            self.pending_tasks = [x for x in self.pending_tasks if keep_task(x)]
+            self.pending_tasks = [
+                x for x in self.pending_tasks if keep_task(x)]
             loop.call_later(0.500, announce)
         loop.call_later(0.500, announce)
 
@@ -611,7 +617,7 @@ class Device(EventEmitter):
         if not role or role == self.device_id or role == "{}:{}".format(self.device_id, service_idx):
             return True
         return True
-        # return jacdac._rolemgr.getRole(self.deviceId, serviceIdx) == role
+        # TODO: return jacdac._rolemgr.getRole(self.deviceId, serviceIdx) == role
 
     @property
     def num_service_classes(self):

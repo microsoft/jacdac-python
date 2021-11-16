@@ -1,3 +1,4 @@
 pyserial
 websocket-client
 setuptools
+jurigged

@@ -1,0 +1,1 @@
+python3 -m jurigged -w jacdac/ -v -m jacdac.devtools

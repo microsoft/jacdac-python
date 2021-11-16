@@ -1,5 +1,5 @@
 from typing import Optional
-from .jdconstants import *
+from .constants import *
 import jacdac.util as util
 
 

@@ -1,4 +1,5 @@
 def const(v: int): return v
+    # A shim for the micropython const keyword
 
 JD_SERIAL_HEADER_SIZE = const(16)
 JD_SERIAL_MAX_PAYLOAD_SIZE = const(236)

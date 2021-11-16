@@ -2,7 +2,7 @@ from jacdac.bus import Bus, Server
 from .constants import *
 
 
-class BrainServer(Server):
+class UniqueBrainServer(Server):
     # A unique brain server
 
     def __init__(self, bus: Bus) -> None:

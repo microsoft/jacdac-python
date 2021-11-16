@@ -89,12 +89,12 @@ class Bus(EventEmitter):
         asyncio.set_event_loop(loop)
 
         # TODO: what's the best way to import these things
-        from . import ctrl
-        ctrls = ctrl.CtrlServer(self)  # attach control server
+        from .control.server import ControlServer
+        ctrls = ControlServer(self)  # attach control server
 
         # TODO: make this optional.
-        from .unique_brain.server import BrainServer
-        brain = BrainServer(self)
+        from .unique_brain.server import UniqueBrainServer
+        brain = UniqueBrainServer(self)
 
         def keep_task(t: asyncio.Task[None]):
             if t.done():

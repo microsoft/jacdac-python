@@ -29,7 +29,7 @@ sudo apt upgrade
 sudo apt install python3 python3-pip ipython3 python3-venv
 sudo apt-get install python3-venv
 
-pip3 install --upgrade pyserial
+pip3 install --upgrade -r requirements.txt
 ```
 
 ### Build package
@@ -58,10 +58,16 @@ To install/updates the tools
 sh scripts/devsetup.sh
 ```
 
-To launch the tools
+To launch the developer tools server (once per session)
 
 ```
 sh scripts/devtools.sh
+```
+
+To launch `jacdac.devtools` in watch mode
+
+```
+sh scripts/watch.sh
 ```
 
 ## Contributing

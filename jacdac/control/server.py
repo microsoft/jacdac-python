@@ -5,9 +5,10 @@ from jacdac.bus import Server, Bus, EV_IDENTIFY
 from jacdac.util import pack, logv
 from jacdac.packet import JDPacket
 
+
 class ControlServer(Server):
     def __init__(self, bus: Bus) -> None:
-        super().__init__(bus, 0)
+        super().__init__(bus, JD_SERVICE_CLASS_CONTROL)
         self.restart_counter = 0
 
     def queue_announce(self):

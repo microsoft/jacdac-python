@@ -93,8 +93,8 @@ class Bus(EventEmitter):
         ctrls = ControlServer(self)  # attach control server
 
         # TODO: make this optional.
-        from .unique_brain.server import BrainServer
-        brain = BrainServer(self)
+        from .unique_brain.server import UniqueBrainServer
+        brain = UniqueBrainServer(self)
 
         def keep_task(t: asyncio.Task[None]):
             if t.done():

@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v0.0.6 (2021-11-16)
+### Fix
+* Try using readme.md from jacdac folder ([`5abe14a`](https://github.com/microsoft/jacdac-python/commit/5abe14a49efc4cea2432e6b0e9ed190fc911440b))
+
 ## v0.0.5 (2021-11-16)
 ### Fix
 * Moving metadata to .cfg ([`6a46745`](https://github.com/microsoft/jacdac-python/commit/6a46745ad2e6fe56ccdc6b2473492876d6b18a9f))

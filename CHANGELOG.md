@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v0.0.4 (2021-11-16)
+### Fix
+* Try changing package name ([`367fc7d`](https://github.com/microsoft/jacdac-python/commit/367fc7de923a0d9502326639d718facdbe0285a9))
+
 ## v0.0.3 (2021-11-16)
 ### Fix
 * Updated token ([`84bf56e`](https://github.com/microsoft/jacdac-python/commit/84bf56ec43b2778cf08f18db034a662182b4b78a))

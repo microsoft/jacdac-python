@@ -7,6 +7,7 @@ import os
 from typing import Optional, TypeVar, Union, cast
 
 from .constants import *
+from system.constants import *
 from .events import *
 from .packet import *
 from .transport import Transport

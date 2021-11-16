@@ -1,10 +1,10 @@
 import threading
-from typing import Callable, TYPE_CHECKING
+from typing import Any, Callable, TYPE_CHECKING, Coroutine, Union
 
 if TYPE_CHECKING:
     from .bus import Bus
 
-HandlerFn = Callable[..., None]
+HandlerFn = Callable[..., Union[None, Coroutine[Any, Any, None]]]
 
 
 class EventEmitter:
@@ -19,7 +19,12 @@ class EventEmitter:
         while idx < len(self._listeners):
             lid, fn, once = self._listeners[idx]
             if lid == id:
-                self.bus.loop.call_soon(fn, *args)
+                def cb():
+                    r = fn(*args)
+                    if r is None:
+                        return
+                    self.bus.loop.create_task(r)
+                self.bus.loop.call_soon(cb)
                 if once:
                     del self._listeners[idx]
                     idx -= 1

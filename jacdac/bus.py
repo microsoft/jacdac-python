@@ -93,6 +93,7 @@ class Bus(EventEmitter):
 
         def process_bytes(pkt: bytes):
             self.process_packet(JDPacket(frombytes=pkt))
+
         def process_later(pkt: bytes):
             loop.call_soon_threadsafe(process_bytes, pkt)
         self.transport.on_receive = process_later
@@ -136,7 +137,12 @@ class Bus(EventEmitter):
 
     def _send_core(self, pkt: JDPacket):
         assert len(pkt._data) == pkt._header[12]
-        self.transport.send(pkt._header + pkt._data)
+        pkt._header[2] = len(pkt._data) + 4
+        buf = pkt._header + pkt._data
+        crc = util.crc16(buf, 2)
+        util.set_u16(buf, 0, crc)
+        util.set_u16(pkt._header, 0, crc)
+        self._sendq.put(buf)
         self.process_packet(pkt)  # handle loop-back packet
 
     def clear_attach_cache(self):
@@ -316,6 +322,17 @@ class RawRegisterClient(EventEmitter):
             return curr
         self.refresh()
         self.wait_for(EV_CHANGE)
+        if self._data is None:
+            raise RuntimeError(
+                "Can't read reg #{} (from {})".format(self.code, self.client))
+        return self._data
+
+    async def query_async(self, refresh_ms: int = 500):
+        curr = self.current(refresh_ms)
+        if curr:
+            return curr
+        self.refresh()
+        await self.event(EV_CHANGE)
         if self._data is None:
             raise RuntimeError(
                 "Can't read reg #{} (from {})".format(self.code, self.client))

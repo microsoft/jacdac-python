@@ -29,7 +29,7 @@ sudo apt upgrade
 sudo apt install python3 python3-pip ipython3 python3-venv
 sudo apt-get install python3-venv
 
-pip3 install --upgrade serial
+pip3 install --upgrade pyserial
 ```
 
 ### Build package

@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v0.0.8 (2021-11-16)
+### Fix
+* Force build ([`bd05439`](https://github.com/microsoft/jacdac-python/commit/bd05439d6e4aa071d4dd71161bbd5a501937bfcf))
+
 ## v0.0.7 (2021-11-16)
 ### Fix
 * Attempt at formatting ([`63bddf1`](https://github.com/microsoft/jacdac-python/commit/63bddf19d7b856a395e83c8ceb8b42d2c99d5ea8))

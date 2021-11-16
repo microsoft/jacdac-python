@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v0.0.3 (2021-11-16)
+### Fix
+* Updated token ([`84bf56e`](https://github.com/microsoft/jacdac-python/commit/84bf56ec43b2778cf08f18db034a662182b4b78a))
+
 ## v0.0.2 (2021-11-16)
 ### Fix
 * Use setup.py cos you have to ([`5fe8f26`](https://github.com/microsoft/jacdac-python/commit/5fe8f266d828f1b8f16eac9dad0ba6f714fccf72))

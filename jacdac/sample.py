@@ -30,9 +30,9 @@ def acc_sample(bus: Bus):
     acc = Client(bus, _JD_SERVICE_CLASS_ACCELEROMETER, "acc")
 
     async def acc_ev(pkt: JDPacket):
-        print("acc", pkt.event_code)
+        print("acc 0x%x" % pkt.event_code)
         v = await acc.register(_JD_ACCELEROMETER_REG_FORCES).query_async()
-        print(v)
+        print(v.hex())
     acc.on(EV_EVENT, acc_ev)
 
     btn = Client(bus, _JD_SERVICE_CLASS_BUTTON, "btn")
@@ -40,5 +40,5 @@ def acc_sample(bus: Bus):
     async def btn_ev(pkt: JDPacket):
         print("btn", pkt.event_code, len(pkt.data) and pkt.unpack("I"))
         v =  await btn.register(13).query_async()
-        print(v)
+        print(v.hex())
     btn.on(EV_EVENT, btn_ev)

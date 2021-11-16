@@ -2,6 +2,7 @@ import threading
 import random
 import asyncio
 import queue
+import os
 
 from typing import Optional, TypeVar, Union, cast
 
@@ -62,6 +63,11 @@ class Bus(EventEmitter):
 
         self.loop = asyncio.new_event_loop()
 
+        def handler(loop, context): # type: ignore
+            self.loop.default_exception_handler(context) # type: ignore
+            os._exit(10)
+        self.loop.set_exception_handler(handler) # type: ignore
+
         self.sender_thread = threading.Thread(target=self._sender)
         self.sender_thread.start()
 
@@ -91,11 +97,8 @@ class Bus(EventEmitter):
         from . import sample
         sample.acc_sample(self)
 
-        def process_bytes(pkt: bytes):
-            self.process_packet(JDPacket(frombytes=pkt))
-
         def process_later(pkt: bytes):
-            loop.call_soon_threadsafe(process_bytes, pkt)
+            loop.call_soon_threadsafe(self.process_frame, pkt)
         self.transport.on_receive = process_later
 
         try:
@@ -103,6 +106,23 @@ class Bus(EventEmitter):
         finally:
             loop.run_until_complete(loop.shutdown_asyncgens())
             loop.close()
+
+    def process_frame(self, frame: bytes):
+        if frame[2] - frame[12] < 4:
+            # single packet in frame
+            self.process_packet(JDPacket(frombytes=frame))
+        else:
+            # split into frames
+            ptr = 12
+            while ptr < 12 + frame[2]:
+                sz = frame[ptr] + 4
+                pktbytes = frame[0:12] + frame[ptr:ptr+sz]
+                #log("PKT: {}-{} / {}", ptr, len(frame), pktbytes.hex())
+                pkt = JDPacket(frombytes=pktbytes)
+                if ptr > 12:
+                    pkt.requires_ack = False
+                self.process_packet(pkt)
+                ptr += (sz + 3) & ~3
 
     def force_jd_thread(self):
         assert threading.current_thread() is self.process_thread

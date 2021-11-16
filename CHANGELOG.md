@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v0.0.7 (2021-11-16)
+### Fix
+* Attempt at formatting ([`63bddf1`](https://github.com/microsoft/jacdac-python/commit/63bddf19d7b856a395e83c8ceb8b42d2c99d5ea8))
+
 ## v0.0.6 (2021-11-16)
 ### Fix
 * Try using readme.md from jacdac folder ([`5abe14a`](https://github.com/microsoft/jacdac-python/commit/5abe14a49efc4cea2432e6b0e9ed190fc911440b))

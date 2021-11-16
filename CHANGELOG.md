@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v0.0.5 (2021-11-16)
+### Fix
+* Moving metadata to .cfg ([`6a46745`](https://github.com/microsoft/jacdac-python/commit/6a46745ad2e6fe56ccdc6b2473492876d6b18a9f))
+
 ## v0.0.4 (2021-11-16)
 ### Fix
 * Try changing package name ([`367fc7d`](https://github.com/microsoft/jacdac-python/commit/367fc7de923a0d9502326639d718facdbe0285a9))

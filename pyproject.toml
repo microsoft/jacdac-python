@@ -2,6 +2,11 @@
 requires = ["setuptools", "wheel"]
 build-backend = "setuptools.build_meta"
 
+[project]
+name = "pyJacdac"
+authors = [{name = "Microsoft"}]
+dynamic = ["version", "description"]
+
 [tool.pyright]
 include = ["jacdac"]
 pythonVersion = 3.7

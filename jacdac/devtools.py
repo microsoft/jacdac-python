@@ -6,7 +6,7 @@ def on_device_connect(dev: Device):
     print("connected " + dev.short_id)
 
 
-print("pyJacdac dev tools")
+print("jacdac-python dev tools")
 print("run scripts/devtools.sh to launch the development server")
 print("open http://localhost:8081 to connect")
 transport = WebSocketTransport("ws://localhost:8081")

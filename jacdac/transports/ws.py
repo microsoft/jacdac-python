@@ -1,3 +1,4 @@
+import threading
 from websocket import WebSocketApp
 from ..transport import Transport
 
@@ -19,10 +20,11 @@ class WebSocketTransport(Transport):
                           on_message=self.on_message,
                           on_error=self.on_error,
                           on_close=self.on_close)
-        self.ws.run_forever() # type: ignore
+        t = threading.Thread(target=self.ws.run_forever) # type: ignore
+        t.start()
 
     def send(self, pkt: bytes) -> None:
-        self.ws.send(pkt)  # type: ignore
+        self.ws.send(pkt, opcode=2)  # type: ignore
 
     def on_message(self, ws: WebSocketApp, message: bytes):
         if self.on_receive:

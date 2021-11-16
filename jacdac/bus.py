@@ -7,7 +7,7 @@ import os
 from typing import Optional, TypeVar, Union, cast
 
 from .constants import *
-from system.constants import *
+from .system.constants import *
 from .events import *
 from .packet import *
 from .transport import Transport
@@ -89,8 +89,8 @@ class Bus(EventEmitter):
         asyncio.set_event_loop(loop)
 
         # TODO: what's the best way to import these things
-        from . import ctrl
-        ctrls = ctrl.CtrlServer(self)  # attach control server
+        from .control.server import ControlServer
+        ctrls = ControlServer(self)  # attach control server
 
         # TODO: make this optional.
         from .unique_brain.server import BrainServer

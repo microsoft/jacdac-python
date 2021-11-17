@@ -39,6 +39,6 @@ def acc_sample(bus: Bus):
 
     async def btn_ev(pkt: JDPacket):
         print("btn", pkt.event_code, len(pkt.data) and pkt.unpack("I"))
-        v =  await btn.register(13).query_async()
+        v = await btn.register(13).query_async()
         print(v.hex())
     btn.on(EV_EVENT, btn_ev)

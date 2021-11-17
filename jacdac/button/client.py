@@ -1,8 +1,9 @@
 from typing import Union
-from jacdac.bus import EV_CHANGE, Bus, Client, EV_EVENT, RawRegisterClient
+from jacdac.bus import Bus, Client, EV_EVENT
 from jacdac.packet import JDPacket
-from .constants import *
+from .constants import JD_SERVICE_CLASS_BUTTON, JD_BUTTON_PACK_FORMATS, JD_BUTTON_REG_PRESSURE, JD_BUTTON_EV_UP, JD_BUTTON_EV_DOWN, JD_BUTTON_EV_HOLD
 from jacdac.events import HandlerFn
+
 
 class ButtonClient(Client):
     _pressed = False

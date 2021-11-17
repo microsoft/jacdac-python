@@ -321,17 +321,17 @@ class RawRegisterClient(EventEmitter):
             return self._data
         return None
 
-    def unpacked(self):
+    def unpacked(self) -> tuple[Any, ...]:
         data = self.query_no_wait()
         if data and self.pack_format:
             return unpack(data, self.pack_format)
-        return []
+        return ()
 
     def float_value(self, index: int = 0, scale: int = 1) -> Union[float, None]:
         values = self.unpacked()
         if (len(values) > index):
-            value = values[index]  # type: Union[float, None]
-            return value * scale if not value is None else None
+            value = float(values[index])
+            return value * scale
         else:
             return None
 

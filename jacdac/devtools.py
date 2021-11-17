@@ -2,7 +2,7 @@ from .bus import Bus, Device, EV_DEVICE_CONNECT
 from .transports.ws import WebSocketTransport
 
 
-def createDevToolsBus():
+def create_dev_tools_bus():
     # Starts a Jacdac bus connected to the local detools websocket server
     # at ws://localhost:8081
     print("jacdac-python dev tools")
@@ -14,4 +14,4 @@ def createDevToolsBus():
 
 
 if __name__ == "__main__":
-    createDevToolsBus()
+    create_dev_tools_bus()

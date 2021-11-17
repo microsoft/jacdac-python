@@ -1,8 +1,8 @@
-from jacdac.devtools import createDevToolsBus
+from jacdac.devtools import create_dev_tools_bus
 from .client import ButtonClient
 from time import sleep
 
-bus = createDevToolsBus()
+bus = create_dev_tools_bus()
 
 
 def up():

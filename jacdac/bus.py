@@ -80,6 +80,12 @@ class Bus(EventEmitter):
 
         log("starting bus, self={}", self.self_device)
 
+    def run(self, cb: Callable[..., None], *args: Any):
+        if self.process_thread is threading.current_thread():
+            cb(*args)
+        else:
+            self.loop.call_soon(cb, *args)
+
     def _sender(self):
         while True:
             pkt = self._sendq.get()
@@ -342,28 +348,32 @@ class RawRegisterClient(EventEmitter):
     def refresh(self):
         if self._refreshed_at < 0:
             return  # already in progress
-        prev_data = self._data
-        self._refreshed_at = -1
 
-        def final_check():
-            if prev_data is self._data:
-                # if we still didn't get any data, emit "change" event, so that queries can time out
-                self._data = None
-                self._refreshed_at = 0
-                self.emit(EV_CHANGE)
+        def do_refresh():
+            prev_data = self._data
+            self._refreshed_at = -1
 
-        def second_refresh():
-            if prev_data is self._data:
-                self._query()
-                self.bus.loop.call_later(0.100, final_check)
+            def final_check():
+                if prev_data is self._data:
+                    # if we still didn't get any data, emit "change" event, so that queries can time out
+                    self._data = None
+                    self._refreshed_at = 0
+                    self.emit(EV_CHANGE)
 
-        def first_refresh():
-            if prev_data is self._data:
-                self._query()
-                self.bus.loop.call_later(0.050, second_refresh)
+            def second_refresh():
+                if prev_data is self._data:
+                    self._query()
+                    self.bus.loop.call_later(0.100, final_check)
 
-        self._query()
-        self.bus.loop.call_later(0.020, first_refresh)
+            def first_refresh():
+                if prev_data is self._data:
+                    self._query()
+                    self.bus.loop.call_later(0.050, second_refresh)
+
+            self._query()
+            self.bus.loop.call_later(0.020, first_refresh)
+
+        self.bus.run(do_refresh)
 
     # can't be called from event handlers!
     def query(self, refresh_ms: int = 500):

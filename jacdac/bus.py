@@ -522,9 +522,11 @@ class Client(EventEmitter):
 
     def add_register(self, code: int, pack_format: str):
         r = self._lookup_register(code)
-        if r is None:
-            r = RawRegisterClient(self, code, pack_format)
-            self._registers.append(r)
+        if (not r is None):
+            raise RuntimeError(
+                "reg #{} already added".format(code))
+        r = RawRegisterClient(self, code, pack_format)
+        self._registers.append(r)
         return r
 
     def handle_packet(self, pkt: JDPacket):

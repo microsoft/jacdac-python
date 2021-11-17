@@ -23,6 +23,6 @@ btn1.on_down(down)
 btn1.on_hold(hold)
 
 while True:
-    print(btn1.pressed)
-    print(btn1.pressure)
-    sleep(1000)
+    print("pressed: ", btn1.pressed)
+    print("pressure: ", btn1.pressure)
+    sleep(1)

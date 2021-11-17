@@ -10,7 +10,8 @@ class ButtonClient(Client):
 
     def __init__(self, bus: Bus, role: str) -> None:
         super().__init__(bus, JD_SERVICE_CLASS_BUTTON, role)
-        self._pressure = self.add_register(JD_BUTTON_REG_PRESSURE, "I")
+        # / ?
+        self._pressure = self.add_register(JD_BUTTON_REG_PRESSURE, "H")
         self.on(EV_EVENT, self._on_event)
 
     @property

@@ -26,8 +26,7 @@ class ButtonClient(Client):
     @property
     def pressure(self) -> Union[float, None]:
         reg = self.register(JD_BUTTON_REG_PRESSURE)
-        value = reg.unpacked[0] if reg else None  # float | None
-        return value / 100 if not value is None else None
+        return reg.floatValue(0, 100)
 
     def _on_event(self, pkt: JDPacket):
         code = pkt.event_code

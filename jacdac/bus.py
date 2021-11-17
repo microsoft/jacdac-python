@@ -325,9 +325,14 @@ class RawRegisterClient(EventEmitter):
 
     @property
     def unpacked(self):
-        if self._data and self.pack_format:
-            return unpack(self._data, self.pack_format)
+        data = self.query_no_wait()
+        if data and self.pack_format:
+            return unpack(data, self.pack_format)
         return []
+
+    def floatValue(self, index: int = 0, scale: int = 1) -> Union[float, None]:
+        value = self.unpacked[index]  # type: Union[float, None]
+        return value * scale if not value is None else None
 
     def _query(self):
         pkt = JDPacket(cmd=JD_GET(self.code))

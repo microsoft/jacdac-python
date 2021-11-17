@@ -3,6 +3,6 @@ from jacdac.constants import *
 from jacdac.system.constants import *
 JD_SERVICE_CLASS_ROVER = const(0x19f4d06b)
 JD_ROVER_REG_KINEMATICS = const(JD_REG_READING)
-JD_ROVER__PACK_FORMATS = {
+JD_ROVER_PACK_FORMATS = {
     JD_ROVER_REG_KINEMATICS: "i16.16 i16.16 i16.16 i16.16 i16.16"
 }

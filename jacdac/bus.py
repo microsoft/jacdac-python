@@ -14,6 +14,7 @@ from .transport import Transport
 
 import jacdac.util as util
 from .util import now, log, logv, unpack
+from .control.constants import *
 
 
 EV_CHANGE = "change"
@@ -326,7 +327,7 @@ class RawRegisterClient(EventEmitter):
             return unpack(data, self.pack_format)
         return []
 
-    def floatValue(self, index: int = 0, scale: int = 1) -> Union[float, None]:
+    def float_value(self, index: int = 0, scale: int = 1) -> Union[float, None]:
         values = self.unpacked()
         if (len(values) > index):
             value = values[index]  # type: Union[float, None]
@@ -587,7 +588,8 @@ class Device(EventEmitter):
     @property
     def ctrl_client(self):
         if self._ctrl_client is None:
-            self._ctrl_client = Client(self.bus, 0, "")
+            self._ctrl_client = Client(
+                self.bus, JD_SERVICE_CLASS_CONTROL, JD_CONTROL_PACK_FORMATS, "")
             self._ctrl_client._attach(self, 0)
         return self._ctrl_client
 

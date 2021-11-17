@@ -521,7 +521,7 @@ class Client(EventEmitter):
         return r
 
     def add_register(self, code: int, pack_format: str):
-        r = self.register(code)
+        r = self._lookup_register(code)
         if r is None:
             r = RawRegisterClient(self, code, pack_format)
             self._registers.append(r)

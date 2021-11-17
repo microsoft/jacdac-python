@@ -13,7 +13,8 @@ from .packet import *
 from .transport import Transport
 
 import jacdac.util as util
-from .util import now, log, logv
+from .util import now, log, logv, unpack
+from .control.constants import *
 
 
 EV_CHANGE = "change"
@@ -79,6 +80,12 @@ class Bus(EventEmitter):
 
         log("starting bus, self={}", self.self_device)
 
+    def run(self, cb: Callable[..., None], *args: Any):
+        if self.process_thread is threading.current_thread():
+            cb(*args)
+        else:
+            self.loop.call_soon(cb, *args)
+
     def _sender(self):
         while True:
             pkt = self._sendq.get()
@@ -110,9 +117,6 @@ class Bus(EventEmitter):
                 x for x in self.pending_tasks if keep_task(x)]
             loop.call_later(0.500, announce)
         loop.call_later(0.500, announce)
-
-        from . import sample
-        sample.acc_sample(self)
 
         def process_later(pkt: bytes):
             loop.call_soon_threadsafe(self.process_frame, pkt)
@@ -310,17 +314,32 @@ class Bus(EventEmitter):
 
 
 class RawRegisterClient(EventEmitter):
-    def __init__(self, client: 'Client', code: int) -> None:
+    def __init__(self, client: 'Client', code: int, pack_format: Union[str, None]) -> None:
         super().__init__(client.bus)
         self.code = code
         self._data: Optional[bytearray] = None
         self._refreshed_at = 0
         self.client = client
+        self.pack_format = pack_format
 
     def current(self, refresh_ms: int = 500):
         if self._refreshed_at + refresh_ms >= now():
             return self._data
         return None
+
+    def unpacked(self) -> tuple[Any, ...]:
+        data = self.query_no_wait()
+        if data and self.pack_format:
+            return unpack(data, self.pack_format)
+        return ()
+
+    def float_value(self, index: int = 0, scale: int = 1) -> Union[float, None]:
+        values = self.unpacked()
+        if (len(values) > index):
+            value = float(values[index])
+            return value * scale
+        else:
+            return None
 
     def _query(self):
         pkt = JDPacket(cmd=JD_GET(self.code))
@@ -329,28 +348,32 @@ class RawRegisterClient(EventEmitter):
     def refresh(self):
         if self._refreshed_at < 0:
             return  # already in progress
-        prev_data = self._data
-        self._refreshed_at = -1
 
-        def final_check():
-            if prev_data is self._data:
-                # if we still didn't get any data, emit "change" event, so that queries can time out
-                self._data = None
-                self._refreshed_at = 0
-                self.emit(EV_CHANGE)
+        def do_refresh():
+            prev_data = self._data
+            self._refreshed_at = -1
 
-        def second_refresh():
-            if prev_data is self._data:
-                self._query()
-                self.bus.loop.call_later(0.100, final_check)
+            def final_check():
+                if prev_data is self._data:
+                    # if we still didn't get any data, emit "change" event, so that queries can time out
+                    self._data = None
+                    self._refreshed_at = 0
+                    self.emit(EV_CHANGE)
 
-        def first_refresh():
-            if prev_data is self._data:
-                self._query()
-                self.bus.loop.call_later(0.050, second_refresh)
+            def second_refresh():
+                if prev_data is self._data:
+                    self._query()
+                    self.bus.loop.call_later(0.100, final_check)
 
-        self._query()
-        self.bus.loop.call_later(0.020, first_refresh)
+            def first_refresh():
+                if prev_data is self._data:
+                    self._query()
+                    self.bus.loop.call_later(0.050, second_refresh)
+
+            self._query()
+            self.bus.loop.call_later(0.020, first_refresh)
+
+        self.bus.run(do_refresh)
 
     # can't be called from event handlers!
     def query(self, refresh_ms: int = 500):
@@ -361,7 +384,7 @@ class RawRegisterClient(EventEmitter):
         self.wait_for(EV_CHANGE)
         if self._data is None:
             raise RuntimeError(
-                "Can't read reg #{} (from {})".format(self.code, self.client))
+                "Can't read reg #{} (from {})".format(hex(self.code), self.client))
         return self._data
 
     async def query_async(self, refresh_ms: int = 500):
@@ -372,7 +395,7 @@ class RawRegisterClient(EventEmitter):
         await self.event(EV_CHANGE)
         if self._data is None:
             raise RuntimeError(
-                "Can't read reg #{} (from {})".format(self.code, self.client))
+                "Can't read reg #{} (from {})".format(hex(self.code), self.client))
         return self._data
 
     def query_no_wait(self, refresh_ms: int = 500):
@@ -478,10 +501,11 @@ class Server(EventEmitter):
 
 
 class Client(EventEmitter):
-    def __init__(self, bus: Bus, service_class: int, role: str) -> None:
+    def __init__(self, bus: Bus, service_class: int, pack_formats: dict[int, str], role: str) -> None:
         super().__init__(bus)
         self.broadcast = False
         self.service_class = service_class
+        self.pack_formats = pack_formats
         self.service_index = None
         self.device: Optional['Device'] = None
         self.current_device:  Optional['Device'] = None
@@ -504,7 +528,9 @@ class Client(EventEmitter):
     def register(self, code: int):
         r = self._lookup_register(code)
         if r is None:
-            r = RawRegisterClient(self, code)
+            pack_format = self.pack_formats[code]
+            # TODO: error policy?
+            r = RawRegisterClient(self, code, pack_format)
             self._registers.append(r)
         return r
 
@@ -572,7 +598,8 @@ class Device(EventEmitter):
     @property
     def ctrl_client(self):
         if self._ctrl_client is None:
-            self._ctrl_client = Client(self.bus, 0, "")
+            self._ctrl_client = Client(
+                self.bus, JD_SERVICE_CLASS_CONTROL, JD_CONTROL_PACK_FORMATS, "")
             self._ctrl_client._attach(self, 0)
         return self._ctrl_client
 

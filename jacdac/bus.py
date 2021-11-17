@@ -111,9 +111,6 @@ class Bus(EventEmitter):
             loop.call_later(0.500, announce)
         loop.call_later(0.500, announce)
 
-        from . import sample
-        sample.acc_sample(self)
-
         def process_later(pkt: bytes):
             loop.call_soon_threadsafe(self.process_frame, pkt)
         self.transport.on_receive = process_later
@@ -494,10 +491,11 @@ class Server(EventEmitter):
 
 
 class Client(EventEmitter):
-    def __init__(self, bus: Bus, service_class: int, role: str) -> None:
+    def __init__(self, bus: Bus, service_class: int, pack_formats: dict[int, str], role: str) -> None:
         super().__init__(bus)
         self.broadcast = False
         self.service_class = service_class
+        self.pack_formats = pack_formats
         self.service_index = None
         self.device: Optional['Device'] = None
         self.current_device:  Optional['Device'] = None
@@ -520,17 +518,10 @@ class Client(EventEmitter):
     def register(self, code: int):
         r = self._lookup_register(code)
         if r is None:
-            r = RawRegisterClient(self, code, None)
+            pack_format = self.pack_formats[code]
+            # TODO: error policy?
+            r = RawRegisterClient(self, code, pack_format)
             self._registers.append(r)
-        return r
-
-    def add_register(self, code: int, pack_format: str):
-        r = self._lookup_register(code)
-        if (not r is None):
-            raise RuntimeError(
-                "reg #{} already added".format(code))
-        r = RawRegisterClient(self, code, pack_format)
-        self._registers.append(r)
         return r
 
     def handle_packet(self, pkt: JDPacket):

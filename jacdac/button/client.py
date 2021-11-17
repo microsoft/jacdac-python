@@ -6,12 +6,9 @@ from jacdac.events import HandlerFn
 
 class ButtonClient(Client):
     _pressed = False
-    _pressure: RawRegisterClient
 
     def __init__(self, bus: Bus, role: str) -> None:
-        super().__init__(bus, JD_SERVICE_CLASS_BUTTON, role)
-        # / ?
-        self._pressure = self.add_register(JD_BUTTON_REG_PRESSURE, "H")
+        super().__init__(bus, JD_SERVICE_CLASS_BUTTON, JD_BUTTON_PACK_FORMATS, role)
         self.on(EV_EVENT, self._on_event)
 
     @property

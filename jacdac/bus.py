@@ -13,7 +13,7 @@ from .packet import *
 from .transport import Transport
 
 import jacdac.util as util
-from .util import now, log, logv
+from .util import now, log, logv, unpack
 
 
 EV_CHANGE = "change"
@@ -310,17 +310,24 @@ class Bus(EventEmitter):
 
 
 class RawRegisterClient(EventEmitter):
-    def __init__(self, client: 'Client', code: int) -> None:
+    def __init__(self, client: 'Client', code: int, pack_format: Union[str, None]) -> None:
         super().__init__(client.bus)
         self.code = code
         self._data: Optional[bytearray] = None
         self._refreshed_at = 0
         self.client = client
+        self.pack_format = pack_format
 
     def current(self, refresh_ms: int = 500):
         if self._refreshed_at + refresh_ms >= now():
             return self._data
         return None
+
+    @property
+    def unpacked(self):
+        if self._data and self.pack_format:
+            return unpack(self._data, self.pack_format)
+        return []
 
     def _query(self):
         pkt = JDPacket(cmd=JD_GET(self.code))
@@ -504,7 +511,14 @@ class Client(EventEmitter):
     def register(self, code: int):
         r = self._lookup_register(code)
         if r is None:
-            r = RawRegisterClient(self, code)
+            r = RawRegisterClient(self, code, None)
+            self._registers.append(r)
+        return r
+
+    def add_register(self, code: int, pack_format: str):
+        r = self.register(code)
+        if r is None:
+            r = RawRegisterClient(self, code, pack_format)
             self._registers.append(r)
         return r
 

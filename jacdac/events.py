@@ -42,14 +42,17 @@ class EventEmitter:
             self._listeners: list[tuple[str, HandlerFn, bool]] = []
 
     def on(self, id: str, fn: HandlerFn):
+        # Subscribes an event to a handler
         self._init_emitter()
         self._listeners.append((id, fn, False))
 
     def once(self, id: str, fn: HandlerFn):
+        # Subsubscribes an event to run once; then get unsubscribed
         self._init_emitter()
         self._listeners.append((id, fn, True))
 
     def off(self, id: str, fn: HandlerFn):
+        # Unsubscribes a handler from an event
         self._init_emitter()
         for i in range(len(self._listeners)):
             id2, fn2, _ign = self._listeners[i]
@@ -57,6 +60,14 @@ class EventEmitter:
                 del self._listeners[i]
                 return
         raise ValueError("no matching on() for off()")
+
+    def subscribe(self, id: str, fn: HandlerFn):
+        # Subscribes a handler to the event and returns a function to unsubscribe
+        self.on(id, fn)
+
+        def unsubscribe():
+            return self.off(id, fn)
+        return unsubscribe
 
     # usage: await x.event("...")
     async def event(self, id: str):

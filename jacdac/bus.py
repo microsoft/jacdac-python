@@ -331,8 +331,12 @@ class RawRegisterClient(EventEmitter):
         return []
 
     def floatValue(self, index: int = 0, scale: int = 1) -> Union[float, None]:
-        value = self.unpacked[index]  # type: Union[float, None]
-        return value * scale if not value is None else None
+        values = self.unpacked
+        if (len(values) > index):
+            value = values[index]  # type: Union[float, None]
+            return value * scale if not value is None else None
+        else:
+            return None
 
     def _query(self):
         pkt = JDPacket(cmd=JD_GET(self.code))
@@ -373,7 +377,7 @@ class RawRegisterClient(EventEmitter):
         self.wait_for(EV_CHANGE)
         if self._data is None:
             raise RuntimeError(
-                "Can't read reg #{} (from {})".format(self.code, self.client))
+                "Can't read reg #{} (from {})".format(hex(self.code), self.client))
         return self._data
 
     async def query_async(self, refresh_ms: int = 500):
@@ -384,7 +388,7 @@ class RawRegisterClient(EventEmitter):
         await self.event(EV_CHANGE)
         if self._data is None:
             raise RuntimeError(
-                "Can't read reg #{} (from {})".format(self.code, self.client))
+                "Can't read reg #{} (from {})".format(hex(self.code), self.client))
         return self._data
 
     def query_no_wait(self, refresh_ms: int = 500):

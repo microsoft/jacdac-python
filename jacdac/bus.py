@@ -15,7 +15,7 @@ from .transport import Transport
 import jacdac.util as util
 from .util import now, log, logv, unpack
 from .control.constants import *
-from pack import PackType, jdpack, jdunpack
+from .pack import PackType, jdpack, jdunpack
 
 
 EV_CHANGE = "change"
@@ -38,8 +38,7 @@ _ACK_RETRIES = const(4)
 _ACK_DELAY = const(40)
 
 RegType = TypeVar('RegType', bound=Union[int, tuple[int, ...]])
-
-EventHandlerFn = Callable[[list[PackType], JDPacket], None]
+EventHandlerFn = Callable[..., None]
 
 
 def _service_matches(dev: 'Device', serv: bytearray):
@@ -571,9 +570,9 @@ class Client(EventEmitter):
         if args is None:
             pkt = JDPacket(cmd=cmd)
         else:
-            fmt = self.pack_formats[cmd]
-            if fmt is None:
+            if not cmd in self.pack_formats:
                 raise RuntimeError("unknown data format")
+            fmt = self.pack_formats[cmd]
             data = jdpack(fmt, args)
             pkt = JDPacket(cmd=cmd, data=data)
         self.send_cmd(pkt)
@@ -611,7 +610,10 @@ class Client(EventEmitter):
         Returns:
             UnsubscribeFn: function to call to unregister handler
         """
-        fmt = self.pack_formats[code]
+        if code in self.pack_formats:
+            fmt = self.pack_formats[code]
+        else:
+            fmt = None
 
         def cb(pkt: JDPacket) -> None:
             if pkt.event_code == code:
@@ -619,7 +621,7 @@ class Client(EventEmitter):
                     data = []
                 else:
                     data = jdunpack(pkt.data, fmt)
-                handler(data, pkt)
+                handler(data)
         return self.on(EV_EVENT, cb)
 
 

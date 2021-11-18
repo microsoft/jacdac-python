@@ -1,3 +1,4 @@
+from typing import Any, Type
 from jacdac.devtools import create_dev_tools_bus
 from .client import ButtonClient
 from time import sleep
@@ -5,16 +6,16 @@ from time import sleep
 bus = create_dev_tools_bus()
 
 
-def up():
+def up(data: Any):
     print("up")
 
 
-def down():
+def down(data: Any):
     print("down")
 
 
-def hold():
-    print("hold")
+def hold(data: list[Type[int]]):
+    print("hold", data[0])
 
 
 btn1 = ButtonClient(bus, "btn1")

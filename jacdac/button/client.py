@@ -2,42 +2,50 @@ from typing import Union
 from jacdac.bus import Bus, Client, EV_EVENT, EventHandlerFn
 from jacdac.packet import JDPacket
 from .constants import JD_SERVICE_CLASS_BUTTON, JD_BUTTON_PACK_FORMATS, JD_BUTTON_REG_PRESSURE, JD_BUTTON_EV_UP, JD_BUTTON_EV_DOWN, JD_BUTTON_EV_HOLD
-from jacdac.events import HandlerFn, UnsubscribeFn
+from jacdac.events import UnsubscribeFn
 
 
-class ButtonClient(Client):
+class PressedMixin:
     _pressed = False
 
-    def __init__(self, bus: Bus, role: str) -> None:
-        super().__init__(bus, JD_SERVICE_CLASS_BUTTON, JD_BUTTON_PACK_FORMATS, role)
-        self.on(EV_EVENT, self._on_event)
+    def init_pressed(self, client: Client) -> None:
+        self.client = client
+        self.client.on(EV_EVENT, self._on_event)
 
     @property
-    def pressed(self) -> bool:
-        # Indicates if the button is pressed
+    def pressed(self) -> Union[bool, None]:
+        """
+        Determines if the button is pressed currently.
+
+        If the event ``down`` is observed, ``pressed`` is true; if ``up`` or ``hold`` are observed, ``pressed`` is false.
+        To initialize, wait for any event or timeout to ``pressed`` is true after 750ms (1.5x hold time).
+        """
         return self._pressed
 
     @pressed.setter
     def pressed(self, value: bool):
         self._pressed = value
 
-    @property
-    def pressure(self) -> Union[float, None]:
-        reg = self.register(JD_BUTTON_REG_PRESSURE)
-        return reg.float_value(0, 100)
-
     def _on_event(self, pkt: JDPacket):
         code = pkt.event_code
         if (code == JD_BUTTON_EV_UP):
             self.pressed = False
-            self.emit("up")
         elif (code == JD_BUTTON_EV_DOWN):
             self.pressed = True
-            self.emit("down")
         elif code == JD_BUTTON_EV_HOLD:
             self.pressed = True
-            self.emit("hold")
 
+
+class ButtonClient(Client, PressedMixin):
+
+    def __init__(self, bus: Bus, role: str) -> None:
+        super().__init__(bus, JD_SERVICE_CLASS_BUTTON, JD_BUTTON_PACK_FORMATS, role)
+        self.init_pressed(self)
+
+    @property
+    def pressure(self) -> Union[float, None]:
+        reg = self.register(JD_BUTTON_REG_PRESSURE)
+        return reg.float_value(0, 100)
 
     def on_down(self, handler: EventHandlerFn) -> UnsubscribeFn:
         """

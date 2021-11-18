@@ -4,5 +4,7 @@ API
 .. currentmodule:: jacdac
 .. autosummary::
    :toctree: generated
+   :recursive:
 
-   jacdac.Bus
+   jacdac
+   bus

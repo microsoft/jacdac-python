@@ -17,7 +17,7 @@ class ModelRunnerClient(Client):
     
 
     @property
-    def auto_invoke_every(self) -> Union[float, None]:
+    def auto_invoke_every(self) -> Union[int, None]:
         """
         When register contains `N > 0`, run the model automatically every time new `N` samples are collected.
         Model may be run less often if it takes longer to run than `N * sampling_interval`.
@@ -28,13 +28,13 @@ class ModelRunnerClient(Client):
         return reg.value(0)
 
     @auto_invoke_every.setter
-    def auto_invoke_every(self, value: float) -> None:
+    def auto_invoke_every(self, value: int) -> None:
         reg = self.register(JD_MODEL_RUNNER_REG_AUTO_INVOKE_EVERY)
         reg.set_value(0, value)
 
 
     @property
-    def last_run_time(self) -> Union[float, None]:
+    def last_run_time(self) -> Union[int, None]:
         """
         The time consumed in last model execution., us
         """
@@ -42,7 +42,7 @@ class ModelRunnerClient(Client):
         return reg.value(0)
 
     @property
-    def allocated_arena_size(self) -> Union[float, None]:
+    def allocated_arena_size(self) -> Union[int, None]:
         """
         Number of RAM bytes allocated for model execution., B
         """
@@ -50,7 +50,7 @@ class ModelRunnerClient(Client):
         return reg.value(0)
 
     @property
-    def model_size(self) -> Union[float, None]:
+    def model_size(self) -> Union[int, None]:
         """
         The size of the model in bytes., B
         """
@@ -77,7 +77,7 @@ class ModelRunnerClient(Client):
         return reg.value(0)
 
     @property
-    def format_version(self) -> Union[float, None]:
+    def format_version(self) -> Union[int, None]:
         """
         A version number for the format.
         """
@@ -94,12 +94,12 @@ class ModelRunnerClient(Client):
         return reg.value(0)
 
 
-    def set_model(self, model_size: float) -> None:
+    def set_model(self, model_size: int) -> None:
         """
         Open pipe for streaming in the model. The size of the model has to be declared upfront.
         The model is streamed over regular pipe data packets.
         The format supported by this instance of the service is specified in `format` register.
         When the pipe is closed, the model is written all into flash, and the device running the service may reset.
         """
-        # TODO: self.sendCommand(jacdac.JDPacket.jdpacked(JD_model_Runner_CMD_set_model, "u32", [model_size]))
+        self.send_cmd_packed(JD_MODEL_RUNNER_CMD_SET_MODEL, [model_size])
     

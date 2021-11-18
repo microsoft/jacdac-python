@@ -41,7 +41,7 @@ class BrailleDisplayClient(Client):
 
 
     @property
-    def length(self) -> Union[float, None]:
+    def length(self) -> Union[int, None]:
         """
         Gets the number of patterns that can be displayed., #
         """

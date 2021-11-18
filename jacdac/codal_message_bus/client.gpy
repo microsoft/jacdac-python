@@ -22,9 +22,9 @@ class CodalMessageBusClient(Client):
         # TODO
 
 
-    def send(self, source: float, value: float) -> None:
+    def send(self, source: int, value: int) -> None:
         """
         Send a message on the CODAL bus. If `source` is `0`, it is treated as wildcard.
         """
-        # TODO: self.sendCommand(jacdac.JDPacket.jdpacked(JD_codal_Message_Bus_CMD_send, "u16 u16", [source, value]))
+        self.send_cmd_packed(JD_CODAL_MESSAGE_BUS_CMD_SEND, [source, value])
     

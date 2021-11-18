@@ -63,7 +63,7 @@ class CharacterScreenClient(Client):
 
 
     @property
-    def rows(self) -> Union[float, None]:
+    def rows(self) -> Union[int, None]:
         """
         Gets the number of rows., #
         """
@@ -71,7 +71,7 @@ class CharacterScreenClient(Client):
         return reg.value(0)
 
     @property
-    def columns(self) -> Union[float, None]:
+    def columns(self) -> Union[int, None]:
         """
         Gets the number of columns., #
         """
@@ -79,15 +79,15 @@ class CharacterScreenClient(Client):
         return reg.value(0)
 
 
-    def set_line(self, index: float, message: str) -> None:
+    def set_line(self, index: int, message: str) -> None:
         """
         Overrides the content of a single line at a 0-based index.
         """
-        # TODO: self.sendCommand(jacdac.JDPacket.jdpacked(JD_character_Screen_CMD_set_line, "u16 s", [index, message]))
+        self.send_cmd_packed(JD_CHARACTER_SCREEN_CMD_SET_LINE, [index, message])
 
     def clear(self, ) -> None:
         """
         Clears all text from the display.
         """
-        # TODO: self.sendCommand(jacdac.JDPacket.onlyHeader(JD_character_Screen_CMD_clear))
+        self.send_cmd_packed(JD_CHARACTER_SCREEN_CMD_CLEAR, [])
     

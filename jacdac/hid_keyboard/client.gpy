@@ -23,5 +23,5 @@ class HidKeyboardClient(Client):
         """
         Clears all pressed keys.
         """
-        # TODO: self.sendCommand(jacdac.JDPacket.onlyHeader(JD_hid_Keyboard_CMD_clear))
+        self.send_cmd_packed(JD_HID_KEYBOARD_CMD_CLEAR, [])
     

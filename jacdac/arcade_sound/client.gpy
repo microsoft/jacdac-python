@@ -30,7 +30,7 @@ class ArcadeSoundClient(Client):
 
 
     @property
-    def buffer_size(self) -> Union[float, None]:
+    def buffer_size(self) -> Union[int, None]:
         """
         The size of the internal audio buffer., B
         """
@@ -38,7 +38,7 @@ class ArcadeSoundClient(Client):
         return reg.value(0)
 
     @property
-    def buffer_pending(self) -> Union[float, None]:
+    def buffer_pending(self) -> Union[int, None]:
         """
         How much data is still left in the buffer to play.
         Clients should not send more data than `buffer_size - buffer_pending`,
@@ -53,5 +53,5 @@ class ArcadeSoundClient(Client):
         """
         Play samples, which are single channel, signed 16-bit little endian values.
         """
-        # TODO: self.sendCommand(jacdac.JDPacket.jdpacked(JD_arcade_Sound_CMD_play, "b", [samples]))
+        self.send_cmd_packed(JD_ARCADE_SOUND_CMD_PLAY, [samples])
     

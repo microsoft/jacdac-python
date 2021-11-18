@@ -30,7 +30,7 @@ class IndexedScreenClient(Client):
 
 
     @property
-    def bits_per_pixel(self) -> Union[float, None]:
+    def bits_per_pixel(self) -> Union[int, None]:
         """
         Determines the number of palette entries.
         Typical values are 1, 2, 4, or 8., bit
@@ -39,7 +39,7 @@ class IndexedScreenClient(Client):
         return reg.value(0)
 
     @property
-    def width(self) -> Union[float, None]:
+    def width(self) -> Union[int, None]:
         """
         Screen width in "natural" orientation., px
         """
@@ -47,7 +47,7 @@ class IndexedScreenClient(Client):
         return reg.value(0)
 
     @property
-    def height(self) -> Union[float, None]:
+    def height(self) -> Union[int, None]:
         """
         Screen height in "natural" orientation., px
         """
@@ -74,7 +74,7 @@ class IndexedScreenClient(Client):
 
 
     @property
-    def up_sampling(self) -> Union[float, None]:
+    def up_sampling(self) -> Union[int, None]:
         """
         Every pixel sent over wire is represented by `up_sampling x up_sampling` square of physical pixels.
         Some displays may allow changing this (which will also result in changes to `width` and `height`).
@@ -84,13 +84,13 @@ class IndexedScreenClient(Client):
         return reg.value(0)
 
     @up_sampling.setter
-    def up_sampling(self, value: float) -> None:
+    def up_sampling(self, value: int) -> None:
         reg = self.register(JD_INDEXED_SCREEN_REG_UP_SAMPLING)
         reg.set_value(0, value)
 
 
     @property
-    def rotation(self) -> Union[float, None]:
+    def rotation(self) -> Union[int, None]:
         """
         Possible values are 0, 90, 180 and 270 only.
         Write to this register do not affect `width` and `height` registers,
@@ -100,22 +100,22 @@ class IndexedScreenClient(Client):
         return reg.value(0)
 
     @rotation.setter
-    def rotation(self, value: float) -> None:
+    def rotation(self, value: int) -> None:
         reg = self.register(JD_INDEXED_SCREEN_REG_ROTATION)
         reg.set_value(0, value)
 
 
 
-    def start_update(self, x: float, y: float, width: float, height: float) -> None:
+    def start_update(self, x: int, y: int, width: int, height: int) -> None:
         """
         Sets the update window for subsequent `set_pixels` commands.
         """
-        # TODO: self.sendCommand(jacdac.JDPacket.jdpacked(JD_indexed_Screen_CMD_start_update, "u16 u16 u16 u16", [x, y, width, height]))
+        self.send_cmd_packed(JD_INDEXED_SCREEN_CMD_START_UPDATE, [x, y, width, height])
 
     def set_pixels(self, pixels: bytes) -> None:
         """
         Set pixels in current window, according to current palette.
         Each "line" of data is aligned to a byte.
         """
-        # TODO: self.sendCommand(jacdac.JDPacket.jdpacked(JD_indexed_Screen_CMD_set_pixels, "b", [pixels]))
+        self.send_cmd_packed(JD_INDEXED_SCREEN_CMD_SET_PIXELS, [pixels])
     

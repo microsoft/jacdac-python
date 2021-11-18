@@ -13,7 +13,7 @@ class HidAdapterClient(Client):
     
 
     @property
-    def num_configurations(self) -> Union[float, None]:
+    def num_configurations(self) -> Union[int, None]:
         """
         The number of configurations stored on the server.
         """
@@ -21,13 +21,13 @@ class HidAdapterClient(Client):
         return reg.value(0)
 
     @num_configurations.setter
-    def num_configurations(self, value: float) -> None:
+    def num_configurations(self, value: int) -> None:
         reg = self.register(JD_HID_ADAPTER_REG_NUM_CONFIGURATIONS)
         reg.set_value(0, value)
 
 
     @property
-    def current_configuration(self) -> Union[float, None]:
+    def current_configuration(self) -> Union[int, None]:
         """
         The current configuration the server is using.
         """
@@ -35,7 +35,7 @@ class HidAdapterClient(Client):
         return reg.value(0)
 
     @current_configuration.setter
-    def current_configuration(self, value: float) -> None:
+    def current_configuration(self, value: int) -> None:
         reg = self.register(JD_HID_ADAPTER_REG_CURRENT_CONFIGURATION)
         reg.set_value(0, value)
 
@@ -47,27 +47,27 @@ class HidAdapterClient(Client):
         # TODO
 
 
-    def set_binding(self, configuration_number: float, binding_index: float, padding: float, device_id: float, service_class: float, trigger_value: float, trigger_context: float, service_index: float, selector: float, modifiers: undefined) -> None:
+    def set_binding(self, configuration_number: int, binding_index: int, padding: int, device_id: int, service_class: int, trigger_value: int, trigger_context: int, service_index: int, selector: int, modifiers: undefined) -> None:
         """
         Stores the given binding on the server. If a binding exists at this index, the new binding will replace it.
         """
-        # TODO: self.sendCommand(jacdac.JDPacket.jdpacked(JD_hid_Adapter_CMD_set_binding, "u8 u8 b[2] u64 u32 u32 u8 u8 u16 u16", [configuration_number, binding_index, padding, device_id, service_class, trigger_value, trigger_context, service_index, selector, modifiers]))
+        self.send_cmd_packed(JD_HID_ADAPTER_CMD_SET_BINDING, [configuration_number, binding_index, padding, device_id, service_class, trigger_value, trigger_context, service_index, selector, modifiers])
 
-    def clear_binding(self, configuration_number: float, binding_index: float) -> None:
+    def clear_binding(self, configuration_number: int, binding_index: int) -> None:
         """
         Clears a specific binding stored on the device.
         """
-        # TODO: self.sendCommand(jacdac.JDPacket.jdpacked(JD_hid_Adapter_CMD_clear_binding, "u8 u8", [configuration_number, binding_index]))
+        self.send_cmd_packed(JD_HID_ADAPTER_CMD_CLEAR_BINDING, [configuration_number, binding_index])
 
-    def clear_configuration(self, configuration_number: float) -> None:
+    def clear_configuration(self, configuration_number: int) -> None:
         """
         Clears a specific configuration stored on the device.
         """
-        # TODO: self.sendCommand(jacdac.JDPacket.jdpacked(JD_hid_Adapter_CMD_clear_configuration, "u8", [configuration_number]))
+        self.send_cmd_packed(JD_HID_ADAPTER_CMD_CLEAR_CONFIGURATION, [configuration_number])
 
     def clear(self, ) -> None:
         """
         Clears all configurations and bindings stored on the device.
         """
-        # TODO: self.sendCommand(jacdac.JDPacket.onlyHeader(JD_hid_Adapter_CMD_clear))
+        self.send_cmd_packed(JD_HID_ADAPTER_CMD_CLEAR, [])
     

@@ -13,7 +13,7 @@ class RealTimeClockClient(Client):
     
 
     @property
-    def year(self) -> Union[float, None]:
+    def year(self) -> Union[int, None]:
         """
         Current time in 24h representation. 
         * ``day_of_month`` is day of the month, starting at ``1``
@@ -24,7 +24,7 @@ class RealTimeClockClient(Client):
         return reg.value(0)
 
     @property
-    def month(self) -> Union[float, None]:
+    def month(self) -> Union[int, None]:
         """
         Current time in 24h representation. 
         * ``day_of_month`` is day of the month, starting at ``1``
@@ -35,7 +35,7 @@ class RealTimeClockClient(Client):
         return reg.value(1)
 
     @property
-    def day_of_month(self) -> Union[float, None]:
+    def day_of_month(self) -> Union[int, None]:
         """
         Current time in 24h representation. 
         * ``day_of_month`` is day of the month, starting at ``1``
@@ -46,7 +46,7 @@ class RealTimeClockClient(Client):
         return reg.value(2)
 
     @property
-    def day_of_week(self) -> Union[float, None]:
+    def day_of_week(self) -> Union[int, None]:
         """
         Current time in 24h representation. 
         * ``day_of_month`` is day of the month, starting at ``1``
@@ -57,7 +57,7 @@ class RealTimeClockClient(Client):
         return reg.value(3)
 
     @property
-    def hour(self) -> Union[float, None]:
+    def hour(self) -> Union[int, None]:
         """
         Current time in 24h representation. 
         * ``day_of_month`` is day of the month, starting at ``1``
@@ -68,7 +68,7 @@ class RealTimeClockClient(Client):
         return reg.value(4)
 
     @property
-    def min(self) -> Union[float, None]:
+    def min(self) -> Union[int, None]:
         """
         Current time in 24h representation. 
         * ``day_of_month`` is day of the month, starting at ``1``
@@ -79,7 +79,7 @@ class RealTimeClockClient(Client):
         return reg.value(5)
 
     @property
-    def sec(self) -> Union[float, None]:
+    def sec(self) -> Union[int, None]:
         """
         Current time in 24h representation. 
         * ``day_of_month`` is day of the month, starting at ``1``
@@ -114,9 +114,9 @@ class RealTimeClockClient(Client):
         return reg.value(0)
 
 
-    def set_time(self, year: float, month: float, day_of_month: float, day_of_week: float, hour: float, min: float, sec: float) -> None:
+    def set_time(self, year: int, month: int, day_of_month: int, day_of_week: int, hour: int, min: int, sec: int) -> None:
         """
         Sets the current time and resets the error.
         """
-        # TODO: self.sendCommand(jacdac.JDPacket.jdpacked(JD_real_Time_Clock_CMD_set_time, "u16 u8 u8 u8 u8 u8 u8", [year, month, day_of_month, day_of_week, hour, min, sec]))
+        self.send_cmd_packed(JD_REAL_TIME_CLOCK_CMD_SET_TIME, [year, month, day_of_month, day_of_week, hour, min, sec])
     

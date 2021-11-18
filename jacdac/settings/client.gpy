@@ -23,5 +23,5 @@ class SettingsClient(Client):
         """
         Get the value of given setting. If no such entry exists, the value returned is empty.
         """
-        # TODO: self.sendCommand(jacdac.JDPacket.jdpacked(JD_settings_CMD_get, "s", [key]))
+        self.send_cmd_packed(JD_SETTINGS_CMD_GET, [key])
     

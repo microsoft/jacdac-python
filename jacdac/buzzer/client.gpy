@@ -27,16 +27,16 @@ class BuzzerClient(Client):
 
 
 
-    def play_tone(self, period: float, duty: float, duration: float) -> None:
+    def play_tone(self, period: int, duty: int, duration: int) -> None:
         """
         Play a PWM tone with given period and duty for given duration.
         The duty is scaled down with `volume` register.
         To play tone at frequency `F` Hz and volume `V` (in `0..1`) you will want
         to send `P = 1000000 / F` and `D = P * V / 2`.
         """
-        # TODO: self.sendCommand(jacdac.JDPacket.jdpacked(JD_buzzer_CMD_play_tone, "u16 u16 u16", [period, duty, duration]))
+        self.send_cmd_packed(JD_BUZZER_CMD_PLAY_TONE, [period, duty, duration])
 
-    def play_note(self, frequency: float, volume: float, duration: float) -> None:
+    def play_note(self, frequency: int, volume: float, duration: int) -> None:
         """
         Play a note at the given frequency and volume.
         """

@@ -21,7 +21,7 @@ class VerifiedTelemetryClient(Client):
         return reg.value(0)
 
     @property
-    def telemetry_status_interval(self) -> Union[float, None]:
+    def telemetry_status_interval(self) -> Union[int, None]:
         """
         (Optional) Specifies the interval between computing the fingerprint information., ms
         """
@@ -29,7 +29,7 @@ class VerifiedTelemetryClient(Client):
         return reg.value(0)
 
     @telemetry_status_interval.setter
-    def telemetry_status_interval(self, value: float) -> None:
+    def telemetry_status_interval(self, value: int) -> None:
         reg = self.register(JD_VERIFIED_TELEMETRY_REG_TELEMETRY_STATUS_INTERVAL)
         reg.set_value(0, value)
 
@@ -43,7 +43,7 @@ class VerifiedTelemetryClient(Client):
         return reg.value(0)
 
     @property
-    def fingerprint_template_Confidence(self) -> Union[float, None]:
+    def fingerprint_template_Confidence(self) -> Union[int, None]:
         """
         Template Fingerprint information of a working sensor., %
         """
@@ -75,11 +75,11 @@ class VerifiedTelemetryClient(Client):
         """
         This command will clear the template fingerprint of a sensor and collect a new template fingerprint of the attached sensor.
         """
-        # TODO: self.sendCommand(jacdac.JDPacket.onlyHeader(JD_verified_Telemetry_CMD_reset_fingerprint_template))
+        self.send_cmd_packed(JD_VERIFIED_TELEMETRY_CMD_RESET_FINGERPRINT_TEMPLATE, [])
 
     def retrain_fingerprint_template(self, ) -> None:
         """
         This command will append a new template fingerprint to the `fingerprintTemplate`. Appending more fingerprints will increase the accuracy in detecting the telemetry status.
         """
-        # TODO: self.sendCommand(jacdac.JDPacket.onlyHeader(JD_verified_Telemetry_CMD_retrain_fingerprint_template))
+        self.send_cmd_packed(JD_VERIFIED_TELEMETRY_CMD_RETRAIN_FINGERPRINT_TEMPLATE, [])
     

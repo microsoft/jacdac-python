@@ -45,7 +45,7 @@ class ECO2Client(Client):
         return reg.value(0)
 
     @property
-    def conditioning_period(self) -> Union[float, None]:
+    def conditioning_period(self) -> Union[int, None]:
         """
         (Optional) Time required to achieve good sensor stability before measuring after long idle period., s
         """

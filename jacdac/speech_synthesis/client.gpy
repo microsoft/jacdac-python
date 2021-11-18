@@ -87,11 +87,11 @@ class SpeechSynthesisClient(Client):
         """
         Adds an utterance to the utterance queue; it will be spoken when any other utterances queued before it have been spoken.
         """
-        # TODO: self.sendCommand(jacdac.JDPacket.jdpacked(JD_speech_Synthesis_CMD_speak, "s", [text]))
+        self.send_cmd_packed(JD_SPEECH_SYNTHESIS_CMD_SPEAK, [text])
 
     def cancel(self, ) -> None:
         """
         Cancels current utterance and all utterances from the utterance queue.
         """
-        # TODO: self.sendCommand(jacdac.JDPacket.onlyHeader(JD_speech_Synthesis_CMD_cancel))
+        self.send_cmd_packed(JD_SPEECH_SYNTHESIS_CMD_CANCEL, [])
     

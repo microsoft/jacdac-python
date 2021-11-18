@@ -31,11 +31,11 @@ class MidiOutputClient(Client):
         """
         Clears any pending send data that has not yet been sent from the MIDIOutput's queue.
         """
-        # TODO: self.sendCommand(jacdac.JDPacket.onlyHeader(JD_midi_Output_CMD_clear))
+        self.send_cmd_packed(JD_MIDI_OUTPUT_CMD_CLEAR, [])
 
     def send(self, data: bytes) -> None:
         """
         Enqueues the message to be sent to the corresponding MIDI port
         """
-        # TODO: self.sendCommand(jacdac.JDPacket.jdpacked(JD_midi_Output_CMD_send, "b", [data]))
+        self.send_cmd_packed(JD_MIDI_OUTPUT_CMD_SEND, [data])
     

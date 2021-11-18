@@ -29,7 +29,7 @@ class PowerClient(Client):
 
 
     @property
-    def max_power(self) -> Union[float, None]:
+    def max_power(self) -> Union[int, None]:
         """
         (Optional) Limit the power provided by the service. The actual maximum limit will depend on hardware.
         This field may be read-only in some implementations - you should read it back after setting., mA
@@ -38,7 +38,7 @@ class PowerClient(Client):
         return reg.value(0)
 
     @max_power.setter
-    def max_power(self, value: float) -> None:
+    def max_power(self, value: int) -> None:
         reg = self.register(JD_POWER_REG_MAX_POWER)
         reg.set_value(0, value)
 
@@ -53,7 +53,7 @@ class PowerClient(Client):
         return reg.value(0)
 
     @property
-    def current_draw(self) -> Union[float, None]:
+    def current_draw(self) -> Union[int, None]:
         """
         (Optional) Present current draw from the bus., mA
         """
@@ -61,7 +61,7 @@ class PowerClient(Client):
         return reg.value(0)
 
     @property
-    def battery_voltage(self) -> Union[float, None]:
+    def battery_voltage(self) -> Union[int, None]:
         """
         (Optional) Voltage on input., mV
         """
@@ -77,7 +77,7 @@ class PowerClient(Client):
         return reg.value(0)
 
     @property
-    def battery_capacity(self) -> Union[float, None]:
+    def battery_capacity(self) -> Union[int, None]:
         """
         (Optional) Energy that can be delivered to the bus when battery is fully charged.
         This excludes conversion overheads if any., mWh
@@ -86,7 +86,7 @@ class PowerClient(Client):
         return reg.value(0)
 
     @property
-    def keep_on_pulse_duration(self) -> Union[float, None]:
+    def keep_on_pulse_duration(self) -> Union[int, None]:
         """
         (Optional) Many USB power packs need current to be drawn from time to time to prevent shutdown.
         This regulates how often and for how long such current is drawn.
@@ -96,13 +96,13 @@ class PowerClient(Client):
         return reg.value(0)
 
     @keep_on_pulse_duration.setter
-    def keep_on_pulse_duration(self, value: float) -> None:
+    def keep_on_pulse_duration(self, value: int) -> None:
         reg = self.register(JD_POWER_REG_KEEP_ON_PULSE_DURATION)
         reg.set_value(0, value)
 
 
     @property
-    def keep_on_pulse_period(self) -> Union[float, None]:
+    def keep_on_pulse_period(self) -> Union[int, None]:
         """
         (Optional) Many USB power packs need current to be drawn from time to time to prevent shutdown.
         This regulates how often and for how long such current is drawn.
@@ -112,7 +112,7 @@ class PowerClient(Client):
         return reg.value(0)
 
     @keep_on_pulse_period.setter
-    def keep_on_pulse_period(self, value: float) -> None:
+    def keep_on_pulse_period(self, value: int) -> None:
         reg = self.register(JD_POWER_REG_KEEP_ON_PULSE_PERIOD)
         reg.set_value(0, value)
 
@@ -128,5 +128,5 @@ class PowerClient(Client):
         """
         Sent by the power service periodically, as broadcast.
         """
-        # TODO: self.sendCommand(jacdac.JDPacket.onlyHeader(JD_power_CMD_shutdown))
+        self.send_cmd_packed(JD_POWER_CMD_SHUTDOWN, [])
     

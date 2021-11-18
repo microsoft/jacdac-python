@@ -54,7 +54,7 @@ class LedPixelClient(Client):
 
 
     @property
-    def num_pixels(self) -> Union[float, None]:
+    def num_pixels(self) -> Union[int, None]:
         """
         Specifies the number of pixels in the strip.
         Controllers which are sold with lights should default to the correct length
@@ -64,13 +64,13 @@ class LedPixelClient(Client):
         return reg.value(0)
 
     @num_pixels.setter
-    def num_pixels(self, value: float) -> None:
+    def num_pixels(self, value: int) -> None:
         reg = self.register(JD_LED_PIXEL_REG_NUM_PIXELS)
         reg.set_value(0, value)
 
 
     @property
-    def num_columns(self) -> Union[float, None]:
+    def num_columns(self) -> Union[int, None]:
         """
         (Optional) If the LED pixel strip is a matrix, specifies the number of columns. Otherwise, a square shape is assumed. Controllers which are sold with lights should default to the correct length
         and could not allow change. Increasing length at runtime leads to ineffective use of memory and may lead to controller reboot., #
@@ -79,13 +79,13 @@ class LedPixelClient(Client):
         return reg.value(0)
 
     @num_columns.setter
-    def num_columns(self, value: float) -> None:
+    def num_columns(self, value: int) -> None:
         reg = self.register(JD_LED_PIXEL_REG_NUM_COLUMNS)
         reg.set_value(0, value)
 
 
     @property
-    def max_power(self) -> Union[float, None]:
+    def max_power(self) -> Union[int, None]:
         """
         Limit the power drawn by the light-strip (and controller)., mA
         """
@@ -93,13 +93,13 @@ class LedPixelClient(Client):
         return reg.value(0)
 
     @max_power.setter
-    def max_power(self, value: float) -> None:
+    def max_power(self, value: int) -> None:
         reg = self.register(JD_LED_PIXEL_REG_MAX_POWER)
         reg.set_value(0, value)
 
 
     @property
-    def max_pixels(self) -> Union[float, None]:
+    def max_pixels(self) -> Union[int, None]:
         """
         The maximum supported number of pixels.
         All writes to `num_pixels` are clamped to `max_pixels`., #
@@ -108,7 +108,7 @@ class LedPixelClient(Client):
         return reg.value(0)
 
     @property
-    def num_repeats(self) -> Union[float, None]:
+    def num_repeats(self) -> Union[int, None]:
         """
         How many times to repeat the program passed in `run` command.
         Should be set before the `run` command.
@@ -118,7 +118,7 @@ class LedPixelClient(Client):
         return reg.value(0)
 
     @num_repeats.setter
-    def num_repeats(self, value: float) -> None:
+    def num_repeats(self, value: int) -> None:
         reg = self.register(JD_LED_PIXEL_REG_NUM_REPEATS)
         reg.set_value(0, value)
 
@@ -136,5 +136,5 @@ class LedPixelClient(Client):
         """
         Run the given light "program". See service description for details.
         """
-        # TODO: self.sendCommand(jacdac.JDPacket.jdpacked(JD_led_Pixel_CMD_run, "b", [program]))
+        self.send_cmd_packed(JD_LED_PIXEL_CMD_RUN, [program])
     

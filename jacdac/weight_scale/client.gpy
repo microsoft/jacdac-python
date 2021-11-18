@@ -94,11 +94,11 @@ class WeightScaleClient(Client):
         """
         Call this command when there is nothing on the scale. If supported, the module should save the calibration data.
         """
-        # TODO: self.sendCommand(jacdac.JDPacket.onlyHeader(JD_weight_Scale_CMD_calibrate_zero_offset))
+        self.send_cmd_packed(JD_WEIGHT_SCALE_CMD_CALIBRATE_ZERO_OFFSET, [])
 
     def calibrate_gain(self, weight: float) -> None:
         """
         Call this command with the weight of the thing on the scale.
         """
-        # TODO: self.sendCommand(jacdac.JDPacket.jdpacked(JD_weight_Scale_CMD_calibrate_gain, "u22.10", [weight]))
+        self.send_cmd_packed(JD_WEIGHT_SCALE_CMD_CALIBRATE_GAIN, [weight])
     

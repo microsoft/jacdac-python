@@ -13,7 +13,7 @@ class MatrixKeypadClient(Client):
     
 
     @property
-    def rows(self) -> Union[float, None]:
+    def rows(self) -> Union[int, None]:
         """
         Number of rows in the matrix, #
         """
@@ -21,7 +21,7 @@ class MatrixKeypadClient(Client):
         return reg.value(0)
 
     @property
-    def columns(self) -> Union[float, None]:
+    def columns(self) -> Union[int, None]:
         """
         Number of columns in the matrix, #
         """

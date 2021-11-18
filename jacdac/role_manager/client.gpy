@@ -57,21 +57,21 @@ class RoleManagerClient(Client):
         # TODO
 
 
-    def get_role(self, device_id: bytes, service_idx: float) -> None:
+    def get_role(self, device_id: bytes, service_idx: int) -> None:
         """
         Get the role corresponding to given device identifer. Returns empty string if unset.
         """
-        # TODO: self.sendCommand(jacdac.JDPacket.jdpacked(JD_role_Manager_CMD_get_role, "b[8] u8", [device_id, service_idx]))
+        self.send_cmd_packed(JD_ROLE_MANAGER_CMD_GET_ROLE, [device_id, service_idx])
 
-    def set_role(self, device_id: bytes, service_idx: float, role: str) -> None:
+    def set_role(self, device_id: bytes, service_idx: int, role: str) -> None:
         """
         Set role. Can set to empty to remove role binding.
         """
-        # TODO: self.sendCommand(jacdac.JDPacket.jdpacked(JD_role_Manager_CMD_set_role, "b[8] u8 s", [device_id, service_idx, role]))
+        self.send_cmd_packed(JD_ROLE_MANAGER_CMD_SET_ROLE, [device_id, service_idx, role])
 
     def clear_all_roles(self, ) -> None:
         """
         Remove all role bindings.
         """
-        # TODO: self.sendCommand(jacdac.JDPacket.onlyHeader(JD_role_Manager_CMD_clear_all_roles))
+        self.send_cmd_packed(JD_ROLE_MANAGER_CMD_CLEAR_ALL_ROLES, [])
     

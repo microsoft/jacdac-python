@@ -65,7 +65,7 @@ class ServoClient(Client):
         return reg.value(0)
 
     @property
-    def min_pulse(self) -> Union[float, None]:
+    def min_pulse(self) -> Union[int, None]:
         """
         The length of pulse corresponding to lowest angle., us
         """
@@ -73,7 +73,7 @@ class ServoClient(Client):
         return reg.value(0)
 
     @min_pulse.setter
-    def min_pulse(self, value: float) -> None:
+    def min_pulse(self, value: int) -> None:
         reg = self.register(JD_SERVO_REG_MIN_PULSE)
         reg.set_value(0, value)
 
@@ -87,7 +87,7 @@ class ServoClient(Client):
         return reg.value(0)
 
     @property
-    def max_pulse(self) -> Union[float, None]:
+    def max_pulse(self) -> Union[int, None]:
         """
         The length of pulse corresponding to highest angle., us
         """
@@ -95,7 +95,7 @@ class ServoClient(Client):
         return reg.value(0)
 
     @max_pulse.setter
-    def max_pulse(self, value: float) -> None:
+    def max_pulse(self, value: int) -> None:
         reg = self.register(JD_SERVO_REG_MAX_PULSE)
         reg.set_value(0, value)
 

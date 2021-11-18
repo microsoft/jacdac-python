@@ -14,7 +14,7 @@ class SensorAggregatorClient(Client):
     
 
     @property
-    def num_samples(self) -> Union[float, None]:
+    def num_samples(self) -> Union[int, None]:
         """
         Number of input samples collected so far.
         """
@@ -22,7 +22,7 @@ class SensorAggregatorClient(Client):
         return reg.value(0)
 
     @property
-    def sample_size(self) -> Union[float, None]:
+    def sample_size(self) -> Union[int, None]:
         """
         Size of a single sample., B
         """
@@ -30,7 +30,7 @@ class SensorAggregatorClient(Client):
         return reg.value(0)
 
     @property
-    def streaming_samples(self) -> Union[float, None]:
+    def streaming_samples(self) -> Union[int, None]:
         """
         When set to `N`, will stream `N` samples as `current_sample` reading., #
         """
@@ -38,7 +38,7 @@ class SensorAggregatorClient(Client):
         return reg.value(0)
 
     @streaming_samples.setter
-    def streaming_samples(self, value: float) -> None:
+    def streaming_samples(self, value: int) -> None:
         reg = self.register(JD_SENSOR_AGGREGATOR_REG_STREAMING_SAMPLES)
         reg.set_value(0, value)
 

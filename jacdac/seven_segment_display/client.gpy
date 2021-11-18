@@ -69,7 +69,7 @@ class SevenSegmentDisplayClient(Client):
 
 
     @property
-    def digit_count(self) -> Union[float, None]:
+    def digit_count(self) -> Union[int, None]:
         """
         The number of digits available on the display.
         """

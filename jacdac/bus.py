@@ -15,6 +15,7 @@ from .transport import Transport
 import jacdac.util as util
 from .util import now, log, logv, unpack
 from .control.constants import *
+from pack import PackType, jdpack
 
 
 EV_CHANGE = "change"
@@ -564,8 +565,16 @@ class Client(EventEmitter):
         pkt._header[3] |= JD_FRAME_FLAG_COMMAND
         self.bus._send_core(pkt)
 
-    def on_attach(self):
-        pass
+    def send_cmd_packed(self, cmd: int, args: PackType = None):
+        if args is None:
+            pkt = JDPacket(cmd=cmd)
+        else:
+            fmt = self.pack_formats[cmd]
+            if fmt is None:
+                raise RuntimeError("unknown data format")
+            data = jdpack(fmt, args)
+            pkt = JDPacket(cmd=cmd, data=data)
+        self.send_cmd(pkt)
 
     def _attach(self, dev: 'Device', service_idx: int):
         assert self.device is None

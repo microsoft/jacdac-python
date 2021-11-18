@@ -35,7 +35,7 @@ class SoundSpectrumClient(Client):
 
 
     @property
-    def fft_pow2_size(self) -> Union[float, None]:
+    def fft_pow2_size(self) -> Union[int, None]:
         """
         The power of 2 used as the size of the FFT to be used to determine the frequency domain.
         """
@@ -43,13 +43,13 @@ class SoundSpectrumClient(Client):
         return reg.value(0)
 
     @fft_pow2_size.setter
-    def fft_pow2_size(self, value: float) -> None:
+    def fft_pow2_size(self, value: int) -> None:
         reg = self.register(JD_SOUND_SPECTRUM_REG_FFT_POW2_SIZE)
         reg.set_value(0, value)
 
 
     @property
-    def min_decibels(self) -> Union[float, None]:
+    def min_decibels(self) -> Union[int, None]:
         """
         The minimum power value in the scaling range for the FFT analysis data, dB
         """
@@ -57,13 +57,13 @@ class SoundSpectrumClient(Client):
         return reg.value(0)
 
     @min_decibels.setter
-    def min_decibels(self, value: float) -> None:
+    def min_decibels(self, value: int) -> None:
         reg = self.register(JD_SOUND_SPECTRUM_REG_MIN_DECIBELS)
         reg.set_value(0, value)
 
 
     @property
-    def max_decibels(self) -> Union[float, None]:
+    def max_decibels(self) -> Union[int, None]:
         """
         The maximum power value in the scaling range for the FFT analysis data, dB
         """
@@ -71,7 +71,7 @@ class SoundSpectrumClient(Client):
         return reg.value(0)
 
     @max_decibels.setter
-    def max_decibels(self, value: float) -> None:
+    def max_decibels(self, value: int) -> None:
         reg = self.register(JD_SOUND_SPECTRUM_REG_MAX_DECIBELS)
         reg.set_value(0, value)
 

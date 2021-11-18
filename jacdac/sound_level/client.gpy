@@ -35,7 +35,7 @@ class SoundLevelClient(Client):
 
 
     @property
-    def min_decibels(self) -> Union[float, None]:
+    def min_decibels(self) -> Union[int, None]:
         """
         (Optional) The minimum power value considered by the sensor.
         If both ``min_decibels`` and ``max_decibels`` are supported,
@@ -46,13 +46,13 @@ class SoundLevelClient(Client):
         return reg.value(0)
 
     @min_decibels.setter
-    def min_decibels(self, value: float) -> None:
+    def min_decibels(self, value: int) -> None:
         reg = self.register(JD_SOUND_LEVEL_REG_MIN_DECIBELS)
         reg.set_value(0, value)
 
 
     @property
-    def max_decibels(self) -> Union[float, None]:
+    def max_decibels(self) -> Union[int, None]:
         """
         (Optional) The maximum power value considered by the sensor.
         If both ``min_decibels`` and ``max_decibels`` are supported,
@@ -63,7 +63,7 @@ class SoundLevelClient(Client):
         return reg.value(0)
 
     @max_decibels.setter
-    def max_decibels(self, value: float) -> None:
+    def max_decibels(self, value: int) -> None:
         reg = self.register(JD_SOUND_LEVEL_REG_MAX_DECIBELS)
         reg.set_value(0, value)
 

@@ -62,7 +62,7 @@ class WifiClient(Client):
         return reg.value(0)
 
     @property
-    def rssi(self) -> Union[float, None]:
+    def rssi(self) -> Union[int, None]:
         """
         Current signal strength. Returns -128 when not connected., dB
         """
@@ -108,38 +108,38 @@ class WifiClient(Client):
         """
         Automatically connect to named network if available. Also set password if network is not open.
         """
-        # TODO: self.sendCommand(jacdac.JDPacket.jdpacked(JD_wifi_CMD_add_network, "z z", [ssid, password]))
+        self.send_cmd_packed(JD_WIFI_CMD_ADD_NETWORK, [ssid, password])
 
     def reconnect(self, ) -> None:
         """
         Enable the WiFi (if disabled), initiate a scan, wait for results, disconnect from current WiFi network if any,
         and then reconnect (using regular algorithm, see `set_network_priority`).
         """
-        # TODO: self.sendCommand(jacdac.JDPacket.onlyHeader(JD_wifi_CMD_reconnect))
+        self.send_cmd_packed(JD_WIFI_CMD_RECONNECT, [])
 
     def forget_network(self, ssid: str) -> None:
         """
         Prevent from automatically connecting to named network in future.
         Forgetting a network resets its priority to `0`.
         """
-        # TODO: self.sendCommand(jacdac.JDPacket.jdpacked(JD_wifi_CMD_forget_network, "s", [ssid]))
+        self.send_cmd_packed(JD_WIFI_CMD_FORGET_NETWORK, [ssid])
 
     def forget_all_networks(self, ) -> None:
         """
         Clear the list of known networks.
         """
-        # TODO: self.sendCommand(jacdac.JDPacket.onlyHeader(JD_wifi_CMD_forget_all_networks))
+        self.send_cmd_packed(JD_WIFI_CMD_FORGET_ALL_NETWORKS, [])
 
-    def set_network_priority(self, priority: float, ssid: str) -> None:
+    def set_network_priority(self, priority: int, ssid: str) -> None:
         """
         Set connection priority for a network.
         By default, all known networks have priority of `0`.
         """
-        # TODO: self.sendCommand(jacdac.JDPacket.jdpacked(JD_wifi_CMD_set_network_priority, "i16 s", [priority, ssid]))
+        self.send_cmd_packed(JD_WIFI_CMD_SET_NETWORK_PRIORITY, [priority, ssid])
 
     def scan(self, ) -> None:
         """
         Initiate search for WiFi networks. Generates `scan_complete` event.
         """
-        # TODO: self.sendCommand(jacdac.JDPacket.onlyHeader(JD_wifi_CMD_scan))
+        self.send_cmd_packed(JD_WIFI_CMD_SCAN, [])
     

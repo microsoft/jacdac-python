@@ -31,5 +31,5 @@ class SoundPlayerClient(Client):
         """
         Starts playing a sound.
         """
-        # TODO: self.sendCommand(jacdac.JDPacket.jdpacked(JD_sound_Player_CMD_play, "s", [name]))
+        self.send_cmd_packed(JD_SOUND_PLAYER_CMD_PLAY, [name])
     

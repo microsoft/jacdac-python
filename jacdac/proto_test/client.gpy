@@ -36,7 +36,7 @@ class ProtoTestClient(Client):
         return reg.value(0)
 
     @property
-    def rw_u32(self) -> Union[float, None]:
+    def rw_u32(self) -> Union[int, None]:
         """
         A read write u32 register.
         """
@@ -44,13 +44,13 @@ class ProtoTestClient(Client):
         return reg.value(0)
 
     @rw_u32.setter
-    def rw_u32(self, value: float) -> None:
+    def rw_u32(self, value: int) -> None:
         reg = self.register(JD_PROTO_TEST_REG_RW_U32)
         reg.set_value(0, value)
 
 
     @property
-    def ro_u32(self) -> Union[float, None]:
+    def ro_u32(self) -> Union[int, None]:
         """
         A read only u32 register.. Mirrors rw_u32.
         """
@@ -58,7 +58,7 @@ class ProtoTestClient(Client):
         return reg.value(0)
 
     @property
-    def rw_i32(self) -> Union[float, None]:
+    def rw_i32(self) -> Union[int, None]:
         """
         A read write i32 register.
         """
@@ -66,13 +66,13 @@ class ProtoTestClient(Client):
         return reg.value(0)
 
     @rw_i32.setter
-    def rw_i32(self, value: float) -> None:
+    def rw_i32(self, value: int) -> None:
         reg = self.register(JD_PROTO_TEST_REG_RW_I32)
         reg.set_value(0, value)
 
 
     @property
-    def ro_i32(self) -> Union[float, None]:
+    def ro_i32(self) -> Union[int, None]:
         """
         A read only i32 register.. Mirrors rw_i32.
         """
@@ -124,7 +124,7 @@ class ProtoTestClient(Client):
         return reg.value(0)
 
     @property
-    def rw_i8_u8_u16_i32I8(self) -> Union[float, None]:
+    def rw_i8_u8_u16_i32I8(self) -> Union[int, None]:
         """
         A read write i8, u8, u16, i32 register.
         """
@@ -132,13 +132,13 @@ class ProtoTestClient(Client):
         return reg.value(0)
 
     @rw_i8_u8_u16_i32I8.setter
-    def rw_i8_u8_u16_i32I8(self, value: float) -> None:
+    def rw_i8_u8_u16_i32I8(self, value: int) -> None:
         reg = self.register(JD_PROTO_TEST_REG_RW_I8_U8_U16_I32)
         reg.set_value(0, value)
 
 
     @property
-    def rw_i8_u8_u16_i32U8(self) -> Union[float, None]:
+    def rw_i8_u8_u16_i32U8(self) -> Union[int, None]:
         """
         A read write i8, u8, u16, i32 register.
         """
@@ -146,13 +146,13 @@ class ProtoTestClient(Client):
         return reg.value(1)
 
     @rw_i8_u8_u16_i32U8.setter
-    def rw_i8_u8_u16_i32U8(self, value: float) -> None:
+    def rw_i8_u8_u16_i32U8(self, value: int) -> None:
         reg = self.register(JD_PROTO_TEST_REG_RW_I8_U8_U16_I32)
         reg.set_value(1, value)
 
 
     @property
-    def rw_i8_u8_u16_i32U16(self) -> Union[float, None]:
+    def rw_i8_u8_u16_i32U16(self) -> Union[int, None]:
         """
         A read write i8, u8, u16, i32 register.
         """
@@ -160,13 +160,13 @@ class ProtoTestClient(Client):
         return reg.value(2)
 
     @rw_i8_u8_u16_i32U16.setter
-    def rw_i8_u8_u16_i32U16(self, value: float) -> None:
+    def rw_i8_u8_u16_i32U16(self, value: int) -> None:
         reg = self.register(JD_PROTO_TEST_REG_RW_I8_U8_U16_I32)
         reg.set_value(2, value)
 
 
     @property
-    def rw_i8_u8_u16_i32I32(self) -> Union[float, None]:
+    def rw_i8_u8_u16_i32I32(self) -> Union[int, None]:
         """
         A read write i8, u8, u16, i32 register.
         """
@@ -174,13 +174,13 @@ class ProtoTestClient(Client):
         return reg.value(3)
 
     @rw_i8_u8_u16_i32I32.setter
-    def rw_i8_u8_u16_i32I32(self, value: float) -> None:
+    def rw_i8_u8_u16_i32I32(self, value: int) -> None:
         reg = self.register(JD_PROTO_TEST_REG_RW_I8_U8_U16_I32)
         reg.set_value(3, value)
 
 
     @property
-    def ro_i8_u8_u16_i32I8(self) -> Union[float, None]:
+    def ro_i8_u8_u16_i32I8(self) -> Union[int, None]:
         """
         A read only i8, u8, u16, i32 register.. Mirrors rw_i8_u8_u16_i32.
         """
@@ -188,7 +188,7 @@ class ProtoTestClient(Client):
         return reg.value(0)
 
     @property
-    def ro_i8_u8_u16_i32U8(self) -> Union[float, None]:
+    def ro_i8_u8_u16_i32U8(self) -> Union[int, None]:
         """
         A read only i8, u8, u16, i32 register.. Mirrors rw_i8_u8_u16_i32.
         """
@@ -196,7 +196,7 @@ class ProtoTestClient(Client):
         return reg.value(1)
 
     @property
-    def ro_i8_u8_u16_i32U16(self) -> Union[float, None]:
+    def ro_i8_u8_u16_i32U16(self) -> Union[int, None]:
         """
         A read only i8, u8, u16, i32 register.. Mirrors rw_i8_u8_u16_i32.
         """
@@ -204,7 +204,7 @@ class ProtoTestClient(Client):
         return reg.value(2)
 
     @property
-    def ro_i8_u8_u16_i32I32(self) -> Union[float, None]:
+    def ro_i8_u8_u16_i32I32(self) -> Union[int, None]:
         """
         A read only i8, u8, u16, i32 register.. Mirrors rw_i8_u8_u16_i32.
         """
@@ -212,7 +212,7 @@ class ProtoTestClient(Client):
         return reg.value(3)
 
     @property
-    def rw_u8_string_U8(self) -> Union[float, None]:
+    def rw_u8_string_U8(self) -> Union[int, None]:
         """
         A read write u8, string register.
         """
@@ -220,7 +220,7 @@ class ProtoTestClient(Client):
         return reg.value(0)
 
     @rw_u8_string_U8.setter
-    def rw_u8_string_U8(self, value: float) -> None:
+    def rw_u8_string_U8(self, value: int) -> None:
         reg = self.register(JD_PROTO_TEST_REG_RW_U8_STRING)
         reg.set_value(0, value)
 
@@ -240,7 +240,7 @@ class ProtoTestClient(Client):
 
 
     @property
-    def ro_u8_string_U8(self) -> Union[float, None]:
+    def ro_u8_string_U8(self) -> Union[int, None]:
         """
         A read only u8, string register.. Mirrors rw_u8_string.
         """
@@ -302,41 +302,41 @@ class ProtoTestClient(Client):
         """
         A command to set rw_bool.
         """
-        # TODO: self.sendCommand(jacdac.JDPacket.jdpacked(JD_proto_Test_CMD_c_bool, "u8", [bool]))
+        self.send_cmd_packed(JD_PROTO_TEST_CMD_C_BOOL, [bool])
 
-    def c_u32(self, u32: float) -> None:
+    def c_u32(self, u32: int) -> None:
         """
         A command to set rw_u32.
         """
-        # TODO: self.sendCommand(jacdac.JDPacket.jdpacked(JD_proto_Test_CMD_c_u32, "u32", [u32]))
+        self.send_cmd_packed(JD_PROTO_TEST_CMD_C_U32, [u32])
 
-    def c_i32(self, i32: float) -> None:
+    def c_i32(self, i32: int) -> None:
         """
         A command to set rw_i32.
         """
-        # TODO: self.sendCommand(jacdac.JDPacket.jdpacked(JD_proto_Test_CMD_c_i32, "i32", [i32]))
+        self.send_cmd_packed(JD_PROTO_TEST_CMD_C_I32, [i32])
 
     def c_string(self, string: str) -> None:
         """
         A command to set rw_string.
         """
-        # TODO: self.sendCommand(jacdac.JDPacket.jdpacked(JD_proto_Test_CMD_c_string, "s", [string]))
+        self.send_cmd_packed(JD_PROTO_TEST_CMD_C_STRING, [string])
 
     def c_bytes(self, bytes: bytes) -> None:
         """
         A command to set rw_string.
         """
-        # TODO: self.sendCommand(jacdac.JDPacket.jdpacked(JD_proto_Test_CMD_c_bytes, "b", [bytes]))
+        self.send_cmd_packed(JD_PROTO_TEST_CMD_C_BYTES, [bytes])
 
-    def c_i8_u8_u16_i32(self, i8: float, u8: float, u16: float, i32: float) -> None:
+    def c_i8_u8_u16_i32(self, i8: int, u8: int, u16: int, i32: int) -> None:
         """
         A command to set rw_bytes.
         """
-        # TODO: self.sendCommand(jacdac.JDPacket.jdpacked(JD_proto_Test_CMD_c_i8_u8_u16_i32, "i8 u8 u16 i32", [i8, u8, u16, i32]))
+        self.send_cmd_packed(JD_PROTO_TEST_CMD_C_I8_U8_U16_I32, [i8, u8, u16, i32])
 
-    def c_u8_string(self, u8: float, string: str) -> None:
+    def c_u8_string(self, u8: int, string: str) -> None:
         """
         A command to set rw_u8_string.
         """
-        # TODO: self.sendCommand(jacdac.JDPacket.jdpacked(JD_proto_Test_CMD_c_u8_string, "u8 s", [u8, string]))
+        self.send_cmd_packed(JD_PROTO_TEST_CMD_C_U8_STRING, [u8, string])
     

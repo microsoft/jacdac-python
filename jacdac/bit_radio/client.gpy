@@ -27,7 +27,7 @@ class BitRadioClient(Client):
 
 
     @property
-    def group(self) -> Union[float, None]:
+    def group(self) -> Union[int, None]:
         """
         Group used to filter packets
         """
@@ -35,13 +35,13 @@ class BitRadioClient(Client):
         return reg.value(0)
 
     @group.setter
-    def group(self, value: float) -> None:
+    def group(self, value: int) -> None:
         reg = self.register(JD_BIT_RADIO_REG_GROUP)
         reg.set_value(0, value)
 
 
     @property
-    def transmission_power(self) -> Union[float, None]:
+    def transmission_power(self) -> Union[int, None]:
         """
         Antenna power to increase or decrease range.
         """
@@ -49,13 +49,13 @@ class BitRadioClient(Client):
         return reg.value(0)
 
     @transmission_power.setter
-    def transmission_power(self, value: float) -> None:
+    def transmission_power(self, value: int) -> None:
         reg = self.register(JD_BIT_RADIO_REG_TRANSMISSION_POWER)
         reg.set_value(0, value)
 
 
     @property
-    def frequency_band(self) -> Union[float, None]:
+    def frequency_band(self) -> Union[int, None]:
         """
         Change the transmission and reception band of the radio to the given channel.
         """
@@ -63,7 +63,7 @@ class BitRadioClient(Client):
         return reg.value(0)
 
     @frequency_band.setter
-    def frequency_band(self, value: float) -> None:
+    def frequency_band(self, value: int) -> None:
         reg = self.register(JD_BIT_RADIO_REG_FREQUENCY_BAND)
         reg.set_value(0, value)
 
@@ -73,23 +73,23 @@ class BitRadioClient(Client):
         """
         Sends a string payload as a radio message, maximum 18 characters.
         """
-        # TODO: self.sendCommand(jacdac.JDPacket.jdpacked(JD_bit_Radio_CMD_send_string, "s", [message]))
+        self.send_cmd_packed(JD_BIT_RADIO_CMD_SEND_STRING, [message])
 
     def send_number(self, value: float) -> None:
         """
         Sends a double precision number payload as a radio message
         """
-        # TODO: self.sendCommand(jacdac.JDPacket.jdpacked(JD_bit_Radio_CMD_send_number, "f64", [value]))
+        self.send_cmd_packed(JD_BIT_RADIO_CMD_SEND_NUMBER, [value])
 
     def send_value(self, value: float, name: str) -> None:
         """
         Sends a double precision number and a name payload as a radio message
         """
-        # TODO: self.sendCommand(jacdac.JDPacket.jdpacked(JD_bit_Radio_CMD_send_value, "f64 s", [value, name]))
+        self.send_cmd_packed(JD_BIT_RADIO_CMD_SEND_VALUE, [value, name])
 
     def send_buffer(self, data: bytes) -> None:
         """
         Sends a payload of bytes as a radio message
         """
-        # TODO: self.sendCommand(jacdac.JDPacket.jdpacked(JD_bit_Radio_CMD_send_buffer, "b", [data]))
+        self.send_cmd_packed(JD_BIT_RADIO_CMD_SEND_BUFFER, [data])
     

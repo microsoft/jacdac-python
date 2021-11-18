@@ -42,7 +42,7 @@ class DotMatrixClient(Client):
 
 
     @property
-    def rows(self) -> Union[float, None]:
+    def rows(self) -> Union[int, None]:
         """
         Number of rows on the screen, #
         """
@@ -50,7 +50,7 @@ class DotMatrixClient(Client):
         return reg.value(0)
 
     @property
-    def columns(self) -> Union[float, None]:
+    def columns(self) -> Union[int, None]:
         """
         Number of columns on the screen, #
         """

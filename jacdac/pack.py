@@ -245,6 +245,7 @@ def jdpack(fmt: str, *args: PackType) -> bytes:
     return res
 
 
+# TODO: move out to some test file?
 def _jdpack_test():
     import json
 

@@ -47,5 +47,5 @@ class CompassClient(Client):
         """
         Starts a calibration sequence for the compass.
         """
-        # TODO: self.sendCommand(jacdac.JDPacket.onlyHeader(JD_compass_CMD_calibrate))
+        self.send_cmd_packed(JD_COMPASS_CMD_CALIBRATE, [])
     

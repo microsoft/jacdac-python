@@ -13,7 +13,7 @@ class MicrophoneClient(Client):
     
 
     @property
-    def sampling_period(self) -> Union[float, None]:
+    def sampling_period(self) -> Union[int, None]:
         """
         Get or set microphone sampling period.
         Sampling rate is `1_000_000 / sampling_period Hz`., us
@@ -22,7 +22,7 @@ class MicrophoneClient(Client):
         return reg.value(0)
 
     @sampling_period.setter
-    def sampling_period(self, value: float) -> None:
+    def sampling_period(self, value: int) -> None:
         reg = self.register(JD_MICROPHONE_REG_SAMPLING_PERIOD)
         reg.set_value(0, value)
 

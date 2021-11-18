@@ -13,7 +13,7 @@ class WindDirectionClient(Client):
     
 
     @property
-    def wind_direction(self) -> Union[float, None]:
+    def wind_direction(self) -> Union[int, None]:
         """
         The direction of the wind., °
         """
@@ -21,7 +21,7 @@ class WindDirectionClient(Client):
         return reg.value(0)
 
     @property
-    def wind_direction_error(self) -> Union[float, None]:
+    def wind_direction_error(self) -> Union[int, None]:
         """
         (Optional) Error on the wind direction reading, °
         """

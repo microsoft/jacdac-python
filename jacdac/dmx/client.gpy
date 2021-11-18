@@ -31,5 +31,5 @@ class DmxClient(Client):
         """
         Send a DMX packet, up to 236bytes long, including the start code.
         """
-        # TODO: self.sendCommand(jacdac.JDPacket.jdpacked(JD_dmx_CMD_send, "b", [channels]))
+        self.send_cmd_packed(JD_DMX_CMD_SEND, [channels])
     

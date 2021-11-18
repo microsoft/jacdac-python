@@ -13,7 +13,7 @@ class MagnetometerClient(Client):
     
 
     @property
-    def x(self) -> Union[float, None]:
+    def x(self) -> Union[int, None]:
         """
         Indicates the current magnetic field on magnetometer.
         For reference: `1 mgauss` is `100 nT` (and `1 gauss` is `100 000 nT`)., nT
@@ -22,7 +22,7 @@ class MagnetometerClient(Client):
         return reg.value(0)
 
     @property
-    def y(self) -> Union[float, None]:
+    def y(self) -> Union[int, None]:
         """
         Indicates the current magnetic field on magnetometer.
         For reference: `1 mgauss` is `100 nT` (and `1 gauss` is `100 000 nT`)., nT
@@ -31,7 +31,7 @@ class MagnetometerClient(Client):
         return reg.value(1)
 
     @property
-    def z(self) -> Union[float, None]:
+    def z(self) -> Union[int, None]:
         """
         Indicates the current magnetic field on magnetometer.
         For reference: `1 mgauss` is `100 nT` (and `1 gauss` is `100 000 nT`)., nT
@@ -40,7 +40,7 @@ class MagnetometerClient(Client):
         return reg.value(2)
 
     @property
-    def forces_error(self) -> Union[float, None]:
+    def forces_error(self) -> Union[int, None]:
         """
         (Optional) Error on the readings., nT
         """
@@ -53,5 +53,5 @@ class MagnetometerClient(Client):
         Forces a calibration sequence where the user/device
         might have to rotate to be calibrated.
         """
-        # TODO: self.sendCommand(jacdac.JDPacket.onlyHeader(JD_magnetometer_CMD_calibrate))
+        self.send_cmd_packed(JD_MAGNETOMETER_CMD_CALIBRATE, [])
     

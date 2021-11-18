@@ -29,7 +29,7 @@ class MotionClient(Client):
         return reg.value(0)
 
     @property
-    def angle(self) -> Union[float, None]:
+    def angle(self) -> Union[int, None]:
         """
         (Optional) Opening of the field of view, °
         """

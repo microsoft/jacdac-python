@@ -13,7 +13,7 @@ class LedClient(Client):
     
 
     @property
-    def color_Red(self) -> Union[float, None]:
+    def color_Red(self) -> Union[int, None]:
         """
         The current color of the LED.
         """
@@ -21,7 +21,7 @@ class LedClient(Client):
         return reg.value(0)
 
     @property
-    def color_Green(self) -> Union[float, None]:
+    def color_Green(self) -> Union[int, None]:
         """
         The current color of the LED.
         """
@@ -29,7 +29,7 @@ class LedClient(Client):
         return reg.value(1)
 
     @property
-    def color_Blue(self) -> Union[float, None]:
+    def color_Blue(self) -> Union[int, None]:
         """
         The current color of the LED.
         """
@@ -37,7 +37,7 @@ class LedClient(Client):
         return reg.value(2)
 
     @property
-    def max_power(self) -> Union[float, None]:
+    def max_power(self) -> Union[int, None]:
         """
         (Optional) Limit the power drawn by the light-strip (and controller)., mA
         """
@@ -45,13 +45,13 @@ class LedClient(Client):
         return reg.value(0)
 
     @max_power.setter
-    def max_power(self, value: float) -> None:
+    def max_power(self, value: int) -> None:
         reg = self.register(JD_LED_REG_MAX_POWER)
         reg.set_value(0, value)
 
 
     @property
-    def led_count(self) -> Union[float, None]:
+    def led_count(self) -> Union[int, None]:
         """
         (Optional) If known, specifies the number of LEDs in parallel on this device.
         """
@@ -59,7 +59,7 @@ class LedClient(Client):
         return reg.value(0)
 
     @property
-    def wave_length(self) -> Union[float, None]:
+    def wave_length(self) -> Union[int, None]:
         """
         (Optional) If monochrome LED, specifies the wave length of the LED., nm
         """
@@ -67,7 +67,7 @@ class LedClient(Client):
         return reg.value(0)
 
     @property
-    def luminous_intensity(self) -> Union[float, None]:
+    def luminous_intensity(self) -> Union[int, None]:
         """
         (Optional) The luminous intensity of the LED, at full value, in micro candella., mcd
         """
@@ -83,9 +83,9 @@ class LedClient(Client):
         return reg.value(0)
 
 
-    def animate(self, to_red: float, to_green: float, to_blue: float, speed: float) -> None:
+    def animate(self, to_red: int, to_green: int, to_blue: int, speed: int) -> None:
         """
         This has the same semantics as `set_status_light` in the control service.
         """
-        # TODO: self.sendCommand(jacdac.JDPacket.jdpacked(JD_led_CMD_animate, "u8 u8 u8 u8", [to_red, to_green, to_blue, speed]))
+        self.send_cmd_packed(JD_LED_CMD_ANIMATE, [to_red, to_green, to_blue, speed])
     

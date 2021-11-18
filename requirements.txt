@@ -2,3 +2,5 @@ pyserial
 websocket-client
 setuptools
 jurigged
+sphinx
+build

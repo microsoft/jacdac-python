@@ -8,3 +8,5 @@ API
 
    jacdac
    bus
+   jacdac.bus.Bus
+   jacdac.bus

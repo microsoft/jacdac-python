@@ -333,13 +333,23 @@ class RawRegisterClient(EventEmitter):
             return unpack(data, self.pack_format)
         return ()
 
-    def float_value(self, index: int = 0, scale: int = 1) -> Union[float, None]:
+    def value(self, index: int):
         values = self.unpacked()
         if (len(values) > index):
-            value = float(values[index])
-            return value * scale
+            return values[index]
         else:
             return None
+
+    def set_value(self, index: int, value: Any):
+        # TODO:
+        pass
+
+    def float_value(self, index: int = 0, scale: int = 1) -> Union[float, None]:
+        value = self.value(index)
+        if value is None:
+            return None
+        else:
+            return float(value) * scale
 
     def _query(self):
         pkt = JDPacket(cmd=JD_GET(self.code))

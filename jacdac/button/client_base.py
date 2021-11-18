@@ -5,10 +5,6 @@ from typing import Optional, cast
 from jacdac.events import EventHandlerFn, UnsubscribeFn
 
 class ButtonClientBase(Client):
-    """
-    A push-button, which returns to inactive position when not operated anymore.
-    """
-
     def __init__(self, bus: Bus, role: str) -> None:
         super().__init__(bus, JD_SERVICE_CLASS_BUTTON, JD_BUTTON_PACK_FORMATS, role)
     

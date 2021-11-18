@@ -5,6 +5,8 @@ from .client_base import ButtonClientBase
 
 
 class ButtonClient(ButtonClientBase):
+    """A push-button, which returns to inactive position when not operated anymore."""
+
     def __init__(self, bus: Bus, role: str) -> None:
         super().__init__(bus, role)
         self.on(EV_EVENT, self._on_event)

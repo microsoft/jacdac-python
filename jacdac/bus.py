@@ -39,7 +39,7 @@ _ACK_DELAY = const(40)
 
 RegType = TypeVar('RegType', bound=Union[int, tuple[int, ...]])
 
-EventHandlerFn = Callable[[Union[list[PackType], None], JDPacket], None]
+EventHandlerFn = Callable[[list[PackType], JDPacket], None]
 
 
 def _service_matches(dev: 'Device', serv: bytearray):
@@ -616,7 +616,7 @@ class Client(EventEmitter):
         def cb(pkt: JDPacket) -> None:
             if pkt.event_code == code:
                 if fmt is None:
-                    data = None
+                    data = []
                 else:
                     data = jdunpack(pkt.data, fmt)
                 handler(data, pkt)

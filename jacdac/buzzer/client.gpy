@@ -1,6 +1,6 @@
 from jacdac.bus import Bus, Client
 from .constants import *
-from typing import Union
+from typing import Union, cast
 
 
 class BuzzerClient(Client):
@@ -18,7 +18,8 @@ class BuzzerClient(Client):
         The volume (duty cycle) of the buzzer., /
         """
         reg = self.register(JD_BUZZER_REG_VOLUME)
-        return reg.value(0)
+        value = reg.value(0)
+        return cast(Union[float, None], value)
 
     @volume.setter
     def volume(self, value: float) -> None:
@@ -34,7 +35,7 @@ class BuzzerClient(Client):
         To play tone at frequency `F` Hz and volume `V` (in `0..1`) you will want
         to send `P = 1000000 / F` and `D = P * V / 2`.
         """
-        self.send_cmd_packed(JD_BUZZER_CMD_PLAY_TONE, [period, duty, duration])
+        self.send_cmd_packed(JD_BUZZER_CMD_PLAY_TONE, period, duty, duration)
 
     def play_note(self, frequency: int, volume: float, duration: int) -> None:
         """

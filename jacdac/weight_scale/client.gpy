@@ -1,6 +1,6 @@
 from jacdac.bus import Bus, Client
 from .constants import *
-from typing import Union
+from typing import Union, cast
 
 
 class WeightScaleClient(Client):
@@ -18,7 +18,8 @@ class WeightScaleClient(Client):
         The reported weight., kg
         """
         reg = self.register(JD_WEIGHT_SCALE_REG_WEIGHT)
-        return reg.value(0)
+        value = reg.value(0)
+        return cast(Union[float, None], value)
 
     @property
     def weight_error(self) -> Union[float, None]:
@@ -26,7 +27,8 @@ class WeightScaleClient(Client):
         (Optional) The estimate error on the reported reading., kg
         """
         reg = self.register(JD_WEIGHT_SCALE_REG_WEIGHT_ERROR)
-        return reg.value(0)
+        value = reg.value(0)
+        return cast(Union[float, None], value)
 
     @property
     def zero_offset(self) -> Union[float, None]:
@@ -35,7 +37,8 @@ class WeightScaleClient(Client):
         You do not need to subtract that from the reading, it has already been done., kg
         """
         reg = self.register(JD_WEIGHT_SCALE_REG_ZERO_OFFSET)
-        return reg.value(0)
+        value = reg.value(0)
+        return cast(Union[float, None], value)
 
     @zero_offset.setter
     def zero_offset(self, value: float) -> None:
@@ -49,7 +52,8 @@ class WeightScaleClient(Client):
         (Optional) Calibrated gain on the weight scale error.
         """
         reg = self.register(JD_WEIGHT_SCALE_REG_GAIN)
-        return reg.value(0)
+        value = reg.value(0)
+        return cast(Union[float, None], value)
 
     @gain.setter
     def gain(self, value: float) -> None:
@@ -63,7 +67,8 @@ class WeightScaleClient(Client):
         (Optional) Maximum supported weight on the scale., kg
         """
         reg = self.register(JD_WEIGHT_SCALE_REG_MAX_WEIGHT)
-        return reg.value(0)
+        value = reg.value(0)
+        return cast(Union[float, None], value)
 
     @property
     def min_weight(self) -> Union[float, None]:
@@ -71,7 +76,8 @@ class WeightScaleClient(Client):
         (Optional) Minimum recommend weight on the scale., kg
         """
         reg = self.register(JD_WEIGHT_SCALE_REG_MIN_WEIGHT)
-        return reg.value(0)
+        value = reg.value(0)
+        return cast(Union[float, None], value)
 
     @property
     def weight_resolution(self) -> Union[float, None]:
@@ -79,7 +85,8 @@ class WeightScaleClient(Client):
         (Optional) Smallest, yet distinguishable change in reading., kg
         """
         reg = self.register(JD_WEIGHT_SCALE_REG_WEIGHT_RESOLUTION)
-        return reg.value(0)
+        value = reg.value(0)
+        return cast(Union[float, None], value)
 
     @property
     def variant(self) -> Union[WeightScaleVariant, None]:
@@ -87,18 +94,19 @@ class WeightScaleClient(Client):
         (Optional) The type of physical scale
         """
         reg = self.register(JD_WEIGHT_SCALE_REG_VARIANT)
-        return reg.value(0)
+        value = reg.value(0)
+        return cast(Union[WeightScaleVariant, None], value)
 
 
     def calibrate_zero_offset(self, ) -> None:
         """
         Call this command when there is nothing on the scale. If supported, the module should save the calibration data.
         """
-        self.send_cmd_packed(JD_WEIGHT_SCALE_CMD_CALIBRATE_ZERO_OFFSET, [])
+        self.send_cmd_packed(JD_WEIGHT_SCALE_CMD_CALIBRATE_ZERO_OFFSET, )
 
     def calibrate_gain(self, weight: float) -> None:
         """
         Call this command with the weight of the thing on the scale.
         """
-        self.send_cmd_packed(JD_WEIGHT_SCALE_CMD_CALIBRATE_GAIN, [weight])
+        self.send_cmd_packed(JD_WEIGHT_SCALE_CMD_CALIBRATE_GAIN, weight)
     

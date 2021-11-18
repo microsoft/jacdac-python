@@ -1,6 +1,6 @@
 from jacdac.bus import Bus, Client
 from .constants import *
-from typing import Union
+from typing import Union, cast
 
 
 class RngClient(Client):
@@ -22,7 +22,8 @@ class RngClient(Client):
         This never blocks for a long time. If you need additional random bytes, keep querying the register.
         """
         reg = self.register(JD_RNG_REG_RANDOM)
-        return reg.value(0)
+        value = reg.value(0)
+        return cast(Union[bytes, None], value)
 
     @property
     def variant(self) -> Union[RngVariant, None]:
@@ -33,6 +34,7 @@ class RngClient(Client):
         `WebCrypto` refers is used in simulators, where the source of randomness comes from an advanced operating system.
         """
         reg = self.register(JD_RNG_REG_VARIANT)
-        return reg.value(0)
+        value = reg.value(0)
+        return cast(Union[RngVariant, None], value)
 
     

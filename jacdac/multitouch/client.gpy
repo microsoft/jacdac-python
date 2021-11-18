@@ -1,6 +1,6 @@
 from jacdac.bus import Bus, Client
 from .constants import *
-
+from typing import Union, cast
 from jacdac.events import EventHandlerFn, UnsubscribeFn
 
 class MultitouchClient(Client):

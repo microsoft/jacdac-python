@@ -1,6 +1,6 @@
 from jacdac.bus import Bus, Client
 from .constants import *
-from typing import Union
+from typing import Union, cast
 
 
 class IndexedScreenClient(Client):
@@ -21,7 +21,8 @@ class IndexedScreenClient(Client):
         If set to `0` the display may go to sleep., /
         """
         reg = self.register(JD_INDEXED_SCREEN_REG_BRIGHTNESS)
-        return reg.value(0)
+        value = reg.value(0)
+        return cast(Union[float, None], value)
 
     @brightness.setter
     def brightness(self, value: float) -> None:
@@ -36,7 +37,8 @@ class IndexedScreenClient(Client):
         Typical values are 1, 2, 4, or 8., bit
         """
         reg = self.register(JD_INDEXED_SCREEN_REG_BITS_PER_PIXEL)
-        return reg.value(0)
+        value = reg.value(0)
+        return cast(Union[int, None], value)
 
     @property
     def width(self) -> Union[int, None]:
@@ -44,7 +46,8 @@ class IndexedScreenClient(Client):
         Screen width in "natural" orientation., px
         """
         reg = self.register(JD_INDEXED_SCREEN_REG_WIDTH)
-        return reg.value(0)
+        value = reg.value(0)
+        return cast(Union[int, None], value)
 
     @property
     def height(self) -> Union[int, None]:
@@ -52,7 +55,8 @@ class IndexedScreenClient(Client):
         Screen height in "natural" orientation., px
         """
         reg = self.register(JD_INDEXED_SCREEN_REG_HEIGHT)
-        return reg.value(0)
+        value = reg.value(0)
+        return cast(Union[int, None], value)
 
     @property
     def width_major(self) -> Union[bool, None]:
@@ -65,7 +69,8 @@ class IndexedScreenClient(Client):
         This is independent of the `rotation` register.
         """
         reg = self.register(JD_INDEXED_SCREEN_REG_WIDTH_MAJOR)
-        return reg.value(0)
+        value = reg.value(0)
+        return cast(Union[bool, None], value)
 
     @width_major.setter
     def width_major(self, value: bool) -> None:
@@ -81,7 +86,8 @@ class IndexedScreenClient(Client):
         Typical values are 1 and 2., px
         """
         reg = self.register(JD_INDEXED_SCREEN_REG_UP_SAMPLING)
-        return reg.value(0)
+        value = reg.value(0)
+        return cast(Union[int, None], value)
 
     @up_sampling.setter
     def up_sampling(self, value: int) -> None:
@@ -97,7 +103,8 @@ class IndexedScreenClient(Client):
         and may be ignored by some screens., °
         """
         reg = self.register(JD_INDEXED_SCREEN_REG_ROTATION)
-        return reg.value(0)
+        value = reg.value(0)
+        return cast(Union[int, None], value)
 
     @rotation.setter
     def rotation(self, value: int) -> None:
@@ -110,12 +117,12 @@ class IndexedScreenClient(Client):
         """
         Sets the update window for subsequent `set_pixels` commands.
         """
-        self.send_cmd_packed(JD_INDEXED_SCREEN_CMD_START_UPDATE, [x, y, width, height])
+        self.send_cmd_packed(JD_INDEXED_SCREEN_CMD_START_UPDATE, x, y, width, height)
 
     def set_pixels(self, pixels: bytes) -> None:
         """
         Set pixels in current window, according to current palette.
         Each "line" of data is aligned to a byte.
         """
-        self.send_cmd_packed(JD_INDEXED_SCREEN_CMD_SET_PIXELS, [pixels])
+        self.send_cmd_packed(JD_INDEXED_SCREEN_CMD_SET_PIXELS, pixels)
     

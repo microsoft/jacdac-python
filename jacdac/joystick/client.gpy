@@ -1,6 +1,6 @@
 from jacdac.bus import Bus, Client
 from .constants import *
-from typing import Union
+from typing import Union, cast
 from jacdac.events import EventHandlerFn, UnsubscribeFn
 
 class JoystickClient(Client):
@@ -21,7 +21,8 @@ class JoystickClient(Client):
         The primary button on the joystick is `A`.
         """
         reg = self.register(JD_JOYSTICK_REG_DIRECTION)
-        return reg.value(0)
+        value = reg.value(0)
+        return cast(Union[JoystickButtons, None], value)
 
     @property
     def x(self) -> Union[float, None]:
@@ -32,7 +33,8 @@ class JoystickClient(Client):
         The primary button on the joystick is `A`., /
         """
         reg = self.register(JD_JOYSTICK_REG_DIRECTION)
-        return reg.value(1)
+        value = reg.value(1)
+        return cast(Union[float, None], value)
 
     @property
     def y(self) -> Union[float, None]:
@@ -43,7 +45,8 @@ class JoystickClient(Client):
         The primary button on the joystick is `A`., /
         """
         reg = self.register(JD_JOYSTICK_REG_DIRECTION)
-        return reg.value(2)
+        value = reg.value(2)
+        return cast(Union[float, None], value)
 
     @property
     def variant(self) -> Union[JoystickVariant, None]:
@@ -51,7 +54,8 @@ class JoystickClient(Client):
         (Optional) The type of physical joystick.
         """
         reg = self.register(JD_JOYSTICK_REG_VARIANT)
-        return reg.value(0)
+        value = reg.value(0)
+        return cast(Union[JoystickVariant, None], value)
 
     @property
     def buttons_available(self) -> Union[JoystickButtons, None]:
@@ -61,7 +65,8 @@ class JoystickClient(Client):
         Even when marked as not available, they will still be simulated based on the analog joystick.
         """
         reg = self.register(JD_JOYSTICK_REG_BUTTONS_AVAILABLE)
-        return reg.value(0)
+        value = reg.value(0)
+        return cast(Union[JoystickButtons, None], value)
 
     def on_buttons_changed(self, handler: EventHandlerFn) -> UnsubscribeFn:
         """

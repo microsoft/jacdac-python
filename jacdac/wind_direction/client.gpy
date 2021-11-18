@@ -1,6 +1,6 @@
 from jacdac.bus import Bus, Client
 from .constants import *
-from typing import Union
+from typing import Union, cast
 
 
 class WindDirectionClient(Client):
@@ -18,7 +18,8 @@ class WindDirectionClient(Client):
         The direction of the wind., °
         """
         reg = self.register(JD_WIND_DIRECTION_REG_WIND_DIRECTION)
-        return reg.value(0)
+        value = reg.value(0)
+        return cast(Union[int, None], value)
 
     @property
     def wind_direction_error(self) -> Union[int, None]:
@@ -26,6 +27,7 @@ class WindDirectionClient(Client):
         (Optional) Error on the wind direction reading, °
         """
         reg = self.register(JD_WIND_DIRECTION_REG_WIND_DIRECTION_ERROR)
-        return reg.value(0)
+        value = reg.value(0)
+        return cast(Union[int, None], value)
 
     

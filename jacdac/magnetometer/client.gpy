@@ -1,6 +1,6 @@
 from jacdac.bus import Bus, Client
 from .constants import *
-from typing import Union
+from typing import Union, cast
 
 
 class MagnetometerClient(Client):
@@ -19,7 +19,8 @@ class MagnetometerClient(Client):
         For reference: `1 mgauss` is `100 nT` (and `1 gauss` is `100 000 nT`)., nT
         """
         reg = self.register(JD_MAGNETOMETER_REG_FORCES)
-        return reg.value(0)
+        value = reg.value(0)
+        return cast(Union[int, None], value)
 
     @property
     def y(self) -> Union[int, None]:
@@ -28,7 +29,8 @@ class MagnetometerClient(Client):
         For reference: `1 mgauss` is `100 nT` (and `1 gauss` is `100 000 nT`)., nT
         """
         reg = self.register(JD_MAGNETOMETER_REG_FORCES)
-        return reg.value(1)
+        value = reg.value(1)
+        return cast(Union[int, None], value)
 
     @property
     def z(self) -> Union[int, None]:
@@ -37,7 +39,8 @@ class MagnetometerClient(Client):
         For reference: `1 mgauss` is `100 nT` (and `1 gauss` is `100 000 nT`)., nT
         """
         reg = self.register(JD_MAGNETOMETER_REG_FORCES)
-        return reg.value(2)
+        value = reg.value(2)
+        return cast(Union[int, None], value)
 
     @property
     def forces_error(self) -> Union[int, None]:
@@ -45,7 +48,8 @@ class MagnetometerClient(Client):
         (Optional) Error on the readings., nT
         """
         reg = self.register(JD_MAGNETOMETER_REG_FORCES_ERROR)
-        return reg.value(0)
+        value = reg.value(0)
+        return cast(Union[int, None], value)
 
 
     def calibrate(self, ) -> None:
@@ -53,5 +57,5 @@ class MagnetometerClient(Client):
         Forces a calibration sequence where the user/device
         might have to rotate to be calibrated.
         """
-        self.send_cmd_packed(JD_MAGNETOMETER_CMD_CALIBRATE, [])
+        self.send_cmd_packed(JD_MAGNETOMETER_CMD_CALIBRATE, )
     

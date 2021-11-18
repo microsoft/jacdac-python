@@ -1,6 +1,6 @@
 from jacdac.bus import Bus, Client
 from .constants import *
-from typing import Union
+from typing import Union, cast
 
 
 class IlluminanceClient(Client):
@@ -20,7 +20,8 @@ class IlluminanceClient(Client):
         The amount of illuminance, as lumens per square metre., lux
         """
         reg = self.register(JD_ILLUMINANCE_REG_LIGHT)
-        return reg.value(0)
+        value = reg.value(0)
+        return cast(Union[float, None], value)
 
     @property
     def light_error(self) -> Union[float, None]:
@@ -28,6 +29,7 @@ class IlluminanceClient(Client):
         (Optional) Error on the reported sensor value., lux
         """
         reg = self.register(JD_ILLUMINANCE_REG_LIGHT_ERROR)
-        return reg.value(0)
+        value = reg.value(0)
+        return cast(Union[float, None], value)
 
     

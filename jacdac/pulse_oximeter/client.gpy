@@ -1,6 +1,6 @@
 from jacdac.bus import Bus, Client
 from .constants import *
-from typing import Union
+from typing import Union, cast
 
 
 class PulseOximeterClient(Client):
@@ -20,7 +20,8 @@ class PulseOximeterClient(Client):
         The estimated oxygen level in blood., %
         """
         reg = self.register(JD_PULSE_OXIMETER_REG_OXYGEN)
-        return reg.value(0)
+        value = reg.value(0)
+        return cast(Union[float, None], value)
 
     @property
     def oxygen_error(self) -> Union[float, None]:
@@ -28,6 +29,7 @@ class PulseOximeterClient(Client):
         (Optional) The estimated error on the reported sensor data., %
         """
         reg = self.register(JD_PULSE_OXIMETER_REG_OXYGEN_ERROR)
-        return reg.value(0)
+        value = reg.value(0)
+        return cast(Union[float, None], value)
 
     

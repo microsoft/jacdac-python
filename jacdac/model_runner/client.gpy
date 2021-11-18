@@ -1,6 +1,6 @@
 from jacdac.bus import Bus, Client
 from .constants import *
-from typing import Union
+from typing import Union, cast
 
 
 class ModelRunnerClient(Client):
@@ -25,7 +25,8 @@ class ModelRunnerClient(Client):
         This register is not stored in flash.
         """
         reg = self.register(JD_MODEL_RUNNER_REG_AUTO_INVOKE_EVERY)
-        return reg.value(0)
+        value = reg.value(0)
+        return cast(Union[int, None], value)
 
     @auto_invoke_every.setter
     def auto_invoke_every(self, value: int) -> None:
@@ -39,7 +40,8 @@ class ModelRunnerClient(Client):
         The time consumed in last model execution., us
         """
         reg = self.register(JD_MODEL_RUNNER_REG_LAST_RUN_TIME)
-        return reg.value(0)
+        value = reg.value(0)
+        return cast(Union[int, None], value)
 
     @property
     def allocated_arena_size(self) -> Union[int, None]:
@@ -47,7 +49,8 @@ class ModelRunnerClient(Client):
         Number of RAM bytes allocated for model execution., B
         """
         reg = self.register(JD_MODEL_RUNNER_REG_ALLOCATED_ARENA_SIZE)
-        return reg.value(0)
+        value = reg.value(0)
+        return cast(Union[int, None], value)
 
     @property
     def model_size(self) -> Union[int, None]:
@@ -55,7 +58,8 @@ class ModelRunnerClient(Client):
         The size of the model in bytes., B
         """
         reg = self.register(JD_MODEL_RUNNER_REG_MODEL_SIZE)
-        return reg.value(0)
+        value = reg.value(0)
+        return cast(Union[int, None], value)
 
     @property
     def last_error(self) -> Union[str, None]:
@@ -63,7 +67,8 @@ class ModelRunnerClient(Client):
         Textual description of last error when running or loading model (if any).
         """
         reg = self.register(JD_MODEL_RUNNER_REG_LAST_ERROR)
-        return reg.value(0)
+        value = reg.value(0)
+        return cast(Union[str, None], value)
 
     @property
     def format(self) -> Union[ModelRunnerModelFormat, None]:
@@ -74,7 +79,8 @@ class ModelRunnerClient(Client):
         The format is typically present as first or second little endian word of model file.
         """
         reg = self.register(JD_MODEL_RUNNER_REG_FORMAT)
-        return reg.value(0)
+        value = reg.value(0)
+        return cast(Union[ModelRunnerModelFormat, None], value)
 
     @property
     def format_version(self) -> Union[int, None]:
@@ -82,7 +88,8 @@ class ModelRunnerClient(Client):
         A version number for the format.
         """
         reg = self.register(JD_MODEL_RUNNER_REG_FORMAT_VERSION)
-        return reg.value(0)
+        value = reg.value(0)
+        return cast(Union[int, None], value)
 
     @property
     def parallel(self) -> Union[bool, None]:
@@ -91,7 +98,8 @@ class ModelRunnerClient(Client):
         instances of this service on the device.
         """
         reg = self.register(JD_MODEL_RUNNER_REG_PARALLEL)
-        return reg.value(0)
+        value = reg.value(0)
+        return cast(Union[bool, None], value)
 
 
     def set_model(self, model_size: int) -> None:
@@ -101,5 +109,5 @@ class ModelRunnerClient(Client):
         The format supported by this instance of the service is specified in `format` register.
         When the pipe is closed, the model is written all into flash, and the device running the service may reset.
         """
-        self.send_cmd_packed(JD_MODEL_RUNNER_CMD_SET_MODEL, [model_size])
+        self.send_cmd_packed(JD_MODEL_RUNNER_CMD_SET_MODEL, model_size)
     

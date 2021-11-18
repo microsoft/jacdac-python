@@ -1,6 +1,6 @@
 from jacdac.bus import Bus, Client
 from .constants import *
-from typing import Union
+from typing import Union, cast
 
 
 class WaterLevelClient(Client):
@@ -18,7 +18,8 @@ class WaterLevelClient(Client):
         The reported water level., /
         """
         reg = self.register(JD_WATER_LEVEL_REG_LEVEL)
-        return reg.value(0)
+        value = reg.value(0)
+        return cast(Union[float, None], value)
 
     @property
     def variant(self) -> Union[WaterLevelVariant, None]:
@@ -26,6 +27,7 @@ class WaterLevelClient(Client):
         (Optional) The type of physical sensor.
         """
         reg = self.register(JD_WATER_LEVEL_REG_VARIANT)
-        return reg.value(0)
+        value = reg.value(0)
+        return cast(Union[WaterLevelVariant, None], value)
 
     

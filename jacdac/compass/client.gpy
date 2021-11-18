@@ -1,6 +1,6 @@
 from jacdac.bus import Bus, Client
 from .constants import *
-from typing import Union
+from typing import Union, cast
 
 
 class CompassClient(Client):
@@ -18,7 +18,8 @@ class CompassClient(Client):
         The heading with respect to the magnetic north., °
         """
         reg = self.register(JD_COMPASS_REG_HEADING)
-        return reg.value(0)
+        value = reg.value(0)
+        return cast(Union[float, None], value)
 
     @property
     def enabled(self) -> Union[bool, None]:
@@ -26,7 +27,8 @@ class CompassClient(Client):
         Turn on or off the sensor. Turning on the sensor may start a calibration sequence.
         """
         reg = self.register(JD_COMPASS_REG_ENABLED)
-        return reg.value(0)
+        value = reg.value(0)
+        return cast(Union[bool, None], value)
 
     @enabled.setter
     def enabled(self, value: bool) -> None:
@@ -40,12 +42,13 @@ class CompassClient(Client):
         (Optional) Error on the heading reading, °
         """
         reg = self.register(JD_COMPASS_REG_HEADING_ERROR)
-        return reg.value(0)
+        value = reg.value(0)
+        return cast(Union[float, None], value)
 
 
     def calibrate(self, ) -> None:
         """
         Starts a calibration sequence for the compass.
         """
-        self.send_cmd_packed(JD_COMPASS_CMD_CALIBRATE, [])
+        self.send_cmd_packed(JD_COMPASS_CMD_CALIBRATE, )
     

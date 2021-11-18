@@ -1,6 +1,6 @@
 from jacdac.bus import Bus, Client
 from .constants import *
-from typing import Union
+from typing import Union, cast
 
 
 class PotentiometerClient(Client):
@@ -9,8 +9,8 @@ class PotentiometerClient(Client):
     """
 
     def __init__(self, bus: Bus, role: str) -> None:
-        super().__init__(bus, JD_SERVICE_CLASS_POTENTIOMETER,
-                         JD_POTENTIOMETER_PACK_FORMATS, role)
+        super().__init__(bus, JD_SERVICE_CLASS_POTENTIOMETER, JD_POTENTIOMETER_PACK_FORMATS, role)
+    
 
     @property
     def position(self) -> Union[float, None]:
@@ -18,7 +18,8 @@ class PotentiometerClient(Client):
         The relative position of the slider., /
         """
         reg = self.register(JD_POTENTIOMETER_REG_POSITION)
-        return reg.value(0)
+        value = reg.value(0)
+        return cast(Union[float, None], value)
 
     @property
     def variant(self) -> Union[PotentiometerVariant, None]:
@@ -26,4 +27,7 @@ class PotentiometerClient(Client):
         (Optional) Specifies the physical layout of the potentiometer.
         """
         reg = self.register(JD_POTENTIOMETER_REG_VARIANT)
-        return reg.value(0)
+        value = reg.value(0)
+        return cast(Union[PotentiometerVariant, None], value)
+
+    

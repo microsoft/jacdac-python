@@ -1,6 +1,6 @@
 from jacdac.bus import Bus, Client
 from .constants import *
-from typing import Union
+from typing import Union, cast
 
 
 class LightLevelClient(Client):
@@ -18,7 +18,8 @@ class LightLevelClient(Client):
         Detect light level, /
         """
         reg = self.register(JD_LIGHT_LEVEL_REG_LIGHT_LEVEL)
-        return reg.value(0)
+        value = reg.value(0)
+        return cast(Union[float, None], value)
 
     @property
     def variant(self) -> Union[LightLevelVariant, None]:
@@ -26,6 +27,7 @@ class LightLevelClient(Client):
         (Optional) The type of physical sensor.
         """
         reg = self.register(JD_LIGHT_LEVEL_REG_VARIANT)
-        return reg.value(0)
+        value = reg.value(0)
+        return cast(Union[LightLevelVariant, None], value)
 
     

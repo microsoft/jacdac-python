@@ -1,6 +1,6 @@
 from jacdac.bus import Bus, Client
 from .constants import *
-from typing import Union
+from typing import Union, cast
 
 
 class SolenoidClient(Client):
@@ -18,7 +18,8 @@ class SolenoidClient(Client):
         Indicates whether the solenoid is energized and pulled (on) or pushed (off).
         """
         reg = self.register(JD_SOLENOID_REG_PULLED)
-        return reg.value(0)
+        value = reg.value(0)
+        return cast(Union[bool, None], value)
 
     @pulled.setter
     def pulled(self, value: bool) -> None:
@@ -32,6 +33,7 @@ class SolenoidClient(Client):
         (Optional) Describes the type of solenoid used.
         """
         reg = self.register(JD_SOLENOID_REG_VARIANT)
-        return reg.value(0)
+        value = reg.value(0)
+        return cast(Union[SolenoidVariant, None], value)
 
     

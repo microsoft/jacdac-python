@@ -1,6 +1,6 @@
 from jacdac.bus import Bus, Client
 from .constants import *
-from typing import Union
+from typing import Union, cast
 from jacdac.events import EventHandlerFn, UnsubscribeFn
 
 class AccelerometerClient(Client):
@@ -18,7 +18,8 @@ class AccelerometerClient(Client):
         Indicates the current forces acting on accelerometer., g
         """
         reg = self.register(JD_ACCELEROMETER_REG_FORCES)
-        return reg.value(0)
+        value = reg.value(0)
+        return cast(Union[float, None], value)
 
     @property
     def y(self) -> Union[float, None]:
@@ -26,7 +27,8 @@ class AccelerometerClient(Client):
         Indicates the current forces acting on accelerometer., g
         """
         reg = self.register(JD_ACCELEROMETER_REG_FORCES)
-        return reg.value(1)
+        value = reg.value(1)
+        return cast(Union[float, None], value)
 
     @property
     def z(self) -> Union[float, None]:
@@ -34,7 +36,8 @@ class AccelerometerClient(Client):
         Indicates the current forces acting on accelerometer., g
         """
         reg = self.register(JD_ACCELEROMETER_REG_FORCES)
-        return reg.value(2)
+        value = reg.value(2)
+        return cast(Union[float, None], value)
 
     @property
     def forces_error(self) -> Union[float, None]:
@@ -42,7 +45,8 @@ class AccelerometerClient(Client):
         (Optional) Error on the reading value., g
         """
         reg = self.register(JD_ACCELEROMETER_REG_FORCES_ERROR)
-        return reg.value(0)
+        value = reg.value(0)
+        return cast(Union[float, None], value)
 
     @property
     def max_force(self) -> Union[float, None]:
@@ -51,7 +55,8 @@ class AccelerometerClient(Client):
         The value will be "rounded up" to one of `max_forces_supported`., g
         """
         reg = self.register(JD_ACCELEROMETER_REG_MAX_FORCE)
-        return reg.value(0)
+        value = reg.value(0)
+        return cast(Union[float, None], value)
 
     @max_force.setter
     def max_force(self, value: float) -> None:

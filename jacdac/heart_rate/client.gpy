@@ -1,6 +1,6 @@
 from jacdac.bus import Bus, Client
 from .constants import *
-from typing import Union
+from typing import Union, cast
 
 
 class HeartRateClient(Client):
@@ -21,7 +21,8 @@ class HeartRateClient(Client):
         The estimated heart rate., bpm
         """
         reg = self.register(JD_HEART_RATE_REG_HEART_RATE)
-        return reg.value(0)
+        value = reg.value(0)
+        return cast(Union[float, None], value)
 
     @property
     def heart_rate_error(self) -> Union[float, None]:
@@ -29,7 +30,8 @@ class HeartRateClient(Client):
         (Optional) The estimated error on the reported sensor data., bpm
         """
         reg = self.register(JD_HEART_RATE_REG_HEART_RATE_ERROR)
-        return reg.value(0)
+        value = reg.value(0)
+        return cast(Union[float, None], value)
 
     @property
     def variant(self) -> Union[HeartRateVariant, None]:
@@ -37,6 +39,7 @@ class HeartRateClient(Client):
         (Optional) The type of physical sensor
         """
         reg = self.register(JD_HEART_RATE_REG_VARIANT)
-        return reg.value(0)
+        value = reg.value(0)
+        return cast(Union[HeartRateVariant, None], value)
 
     

@@ -1,6 +1,6 @@
 from jacdac.bus import Bus, Client
 from .constants import *
-from typing import Union
+from typing import Union, cast
 
 
 class ThermometerClient(Client):
@@ -17,7 +17,8 @@ class ThermometerClient(Client):
         The temperature., °C
         """
         reg = self.register(JD_THERMOMETER_REG_TEMPERATURE)
-        return reg.value(0)
+        value = reg.value(0)
+        return cast(Union[float, None], value)
 
     @property
     def min_temperature(self) -> Union[float, None]:
@@ -25,7 +26,8 @@ class ThermometerClient(Client):
         Lowest temperature that can be reported., °C
         """
         reg = self.register(JD_THERMOMETER_REG_MIN_TEMPERATURE)
-        return reg.value(0)
+        value = reg.value(0)
+        return cast(Union[float, None], value)
 
     @property
     def max_temperature(self) -> Union[float, None]:
@@ -33,7 +35,8 @@ class ThermometerClient(Client):
         Highest temperature that can be reported., °C
         """
         reg = self.register(JD_THERMOMETER_REG_MAX_TEMPERATURE)
-        return reg.value(0)
+        value = reg.value(0)
+        return cast(Union[float, None], value)
 
     @property
     def temperature_error(self) -> Union[float, None]:
@@ -41,7 +44,8 @@ class ThermometerClient(Client):
         The real temperature is between `temperature - temperature_error` and `temperature + temperature_error`., °C
         """
         reg = self.register(JD_THERMOMETER_REG_TEMPERATURE_ERROR)
-        return reg.value(0)
+        value = reg.value(0)
+        return cast(Union[float, None], value)
 
     @property
     def variant(self) -> Union[ThermometerVariant, None]:
@@ -49,4 +53,5 @@ class ThermometerClient(Client):
         (Optional) Specifies the type of thermometer.
         """
         reg = self.register(JD_THERMOMETER_REG_VARIANT)
-        return reg.value(0)
+        value = reg.value(0)
+        return cast(Union[ThermometerVariant, None], value)

@@ -1,6 +1,6 @@
 from jacdac.bus import Bus, Client
 from .constants import *
-from typing import Union
+from typing import Union, cast
 
 
 class TrafficLightClient(Client):
@@ -18,7 +18,8 @@ class TrafficLightClient(Client):
         The on/off state of the red light.
         """
         reg = self.register(JD_TRAFFIC_LIGHT_REG_RED)
-        return reg.value(0)
+        value = reg.value(0)
+        return cast(Union[bool, None], value)
 
     @red.setter
     def red(self, value: bool) -> None:
@@ -32,7 +33,8 @@ class TrafficLightClient(Client):
         The on/off state of the red light.
         """
         reg = self.register(JD_TRAFFIC_LIGHT_REG_ORANGE)
-        return reg.value(0)
+        value = reg.value(0)
+        return cast(Union[bool, None], value)
 
     @orange.setter
     def orange(self, value: bool) -> None:
@@ -46,7 +48,8 @@ class TrafficLightClient(Client):
         The on/off state of the red light.
         """
         reg = self.register(JD_TRAFFIC_LIGHT_REG_GREEN)
-        return reg.value(0)
+        value = reg.value(0)
+        return cast(Union[bool, None], value)
 
     @green.setter
     def green(self, value: bool) -> None:

@@ -1,6 +1,6 @@
 from jacdac.bus import Bus, Client
 from .constants import *
-from typing import Union
+from typing import Union, cast
 from jacdac.events import EventHandlerFn, UnsubscribeFn
 
 class AzureIotHubHealthClient(Client):
@@ -18,7 +18,8 @@ class AzureIotHubHealthClient(Client):
         Something like `my-iot-hub.azure-devices.net`; empty string when not properly configured
         """
         reg = self.register(JD_AZURE_IOT_HUB_HEALTH_REG_HUB_NAME)
-        return reg.value(0)
+        value = reg.value(0)
+        return cast(Union[str, None], value)
 
     @property
     def hub_device_id(self) -> Union[str, None]:
@@ -26,7 +27,8 @@ class AzureIotHubHealthClient(Client):
         Device identifier in Azure Iot Hub
         """
         reg = self.register(JD_AZURE_IOT_HUB_HEALTH_REG_HUB_DEVICE_ID)
-        return reg.value(0)
+        value = reg.value(0)
+        return cast(Union[str, None], value)
 
     @property
     def connection_status(self) -> Union[AzureIotHubHealthConnectionStatus, None]:
@@ -34,7 +36,8 @@ class AzureIotHubHealthClient(Client):
         Indicates the status of connection. A message beyond the [0..3] range represents an HTTP error code.
         """
         reg = self.register(JD_AZURE_IOT_HUB_HEALTH_REG_CONNECTION_STATUS)
-        return reg.value(0)
+        value = reg.value(0)
+        return cast(Union[AzureIotHubHealthConnectionStatus, None], value)
 
     def on_connection_status_change(self, handler: EventHandlerFn) -> UnsubscribeFn:
         """
@@ -53,11 +56,11 @@ class AzureIotHubHealthClient(Client):
         """
         Starts a connection to the IoT hub service
         """
-        self.send_cmd_packed(JD_AZURE_IOT_HUB_HEALTH_CMD_CONNECT, [])
+        self.send_cmd_packed(JD_AZURE_IOT_HUB_HEALTH_CMD_CONNECT, )
 
     def disconnect(self, ) -> None:
         """
         Starts disconnecting from the IoT hub service
         """
-        self.send_cmd_packed(JD_AZURE_IOT_HUB_HEALTH_CMD_DISCONNECT, [])
+        self.send_cmd_packed(JD_AZURE_IOT_HUB_HEALTH_CMD_DISCONNECT, )
     

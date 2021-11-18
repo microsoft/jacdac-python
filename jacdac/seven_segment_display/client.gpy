@@ -1,6 +1,6 @@
 from jacdac.bus import Bus, Client
 from .constants import *
-from typing import Union
+from typing import Union, cast
 
 
 class SevenSegmentDisplayClient(Client):
@@ -31,7 +31,8 @@ class SevenSegmentDisplayClient(Client):
         ```
         """
         reg = self.register(JD_SEVEN_SEGMENT_DISPLAY_REG_DIGITS)
-        return reg.value(0)
+        value = reg.value(0)
+        return cast(Union[bytes, None], value)
 
     @digits.setter
     def digits(self, value: bytes) -> None:
@@ -45,7 +46,8 @@ class SevenSegmentDisplayClient(Client):
         Controls the brightness of the LEDs. ``0`` means off., /
         """
         reg = self.register(JD_SEVEN_SEGMENT_DISPLAY_REG_BRIGHTNESS)
-        return reg.value(0)
+        value = reg.value(0)
+        return cast(Union[float, None], value)
 
     @brightness.setter
     def brightness(self, value: float) -> None:
@@ -60,7 +62,8 @@ class SevenSegmentDisplayClient(Client):
         If the column LEDs is not supported, the value remains false.
         """
         reg = self.register(JD_SEVEN_SEGMENT_DISPLAY_REG_DOUBLE_DOTS)
-        return reg.value(0)
+        value = reg.value(0)
+        return cast(Union[bool, None], value)
 
     @double_dots.setter
     def double_dots(self, value: bool) -> None:
@@ -74,7 +77,8 @@ class SevenSegmentDisplayClient(Client):
         The number of digits available on the display.
         """
         reg = self.register(JD_SEVEN_SEGMENT_DISPLAY_REG_DIGIT_COUNT)
-        return reg.value(0)
+        value = reg.value(0)
+        return cast(Union[int, None], value)
 
     @property
     def decimal_point(self) -> Union[bool, None]:
@@ -82,7 +86,8 @@ class SevenSegmentDisplayClient(Client):
         True if decimal points are available (on all digits).
         """
         reg = self.register(JD_SEVEN_SEGMENT_DISPLAY_REG_DECIMAL_POINT)
-        return reg.value(0)
+        value = reg.value(0)
+        return cast(Union[bool, None], value)
 
 
     def set_number(self, value: float) -> None:

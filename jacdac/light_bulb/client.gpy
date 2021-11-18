@@ -1,6 +1,6 @@
 from jacdac.bus import Bus, Client
 from .constants import *
-from typing import Union
+from typing import Union, cast
 from jacdac.events import EventHandlerFn, UnsubscribeFn
 
 class LightBulbClient(Client):
@@ -19,7 +19,8 @@ class LightBulbClient(Client):
         For non-dimmeable lights, the value should be clamp to 0xffff for any non-zero value., /
         """
         reg = self.register(JD_LIGHT_BULB_REG_BRIGHTNESS)
-        return reg.value(0)
+        value = reg.value(0)
+        return cast(Union[float, None], value)
 
     @brightness.setter
     def brightness(self, value: float) -> None:
@@ -33,7 +34,8 @@ class LightBulbClient(Client):
         (Optional) Indicates if the light supports dimming.
         """
         reg = self.register(JD_LIGHT_BULB_REG_DIMMEABLE)
-        return reg.value(0)
+        value = reg.value(0)
+        return cast(Union[bool, None], value)
 
     def on_on(self, handler: EventHandlerFn) -> UnsubscribeFn:
         """

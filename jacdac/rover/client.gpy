@@ -1,6 +1,6 @@
 from jacdac.bus import Bus, Client
 from .constants import *
-from typing import Union
+from typing import Union, cast
 
 
 class RoverClient(Client):
@@ -18,7 +18,8 @@ class RoverClient(Client):
         The current position and orientation of the robot., cm
         """
         reg = self.register(JD_ROVER_REG_KINEMATICS)
-        return reg.value(0)
+        value = reg.value(0)
+        return cast(Union[float, None], value)
 
     @property
     def y(self) -> Union[float, None]:
@@ -26,7 +27,8 @@ class RoverClient(Client):
         The current position and orientation of the robot., cm
         """
         reg = self.register(JD_ROVER_REG_KINEMATICS)
-        return reg.value(1)
+        value = reg.value(1)
+        return cast(Union[float, None], value)
 
     @property
     def vx(self) -> Union[float, None]:
@@ -34,7 +36,8 @@ class RoverClient(Client):
         The current position and orientation of the robot., cm/s
         """
         reg = self.register(JD_ROVER_REG_KINEMATICS)
-        return reg.value(2)
+        value = reg.value(2)
+        return cast(Union[float, None], value)
 
     @property
     def vy(self) -> Union[float, None]:
@@ -42,7 +45,8 @@ class RoverClient(Client):
         The current position and orientation of the robot., cm/s
         """
         reg = self.register(JD_ROVER_REG_KINEMATICS)
-        return reg.value(3)
+        value = reg.value(3)
+        return cast(Union[float, None], value)
 
     @property
     def heading(self) -> Union[float, None]:
@@ -50,6 +54,7 @@ class RoverClient(Client):
         The current position and orientation of the robot., °
         """
         reg = self.register(JD_ROVER_REG_KINEMATICS)
-        return reg.value(4)
+        value = reg.value(4)
+        return cast(Union[float, None], value)
 
     

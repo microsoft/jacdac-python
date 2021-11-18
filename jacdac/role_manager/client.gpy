@@ -1,6 +1,6 @@
 from jacdac.bus import Bus, Client
 from .constants import *
-from typing import Union
+from typing import Union, cast
 from jacdac.events import EventHandlerFn, UnsubscribeFn
 
 class RoleManagerClient(Client):
@@ -34,7 +34,8 @@ class RoleManagerClient(Client):
         Once user start assigning roles manually using this service, auto-binding should be disabled to avoid confusion.
         """
         reg = self.register(JD_ROLE_MANAGER_REG_AUTO_BIND)
-        return reg.value(0)
+        value = reg.value(0)
+        return cast(Union[bool, None], value)
 
     @auto_bind.setter
     def auto_bind(self, value: bool) -> None:
@@ -48,7 +49,8 @@ class RoleManagerClient(Client):
         Indicates if all required roles have been allocated to devices.
         """
         reg = self.register(JD_ROLE_MANAGER_REG_ALL_ROLES_ALLOCATED)
-        return reg.value(0)
+        value = reg.value(0)
+        return cast(Union[bool, None], value)
 
     def on_change(self, handler: EventHandlerFn) -> UnsubscribeFn:
         """
@@ -61,17 +63,17 @@ class RoleManagerClient(Client):
         """
         Get the role corresponding to given device identifer. Returns empty string if unset.
         """
-        self.send_cmd_packed(JD_ROLE_MANAGER_CMD_GET_ROLE, [device_id, service_idx])
+        self.send_cmd_packed(JD_ROLE_MANAGER_CMD_GET_ROLE, device_id, service_idx)
 
     def set_role(self, device_id: bytes, service_idx: int, role: str) -> None:
         """
         Set role. Can set to empty to remove role binding.
         """
-        self.send_cmd_packed(JD_ROLE_MANAGER_CMD_SET_ROLE, [device_id, service_idx, role])
+        self.send_cmd_packed(JD_ROLE_MANAGER_CMD_SET_ROLE, device_id, service_idx, role)
 
     def clear_all_roles(self, ) -> None:
         """
         Remove all role bindings.
         """
-        self.send_cmd_packed(JD_ROLE_MANAGER_CMD_CLEAR_ALL_ROLES, [])
+        self.send_cmd_packed(JD_ROLE_MANAGER_CMD_CLEAR_ALL_ROLES, )
     

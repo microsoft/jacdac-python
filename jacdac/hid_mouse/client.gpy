@@ -1,6 +1,6 @@
 from jacdac.bus import Bus, Client
 from .constants import *
-
+from typing import Union, cast
 
 
 class HidMouseClient(Client):
@@ -19,19 +19,19 @@ class HidMouseClient(Client):
         A ``Click`` is the same as ``Down`` followed by ``Up`` after 100ms.
         A ``DoubleClick`` is two clicks with ``150ms`` gap between them (that is, ``100ms`` first click, ``150ms`` gap, ``100ms`` second click).
         """
-        self.send_cmd_packed(JD_HID_MOUSE_CMD_SET_BUTTON, [buttons, event])
+        self.send_cmd_packed(JD_HID_MOUSE_CMD_SET_BUTTON, buttons, event)
 
     def move(self, dx: int, dy: int, time: int) -> None:
         """
         Moves the mouse by the distance specified.
         If the time is positive, it specifies how long to make the move.
         """
-        self.send_cmd_packed(JD_HID_MOUSE_CMD_MOVE, [dx, dy, time])
+        self.send_cmd_packed(JD_HID_MOUSE_CMD_MOVE, dx, dy, time)
 
     def wheel(self, dy: int, time: int) -> None:
         """
         Turns the wheel up or down. Positive if scrolling up.
         If the time is positive, it specifies how long to make the move.
         """
-        self.send_cmd_packed(JD_HID_MOUSE_CMD_WHEEL, [dy, time])
+        self.send_cmd_packed(JD_HID_MOUSE_CMD_WHEEL, dy, time)
     

@@ -1,6 +1,6 @@
 from jacdac.bus import Bus, Client
 from .constants import *
-from typing import Union
+from typing import Union, cast
 from jacdac.events import EventHandlerFn, UnsubscribeFn
 
 class SoundLevelClient(Client):
@@ -18,7 +18,8 @@ class SoundLevelClient(Client):
         The sound level detected by the microphone, /
         """
         reg = self.register(JD_SOUND_LEVEL_REG_SOUND_LEVEL)
-        return reg.value(0)
+        value = reg.value(0)
+        return cast(Union[float, None], value)
 
     @property
     def enabled(self) -> Union[bool, None]:
@@ -26,7 +27,8 @@ class SoundLevelClient(Client):
         Turn on or off the microphone.
         """
         reg = self.register(JD_SOUND_LEVEL_REG_ENABLED)
-        return reg.value(0)
+        value = reg.value(0)
+        return cast(Union[bool, None], value)
 
     @enabled.setter
     def enabled(self, value: bool) -> None:
@@ -43,7 +45,8 @@ class SoundLevelClient(Client):
         ``[min_decibels, max_decibels]``., dB
         """
         reg = self.register(JD_SOUND_LEVEL_REG_MIN_DECIBELS)
-        return reg.value(0)
+        value = reg.value(0)
+        return cast(Union[int, None], value)
 
     @min_decibels.setter
     def min_decibels(self, value: int) -> None:
@@ -60,7 +63,8 @@ class SoundLevelClient(Client):
         ``[min_decibels, max_decibels]``., dB
         """
         reg = self.register(JD_SOUND_LEVEL_REG_MAX_DECIBELS)
-        return reg.value(0)
+        value = reg.value(0)
+        return cast(Union[int, None], value)
 
     @max_decibels.setter
     def max_decibels(self, value: int) -> None:
@@ -74,7 +78,8 @@ class SoundLevelClient(Client):
         The sound level to trigger a loud event., /
         """
         reg = self.register(JD_SOUND_LEVEL_REG_LOUD_THRESHOLD)
-        return reg.value(0)
+        value = reg.value(0)
+        return cast(Union[float, None], value)
 
     @loud_threshold.setter
     def loud_threshold(self, value: float) -> None:
@@ -88,7 +93,8 @@ class SoundLevelClient(Client):
         The sound level to trigger a quiet event., /
         """
         reg = self.register(JD_SOUND_LEVEL_REG_QUIET_THRESHOLD)
-        return reg.value(0)
+        value = reg.value(0)
+        return cast(Union[float, None], value)
 
     @quiet_threshold.setter
     def quiet_threshold(self, value: float) -> None:

@@ -1,6 +1,6 @@
 from jacdac.bus import Bus, Client
 from .constants import *
-from typing import Union
+from typing import Union, cast
 from jacdac.events import EventHandlerFn, UnsubscribeFn
 
 class ReflectedLightClient(Client):
@@ -18,7 +18,8 @@ class ReflectedLightClient(Client):
         Reports the reflected brightness. It may be a digital value or, for some sensor, analog value., /
         """
         reg = self.register(JD_REFLECTED_LIGHT_REG_BRIGHTNESS)
-        return reg.value(0)
+        value = reg.value(0)
+        return cast(Union[float, None], value)
 
     @property
     def variant(self) -> Union[ReflectedLightVariant, None]:
@@ -26,7 +27,8 @@ class ReflectedLightClient(Client):
         (Optional) Type of physical sensor used
         """
         reg = self.register(JD_REFLECTED_LIGHT_REG_VARIANT)
-        return reg.value(0)
+        value = reg.value(0)
+        return cast(Union[ReflectedLightVariant, None], value)
 
     def on_dark(self, handler: EventHandlerFn) -> UnsubscribeFn:
         """

@@ -13,7 +13,7 @@ from .packet import *
 from .transport import Transport
 
 import jacdac.util as util
-from .util import now, log, logv, unpack
+from .util import now, log, logv
 from .control.constants import *
 from .pack import PackType, jdpack, jdunpack
 
@@ -334,11 +334,11 @@ class RawRegisterClient(EventEmitter):
             return self._data
         return None
 
-    def unpacked(self) -> tuple[Any, ...]:
+    def unpacked(self) -> list[PackType]:
         data = self.query_no_wait()
         if data and self.pack_format:
-            return unpack(data, self.pack_format)
-        return ()
+            return jdunpack(data, self.pack_format)
+        return []
 
     def value(self, index: int):
         values = self.unpacked()
@@ -348,15 +348,26 @@ class RawRegisterClient(EventEmitter):
             return None
 
     def set_value(self, index: int, value: Any):
-        # TODO:
-        pass
+        if self.pack_format is None:
+            raise RuntimeError("set_value not supported")
+        values = self.unpacked()
+        # TODO: generate empty packed array
+        while len(values) <= index:
+            values.append(0)
+        if isinstance(value, bool):
+            values[index] = 1 if bool(value) else 0
+        else:
+            values[index] = value
+        data = jdpack(self.pack_format, *values)
+        pkt = JDPacket(cmd=JD_SET(self.code), data=data)
+        self.client.send_cmd(pkt)
 
     def float_value(self, index: int = 0, scale: int = 1) -> Union[float, None]:
         value = self.value(index)
         if value is None:
             return None
         else:
-            return float(value) * scale
+            return float(value) * scale  # type: ignore
 
     def _query(self):
         pkt = JDPacket(cmd=JD_GET(self.code))
@@ -571,14 +582,14 @@ class Client(EventEmitter):
         pkt._header[3] |= JD_FRAME_FLAG_COMMAND
         self.bus._send_core(pkt)
 
-    def send_cmd_packed(self, cmd: int, args: PackType = None):
+    def send_cmd_packed(self, cmd: int, *args: PackType):
         if args is None:
             pkt = JDPacket(cmd=cmd)
         else:
             if not cmd in self.pack_formats:
                 raise RuntimeError("unknown data format")
             fmt = self.pack_formats[cmd]
-            data = jdpack(fmt, args)
+            data = jdpack(fmt, *args)
             pkt = JDPacket(cmd=cmd, data=data)
         self.send_cmd(pkt)
 

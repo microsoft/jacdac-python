@@ -1,6 +1,6 @@
 from jacdac.bus import Bus, Client
 from .constants import *
-from typing import Union
+from typing import Union, cast
 
 
 class GyroscopeClient(Client):
@@ -18,7 +18,8 @@ class GyroscopeClient(Client):
         Indicates the current rates acting on gyroscope., °/s
         """
         reg = self.register(JD_GYROSCOPE_REG_ROTATION_RATES)
-        return reg.value(0)
+        value = reg.value(0)
+        return cast(Union[float, None], value)
 
     @property
     def y(self) -> Union[float, None]:
@@ -26,7 +27,8 @@ class GyroscopeClient(Client):
         Indicates the current rates acting on gyroscope., °/s
         """
         reg = self.register(JD_GYROSCOPE_REG_ROTATION_RATES)
-        return reg.value(1)
+        value = reg.value(1)
+        return cast(Union[float, None], value)
 
     @property
     def z(self) -> Union[float, None]:
@@ -34,7 +36,8 @@ class GyroscopeClient(Client):
         Indicates the current rates acting on gyroscope., °/s
         """
         reg = self.register(JD_GYROSCOPE_REG_ROTATION_RATES)
-        return reg.value(2)
+        value = reg.value(2)
+        return cast(Union[float, None], value)
 
     @property
     def rotation_rates_error(self) -> Union[float, None]:
@@ -42,7 +45,8 @@ class GyroscopeClient(Client):
         (Optional) Error on the reading value., °/s
         """
         reg = self.register(JD_GYROSCOPE_REG_ROTATION_RATES_ERROR)
-        return reg.value(0)
+        value = reg.value(0)
+        return cast(Union[float, None], value)
 
     @property
     def max_rate(self) -> Union[float, None]:
@@ -51,7 +55,8 @@ class GyroscopeClient(Client):
         The value will be "rounded up" to one of `max_rates_supported`., °/s
         """
         reg = self.register(JD_GYROSCOPE_REG_MAX_RATE)
-        return reg.value(0)
+        value = reg.value(0)
+        return cast(Union[float, None], value)
 
     @max_rate.setter
     def max_rate(self, value: float) -> None:

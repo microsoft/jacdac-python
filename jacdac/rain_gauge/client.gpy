@@ -1,6 +1,6 @@
 from jacdac.bus import Bus, Client
 from .constants import *
-from typing import Union
+from typing import Union, cast
 
 
 class RainGaugeClient(Client):
@@ -18,7 +18,8 @@ class RainGaugeClient(Client):
         Total precipitation recorded so far., mm
         """
         reg = self.register(JD_RAIN_GAUGE_REG_PRECIPITATION)
-        return reg.value(0)
+        value = reg.value(0)
+        return cast(Union[float, None], value)
 
     @property
     def precipitation_precision(self) -> Union[float, None]:
@@ -26,6 +27,7 @@ class RainGaugeClient(Client):
         (Optional) Typically the amount of rain needed for tipping the bucket., mm
         """
         reg = self.register(JD_RAIN_GAUGE_REG_PRECIPITATION_PRECISION)
-        return reg.value(0)
+        value = reg.value(0)
+        return cast(Union[float, None], value)
 
     

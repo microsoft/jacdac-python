@@ -1,6 +1,6 @@
 from jacdac.bus import Bus, Client
 from .constants import *
-
+from typing import Union, cast
 from jacdac.events import EventHandlerFn, UnsubscribeFn
 
 class SettingsClient(Client):
@@ -23,5 +23,5 @@ class SettingsClient(Client):
         """
         Get the value of given setting. If no such entry exists, the value returned is empty.
         """
-        self.send_cmd_packed(JD_SETTINGS_CMD_GET, [key])
+        self.send_cmd_packed(JD_SETTINGS_CMD_GET, key)
     

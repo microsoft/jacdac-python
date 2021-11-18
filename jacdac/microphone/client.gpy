@@ -1,6 +1,6 @@
 from jacdac.bus import Bus, Client
 from .constants import *
-from typing import Union
+from typing import Union, cast
 
 
 class MicrophoneClient(Client):
@@ -19,7 +19,8 @@ class MicrophoneClient(Client):
         Sampling rate is `1_000_000 / sampling_period Hz`., us
         """
         reg = self.register(JD_MICROPHONE_REG_SAMPLING_PERIOD)
-        return reg.value(0)
+        value = reg.value(0)
+        return cast(Union[int, None], value)
 
     @sampling_period.setter
     def sampling_period(self, value: int) -> None:

@@ -1,6 +1,6 @@
 from jacdac.bus import Bus, Client
 from .constants import *
-from typing import Union
+from typing import Union, cast
 
 
 class DmxClient(Client):
@@ -18,7 +18,8 @@ class DmxClient(Client):
         Determines if the DMX bridge is active
         """
         reg = self.register(JD_DMX_REG_ENABLED)
-        return reg.value(0)
+        value = reg.value(0)
+        return cast(Union[bool, None], value)
 
     @enabled.setter
     def enabled(self, value: bool) -> None:
@@ -31,5 +32,5 @@ class DmxClient(Client):
         """
         Send a DMX packet, up to 236bytes long, including the start code.
         """
-        self.send_cmd_packed(JD_DMX_CMD_SEND, [channels])
+        self.send_cmd_packed(JD_DMX_CMD_SEND, channels)
     

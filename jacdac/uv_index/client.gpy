@@ -1,6 +1,6 @@
 from jacdac.bus import Bus, Client
 from .constants import *
-from typing import Union
+from typing import Union, cast
 
 
 class UvIndexClient(Client):
@@ -18,7 +18,8 @@ class UvIndexClient(Client):
         Ultraviolet index, typically refreshed every second., uv
         """
         reg = self.register(JD_UV_INDEX_REG_UV_INDEX)
-        return reg.value(0)
+        value = reg.value(0)
+        return cast(Union[float, None], value)
 
     @property
     def uv_index_error(self) -> Union[float, None]:
@@ -26,7 +27,8 @@ class UvIndexClient(Client):
         (Optional) Error on the UV measure., uv
         """
         reg = self.register(JD_UV_INDEX_REG_UV_INDEX_ERROR)
-        return reg.value(0)
+        value = reg.value(0)
+        return cast(Union[float, None], value)
 
     @property
     def variant(self) -> Union[UvIndexVariant, None]:
@@ -34,6 +36,7 @@ class UvIndexClient(Client):
         (Optional) The type of physical sensor and capabilities.
         """
         reg = self.register(JD_UV_INDEX_REG_VARIANT)
-        return reg.value(0)
+        value = reg.value(0)
+        return cast(Union[UvIndexVariant, None], value)
 
     

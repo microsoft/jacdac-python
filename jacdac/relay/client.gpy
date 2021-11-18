@@ -1,6 +1,6 @@
 from jacdac.bus import Bus, Client
 from .constants import *
-from typing import Union
+from typing import Union, cast
 from jacdac.events import EventHandlerFn, UnsubscribeFn
 
 class RelayClient(Client):
@@ -18,7 +18,8 @@ class RelayClient(Client):
         Indicates whether the relay circuit is currently energized (closed) or not.
         """
         reg = self.register(JD_RELAY_REG_CLOSED)
-        return reg.value(0)
+        value = reg.value(0)
+        return cast(Union[bool, None], value)
 
     @closed.setter
     def closed(self, value: bool) -> None:
@@ -32,7 +33,8 @@ class RelayClient(Client):
         (Optional) Describes the type of relay used.
         """
         reg = self.register(JD_RELAY_REG_VARIANT)
-        return reg.value(0)
+        value = reg.value(0)
+        return cast(Union[RelayVariant, None], value)
 
     @property
     def max_switching_current(self) -> Union[int, None]:
@@ -40,7 +42,8 @@ class RelayClient(Client):
         (Optional) Maximum switching current for a resistive load., mA
         """
         reg = self.register(JD_RELAY_REG_MAX_SWITCHING_CURRENT)
-        return reg.value(0)
+        value = reg.value(0)
+        return cast(Union[int, None], value)
 
     def on_active(self, handler: EventHandlerFn) -> UnsubscribeFn:
         """

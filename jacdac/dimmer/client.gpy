@@ -1,6 +1,6 @@
 from jacdac.bus import Bus, Client
 from .constants import *
-from typing import Union
+from typing import Union, cast
 
 
 class DimmerClient(Client):
@@ -18,7 +18,8 @@ class DimmerClient(Client):
         The intensity of the current. Set to ``0`` to turn off completely the current., /
         """
         reg = self.register(JD_DIMMER_REG_INTENSITY)
-        return reg.value(0)
+        value = reg.value(0)
+        return cast(Union[float, None], value)
 
     @intensity.setter
     def intensity(self, value: float) -> None:
@@ -32,6 +33,7 @@ class DimmerClient(Client):
         (Optional) The type of physical device
         """
         reg = self.register(JD_DIMMER_REG_VARIANT)
-        return reg.value(0)
+        value = reg.value(0)
+        return cast(Union[DimmerVariant, None], value)
 
     

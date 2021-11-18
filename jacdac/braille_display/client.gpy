@@ -1,6 +1,6 @@
 from jacdac.bus import Bus, Client
 from .constants import *
-from typing import Union
+from typing import Union, cast
 
 
 class BrailleDisplayClient(Client):
@@ -18,7 +18,8 @@ class BrailleDisplayClient(Client):
         Determins if the braille display is active.
         """
         reg = self.register(JD_BRAILLE_DISPLAY_REG_ENABLED)
-        return reg.value(0)
+        value = reg.value(0)
+        return cast(Union[bool, None], value)
 
     @enabled.setter
     def enabled(self, value: bool) -> None:
@@ -32,10 +33,12 @@ class BrailleDisplayClient(Client):
         Braille patterns to show. Must be unicode characters between `0x2800` and `0x28ff`.
         """
         reg = self.register(JD_BRAILLE_DISPLAY_REG_PATTERNS)
-        return reg.value(0)
+        value = reg.value(0)
+        return cast(Union[str, None], value)
 
     @patterns.setter
     def patterns(self, value: str) -> None:
+        self.enabled = True
         reg = self.register(JD_BRAILLE_DISPLAY_REG_PATTERNS)
         reg.set_value(0, value)
 
@@ -46,6 +49,7 @@ class BrailleDisplayClient(Client):
         Gets the number of patterns that can be displayed., #
         """
         reg = self.register(JD_BRAILLE_DISPLAY_REG_LENGTH)
-        return reg.value(0)
+        value = reg.value(0)
+        return cast(Union[int, None], value)
 
     

@@ -1,6 +1,6 @@
 from jacdac.bus import Bus, Client
 from .constants import *
-from typing import Union
+from typing import Union, cast
 from jacdac.events import EventHandlerFn, UnsubscribeFn
 
 class HidAdapterClient(Client):
@@ -18,7 +18,8 @@ class HidAdapterClient(Client):
         The number of configurations stored on the server.
         """
         reg = self.register(JD_HID_ADAPTER_REG_NUM_CONFIGURATIONS)
-        return reg.value(0)
+        value = reg.value(0)
+        return cast(Union[int, None], value)
 
     @num_configurations.setter
     def num_configurations(self, value: int) -> None:
@@ -32,7 +33,8 @@ class HidAdapterClient(Client):
         The current configuration the server is using.
         """
         reg = self.register(JD_HID_ADAPTER_REG_CURRENT_CONFIGURATION)
-        return reg.value(0)
+        value = reg.value(0)
+        return cast(Union[int, None], value)
 
     @current_configuration.setter
     def current_configuration(self, value: int) -> None:
@@ -51,23 +53,23 @@ class HidAdapterClient(Client):
         """
         Stores the given binding on the server. If a binding exists at this index, the new binding will replace it.
         """
-        self.send_cmd_packed(JD_HID_ADAPTER_CMD_SET_BINDING, [configuration_number, binding_index, padding, device_id, service_class, trigger_value, trigger_context, service_index, selector, modifiers])
+        self.send_cmd_packed(JD_HID_ADAPTER_CMD_SET_BINDING, configuration_number, binding_index, padding, device_id, service_class, trigger_value, trigger_context, service_index, selector, modifiers)
 
     def clear_binding(self, configuration_number: int, binding_index: int) -> None:
         """
         Clears a specific binding stored on the device.
         """
-        self.send_cmd_packed(JD_HID_ADAPTER_CMD_CLEAR_BINDING, [configuration_number, binding_index])
+        self.send_cmd_packed(JD_HID_ADAPTER_CMD_CLEAR_BINDING, configuration_number, binding_index)
 
     def clear_configuration(self, configuration_number: int) -> None:
         """
         Clears a specific configuration stored on the device.
         """
-        self.send_cmd_packed(JD_HID_ADAPTER_CMD_CLEAR_CONFIGURATION, [configuration_number])
+        self.send_cmd_packed(JD_HID_ADAPTER_CMD_CLEAR_CONFIGURATION, configuration_number)
 
     def clear(self, ) -> None:
         """
         Clears all configurations and bindings stored on the device.
         """
-        self.send_cmd_packed(JD_HID_ADAPTER_CMD_CLEAR, [])
+        self.send_cmd_packed(JD_HID_ADAPTER_CMD_CLEAR, )
     

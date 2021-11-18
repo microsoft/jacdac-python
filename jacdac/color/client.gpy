@@ -1,6 +1,6 @@
 from jacdac.bus import Bus, Client
 from .constants import *
-from typing import Union
+from typing import Union, cast
 
 
 class ColorClient(Client):
@@ -18,7 +18,8 @@ class ColorClient(Client):
         Detected color in the RGB color space., /
         """
         reg = self.register(JD_COLOR_REG_COLOR)
-        return reg.value(0)
+        value = reg.value(0)
+        return cast(Union[float, None], value)
 
     @property
     def green(self) -> Union[float, None]:
@@ -26,7 +27,8 @@ class ColorClient(Client):
         Detected color in the RGB color space., /
         """
         reg = self.register(JD_COLOR_REG_COLOR)
-        return reg.value(1)
+        value = reg.value(1)
+        return cast(Union[float, None], value)
 
     @property
     def blue(self) -> Union[float, None]:
@@ -34,6 +36,7 @@ class ColorClient(Client):
         Detected color in the RGB color space., /
         """
         reg = self.register(JD_COLOR_REG_COLOR)
-        return reg.value(2)
+        value = reg.value(2)
+        return cast(Union[float, None], value)
 
     

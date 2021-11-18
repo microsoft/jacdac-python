@@ -1,6 +1,6 @@
 from jacdac.bus import Bus, Client
 from .constants import *
-from typing import Union
+from typing import Union, cast
 
 
 class DotMatrixClient(Client):
@@ -19,7 +19,8 @@ class DotMatrixClient(Client):
         stored as a bit, column by column. The column should be byte aligned.
         """
         reg = self.register(JD_DOT_MATRIX_REG_DOTS)
-        return reg.value(0)
+        value = reg.value(0)
+        return cast(Union[bytes, None], value)
 
     @dots.setter
     def dots(self, value: bytes) -> None:
@@ -33,7 +34,8 @@ class DotMatrixClient(Client):
         (Optional) Reads the general brightness of the display, brightness for LEDs. `0` when the screen is off., /
         """
         reg = self.register(JD_DOT_MATRIX_REG_BRIGHTNESS)
-        return reg.value(0)
+        value = reg.value(0)
+        return cast(Union[float, None], value)
 
     @brightness.setter
     def brightness(self, value: float) -> None:
@@ -47,7 +49,8 @@ class DotMatrixClient(Client):
         Number of rows on the screen, #
         """
         reg = self.register(JD_DOT_MATRIX_REG_ROWS)
-        return reg.value(0)
+        value = reg.value(0)
+        return cast(Union[int, None], value)
 
     @property
     def columns(self) -> Union[int, None]:
@@ -55,7 +58,8 @@ class DotMatrixClient(Client):
         Number of columns on the screen, #
         """
         reg = self.register(JD_DOT_MATRIX_REG_COLUMNS)
-        return reg.value(0)
+        value = reg.value(0)
+        return cast(Union[int, None], value)
 
     @property
     def variant(self) -> Union[DotMatrixVariant, None]:
@@ -63,6 +67,7 @@ class DotMatrixClient(Client):
         (Optional) Describes the type of matrix used.
         """
         reg = self.register(JD_DOT_MATRIX_REG_VARIANT)
-        return reg.value(0)
+        value = reg.value(0)
+        return cast(Union[DotMatrixVariant, None], value)
 
     

@@ -1,6 +1,6 @@
 from jacdac.bus import Bus, Client
 from .constants import *
-from typing import Union
+from typing import Union, cast
 
 
 class ECO2Client(Client):
@@ -18,7 +18,8 @@ class ECO2Client(Client):
         Equivalent CO₂ (eCO₂) readings., ppm
         """
         reg = self.register(JD_E_CO2_REG_E_CO2)
-        return reg.value(0)
+        value = reg.value(0)
+        return cast(Union[float, None], value)
 
     @property
     def e_CO2_error(self) -> Union[float, None]:
@@ -26,7 +27,8 @@ class ECO2Client(Client):
         Error on the reading value., ppm
         """
         reg = self.register(JD_E_CO2_REG_E_CO2_ERROR)
-        return reg.value(0)
+        value = reg.value(0)
+        return cast(Union[float, None], value)
 
     @property
     def min_e_CO2(self) -> Union[float, None]:
@@ -34,7 +36,8 @@ class ECO2Client(Client):
         (Optional) Minimum measurable value, ppm
         """
         reg = self.register(JD_E_CO2_REG_MIN_E_CO2)
-        return reg.value(0)
+        value = reg.value(0)
+        return cast(Union[float, None], value)
 
     @property
     def max_e_CO2(self) -> Union[float, None]:
@@ -42,7 +45,8 @@ class ECO2Client(Client):
         (Optional) Minimum measurable value, ppm
         """
         reg = self.register(JD_E_CO2_REG_MAX_E_CO2)
-        return reg.value(0)
+        value = reg.value(0)
+        return cast(Union[float, None], value)
 
     @property
     def conditioning_period(self) -> Union[int, None]:
@@ -50,7 +54,8 @@ class ECO2Client(Client):
         (Optional) Time required to achieve good sensor stability before measuring after long idle period., s
         """
         reg = self.register(JD_E_CO2_REG_CONDITIONING_PERIOD)
-        return reg.value(0)
+        value = reg.value(0)
+        return cast(Union[int, None], value)
 
     @property
     def variant(self) -> Union[ECO2Variant, None]:
@@ -58,6 +63,7 @@ class ECO2Client(Client):
         (Optional) Type of physical sensor and capabilities.
         """
         reg = self.register(JD_E_CO2_REG_VARIANT)
-        return reg.value(0)
+        value = reg.value(0)
+        return cast(Union[ECO2Variant, None], value)
 
     

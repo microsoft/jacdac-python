@@ -1,6 +1,6 @@
 from jacdac.bus import Bus, Client
 from .constants import *
-from typing import Union
+from typing import Union, cast
 
 
 class TvocClient(Client):
@@ -18,7 +18,8 @@ class TvocClient(Client):
         Total volatile organic compound readings in parts per billion., ppb
         """
         reg = self.register(JD_TVOC_REG_TVOC)
-        return reg.value(0)
+        value = reg.value(0)
+        return cast(Union[float, None], value)
 
     @property
     def TVOC_error(self) -> Union[float, None]:
@@ -26,7 +27,8 @@ class TvocClient(Client):
         (Optional) Error on the reading data, ppb
         """
         reg = self.register(JD_TVOC_REG_TVOC_ERROR)
-        return reg.value(0)
+        value = reg.value(0)
+        return cast(Union[float, None], value)
 
     @property
     def min_TVOC(self) -> Union[float, None]:
@@ -34,7 +36,8 @@ class TvocClient(Client):
         (Optional) Minimum measurable value, ppb
         """
         reg = self.register(JD_TVOC_REG_MIN_TVOC)
-        return reg.value(0)
+        value = reg.value(0)
+        return cast(Union[float, None], value)
 
     @property
     def max_TVOC(self) -> Union[float, None]:
@@ -42,7 +45,8 @@ class TvocClient(Client):
         (Optional) Minimum measurable value, ppb
         """
         reg = self.register(JD_TVOC_REG_MAX_TVOC)
-        return reg.value(0)
+        value = reg.value(0)
+        return cast(Union[float, None], value)
 
     @property
     def conditioning_period(self) -> Union[int, None]:
@@ -50,6 +54,7 @@ class TvocClient(Client):
         (Optional) Time required to achieve good sensor stability before measuring after long idle period., s
         """
         reg = self.register(JD_TVOC_REG_CONDITIONING_PERIOD)
-        return reg.value(0)
+        value = reg.value(0)
+        return cast(Union[int, None], value)
 
     

@@ -1,6 +1,6 @@
 from jacdac.bus import Bus, Client
 from .constants import *
-from typing import Union
+from typing import Union, cast
 
 
 class WindSpeedClient(Client):
@@ -18,7 +18,8 @@ class WindSpeedClient(Client):
         The velocity of the wind., m/s
         """
         reg = self.register(JD_WIND_SPEED_REG_WIND_SPEED)
-        return reg.value(0)
+        value = reg.value(0)
+        return cast(Union[float, None], value)
 
     @property
     def wind_speed_error(self) -> Union[float, None]:
@@ -26,7 +27,8 @@ class WindSpeedClient(Client):
         Error on the reading, m/s
         """
         reg = self.register(JD_WIND_SPEED_REG_WIND_SPEED_ERROR)
-        return reg.value(0)
+        value = reg.value(0)
+        return cast(Union[float, None], value)
 
     @property
     def max_wind_speed(self) -> Union[float, None]:
@@ -34,6 +36,7 @@ class WindSpeedClient(Client):
         (Optional) Maximum speed that can be measured by the sensor., m/s
         """
         reg = self.register(JD_WIND_SPEED_REG_MAX_WIND_SPEED)
-        return reg.value(0)
+        value = reg.value(0)
+        return cast(Union[float, None], value)
 
     

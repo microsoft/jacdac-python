@@ -1,6 +1,6 @@
 from jacdac.bus import Bus, Client
 from .constants import *
-
+from typing import Union, cast
 from jacdac.events import EventHandlerFn, UnsubscribeFn
 
 class CodalMessageBusClient(Client):
@@ -26,5 +26,5 @@ class CodalMessageBusClient(Client):
         """
         Send a message on the CODAL bus. If `source` is `0`, it is treated as wildcard.
         """
-        self.send_cmd_packed(JD_CODAL_MESSAGE_BUS_CMD_SEND, [source, value])
+        self.send_cmd_packed(JD_CODAL_MESSAGE_BUS_CMD_SEND, source, value)
     

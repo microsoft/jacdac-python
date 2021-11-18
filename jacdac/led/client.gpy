@@ -1,6 +1,6 @@
 from jacdac.bus import Bus, Client
 from .constants import *
-from typing import Union
+from typing import Union, cast
 
 
 class LedClient(Client):
@@ -18,7 +18,8 @@ class LedClient(Client):
         The current color of the LED.
         """
         reg = self.register(JD_LED_REG_COLOR)
-        return reg.value(0)
+        value = reg.value(0)
+        return cast(Union[int, None], value)
 
     @property
     def color_Green(self) -> Union[int, None]:
@@ -26,7 +27,8 @@ class LedClient(Client):
         The current color of the LED.
         """
         reg = self.register(JD_LED_REG_COLOR)
-        return reg.value(1)
+        value = reg.value(1)
+        return cast(Union[int, None], value)
 
     @property
     def color_Blue(self) -> Union[int, None]:
@@ -34,7 +36,8 @@ class LedClient(Client):
         The current color of the LED.
         """
         reg = self.register(JD_LED_REG_COLOR)
-        return reg.value(2)
+        value = reg.value(2)
+        return cast(Union[int, None], value)
 
     @property
     def max_power(self) -> Union[int, None]:
@@ -42,7 +45,8 @@ class LedClient(Client):
         (Optional) Limit the power drawn by the light-strip (and controller)., mA
         """
         reg = self.register(JD_LED_REG_MAX_POWER)
-        return reg.value(0)
+        value = reg.value(0)
+        return cast(Union[int, None], value)
 
     @max_power.setter
     def max_power(self, value: int) -> None:
@@ -56,7 +60,8 @@ class LedClient(Client):
         (Optional) If known, specifies the number of LEDs in parallel on this device.
         """
         reg = self.register(JD_LED_REG_LED_COUNT)
-        return reg.value(0)
+        value = reg.value(0)
+        return cast(Union[int, None], value)
 
     @property
     def wave_length(self) -> Union[int, None]:
@@ -64,7 +69,8 @@ class LedClient(Client):
         (Optional) If monochrome LED, specifies the wave length of the LED., nm
         """
         reg = self.register(JD_LED_REG_WAVE_LENGTH)
-        return reg.value(0)
+        value = reg.value(0)
+        return cast(Union[int, None], value)
 
     @property
     def luminous_intensity(self) -> Union[int, None]:
@@ -72,7 +78,8 @@ class LedClient(Client):
         (Optional) The luminous intensity of the LED, at full value, in micro candella., mcd
         """
         reg = self.register(JD_LED_REG_LUMINOUS_INTENSITY)
-        return reg.value(0)
+        value = reg.value(0)
+        return cast(Union[int, None], value)
 
     @property
     def variant(self) -> Union[LedVariant, None]:
@@ -80,12 +87,13 @@ class LedClient(Client):
         (Optional) The physical type of LED.
         """
         reg = self.register(JD_LED_REG_VARIANT)
-        return reg.value(0)
+        value = reg.value(0)
+        return cast(Union[LedVariant, None], value)
 
 
     def animate(self, to_red: int, to_green: int, to_blue: int, speed: int) -> None:
         """
         This has the same semantics as `set_status_light` in the control service.
         """
-        self.send_cmd_packed(JD_LED_CMD_ANIMATE, [to_red, to_green, to_blue, speed])
+        self.send_cmd_packed(JD_LED_CMD_ANIMATE, to_red, to_green, to_blue, speed)
     

@@ -1,6 +1,6 @@
 from jacdac.bus import Bus, Client
 from .constants import *
-from typing import Union
+from typing import Union, cast
 
 
 class PressureButtonClient(Client):
@@ -18,7 +18,8 @@ class PressureButtonClient(Client):
         Indicates the threshold for ``up`` events., /
         """
         reg = self.register(JD_PRESSURE_BUTTON_REG_THRESHOLD)
-        return reg.value(0)
+        value = reg.value(0)
+        return cast(Union[float, None], value)
 
     @threshold.setter
     def threshold(self, value: float) -> None:

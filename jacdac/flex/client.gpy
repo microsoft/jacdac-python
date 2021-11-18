@@ -1,6 +1,6 @@
 from jacdac.bus import Bus, Client
 from .constants import *
-from typing import Union
+from typing import Union, cast
 
 
 class FlexClient(Client):
@@ -18,7 +18,8 @@ class FlexClient(Client):
         The relative position of the slider., /
         """
         reg = self.register(JD_FLEX_REG_BENDING)
-        return reg.value(0)
+        value = reg.value(0)
+        return cast(Union[float, None], value)
 
     @property
     def variant(self) -> Union[FlexVariant, None]:
@@ -26,6 +27,7 @@ class FlexClient(Client):
         (Optional) Specifies the physical layout of the flex sensor.
         """
         reg = self.register(JD_FLEX_REG_VARIANT)
-        return reg.value(0)
+        value = reg.value(0)
+        return cast(Union[FlexVariant, None], value)
 
     

@@ -1,6 +1,6 @@
 from jacdac.bus import Bus, Client
 from .constants import *
-from typing import Union
+from typing import Union, cast
 
 
 class SoundSpectrumClient(Client):
@@ -18,7 +18,8 @@ class SoundSpectrumClient(Client):
         The computed frequency data.
         """
         reg = self.register(JD_SOUND_SPECTRUM_REG_FREQUENCY_BINS)
-        return reg.value(0)
+        value = reg.value(0)
+        return cast(Union[bytes, None], value)
 
     @property
     def enabled(self) -> Union[bool, None]:
@@ -26,7 +27,8 @@ class SoundSpectrumClient(Client):
         Turns on/off the micropohone.
         """
         reg = self.register(JD_SOUND_SPECTRUM_REG_ENABLED)
-        return reg.value(0)
+        value = reg.value(0)
+        return cast(Union[bool, None], value)
 
     @enabled.setter
     def enabled(self, value: bool) -> None:
@@ -40,7 +42,8 @@ class SoundSpectrumClient(Client):
         The power of 2 used as the size of the FFT to be used to determine the frequency domain.
         """
         reg = self.register(JD_SOUND_SPECTRUM_REG_FFT_POW2_SIZE)
-        return reg.value(0)
+        value = reg.value(0)
+        return cast(Union[int, None], value)
 
     @fft_pow2_size.setter
     def fft_pow2_size(self, value: int) -> None:
@@ -54,7 +57,8 @@ class SoundSpectrumClient(Client):
         The minimum power value in the scaling range for the FFT analysis data, dB
         """
         reg = self.register(JD_SOUND_SPECTRUM_REG_MIN_DECIBELS)
-        return reg.value(0)
+        value = reg.value(0)
+        return cast(Union[int, None], value)
 
     @min_decibels.setter
     def min_decibels(self, value: int) -> None:
@@ -68,7 +72,8 @@ class SoundSpectrumClient(Client):
         The maximum power value in the scaling range for the FFT analysis data, dB
         """
         reg = self.register(JD_SOUND_SPECTRUM_REG_MAX_DECIBELS)
-        return reg.value(0)
+        value = reg.value(0)
+        return cast(Union[int, None], value)
 
     @max_decibels.setter
     def max_decibels(self, value: int) -> None:
@@ -83,7 +88,8 @@ class SoundSpectrumClient(Client):
         If ``0`` is set, there is no averaging done, whereas a value of ``1`` means "overlap the previous and current buffer quite a lot while computing the value"., /
         """
         reg = self.register(JD_SOUND_SPECTRUM_REG_SMOOTHING_TIME_CONSTANT)
-        return reg.value(0)
+        value = reg.value(0)
+        return cast(Union[float, None], value)
 
     @smoothing_time_constant.setter
     def smoothing_time_constant(self, value: float) -> None:

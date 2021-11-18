@@ -1,6 +1,6 @@
 from jacdac.bus import Bus, Client
 from .constants import *
-from typing import Union
+from typing import Union, cast
 
 
 class MidiOutputClient(Client):
@@ -18,7 +18,8 @@ class MidiOutputClient(Client):
         Opens or closes the port to the MIDI device
         """
         reg = self.register(JD_MIDI_OUTPUT_REG_ENABLED)
-        return reg.value(0)
+        value = reg.value(0)
+        return cast(Union[bool, None], value)
 
     @enabled.setter
     def enabled(self, value: bool) -> None:
@@ -31,11 +32,11 @@ class MidiOutputClient(Client):
         """
         Clears any pending send data that has not yet been sent from the MIDIOutput's queue.
         """
-        self.send_cmd_packed(JD_MIDI_OUTPUT_CMD_CLEAR, [])
+        self.send_cmd_packed(JD_MIDI_OUTPUT_CMD_CLEAR, )
 
     def send(self, data: bytes) -> None:
         """
         Enqueues the message to be sent to the corresponding MIDI port
         """
-        self.send_cmd_packed(JD_MIDI_OUTPUT_CMD_SEND, [data])
+        self.send_cmd_packed(JD_MIDI_OUTPUT_CMD_SEND, data)
     

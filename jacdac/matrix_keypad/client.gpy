@@ -1,6 +1,6 @@
 from jacdac.bus import Bus, Client
 from .constants import *
-from typing import Union
+from typing import Union, cast
 from jacdac.events import EventHandlerFn, UnsubscribeFn
 
 class MatrixKeypadClient(Client):
@@ -18,7 +18,8 @@ class MatrixKeypadClient(Client):
         Number of rows in the matrix, #
         """
         reg = self.register(JD_MATRIX_KEYPAD_REG_ROWS)
-        return reg.value(0)
+        value = reg.value(0)
+        return cast(Union[int, None], value)
 
     @property
     def columns(self) -> Union[int, None]:
@@ -26,7 +27,8 @@ class MatrixKeypadClient(Client):
         Number of columns in the matrix, #
         """
         reg = self.register(JD_MATRIX_KEYPAD_REG_COLUMNS)
-        return reg.value(0)
+        value = reg.value(0)
+        return cast(Union[int, None], value)
 
     @property
     def variant(self) -> Union[MatrixKeypadVariant, None]:
@@ -36,7 +38,8 @@ class MatrixKeypadClient(Client):
         as the service controlling the LED pixel on the keypad.
         """
         reg = self.register(JD_MATRIX_KEYPAD_REG_VARIANT)
-        return reg.value(0)
+        value = reg.value(0)
+        return cast(Union[MatrixKeypadVariant, None], value)
 
     def on_down(self, handler: EventHandlerFn) -> UnsubscribeFn:
         """

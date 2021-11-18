@@ -1,6 +1,6 @@
 from jacdac.bus import Bus, Client
 from .constants import *
-from typing import Union
+from typing import Union, cast
 
 
 class BitRadioClient(Client):
@@ -18,7 +18,8 @@ class BitRadioClient(Client):
         Turns on/off the radio antenna.
         """
         reg = self.register(JD_BIT_RADIO_REG_ENABLED)
-        return reg.value(0)
+        value = reg.value(0)
+        return cast(Union[bool, None], value)
 
     @enabled.setter
     def enabled(self, value: bool) -> None:
@@ -32,7 +33,8 @@ class BitRadioClient(Client):
         Group used to filter packets
         """
         reg = self.register(JD_BIT_RADIO_REG_GROUP)
-        return reg.value(0)
+        value = reg.value(0)
+        return cast(Union[int, None], value)
 
     @group.setter
     def group(self, value: int) -> None:
@@ -46,7 +48,8 @@ class BitRadioClient(Client):
         Antenna power to increase or decrease range.
         """
         reg = self.register(JD_BIT_RADIO_REG_TRANSMISSION_POWER)
-        return reg.value(0)
+        value = reg.value(0)
+        return cast(Union[int, None], value)
 
     @transmission_power.setter
     def transmission_power(self, value: int) -> None:
@@ -60,7 +63,8 @@ class BitRadioClient(Client):
         Change the transmission and reception band of the radio to the given channel.
         """
         reg = self.register(JD_BIT_RADIO_REG_FREQUENCY_BAND)
-        return reg.value(0)
+        value = reg.value(0)
+        return cast(Union[int, None], value)
 
     @frequency_band.setter
     def frequency_band(self, value: int) -> None:
@@ -73,23 +77,23 @@ class BitRadioClient(Client):
         """
         Sends a string payload as a radio message, maximum 18 characters.
         """
-        self.send_cmd_packed(JD_BIT_RADIO_CMD_SEND_STRING, [message])
+        self.send_cmd_packed(JD_BIT_RADIO_CMD_SEND_STRING, message)
 
     def send_number(self, value: float) -> None:
         """
         Sends a double precision number payload as a radio message
         """
-        self.send_cmd_packed(JD_BIT_RADIO_CMD_SEND_NUMBER, [value])
+        self.send_cmd_packed(JD_BIT_RADIO_CMD_SEND_NUMBER, value)
 
     def send_value(self, value: float, name: str) -> None:
         """
         Sends a double precision number and a name payload as a radio message
         """
-        self.send_cmd_packed(JD_BIT_RADIO_CMD_SEND_VALUE, [value, name])
+        self.send_cmd_packed(JD_BIT_RADIO_CMD_SEND_VALUE, value, name)
 
     def send_buffer(self, data: bytes) -> None:
         """
         Sends a payload of bytes as a radio message
         """
-        self.send_cmd_packed(JD_BIT_RADIO_CMD_SEND_BUFFER, [data])
+        self.send_cmd_packed(JD_BIT_RADIO_CMD_SEND_BUFFER, data)
     

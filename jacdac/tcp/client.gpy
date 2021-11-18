@@ -1,6 +1,6 @@
 from jacdac.bus import Bus, Client
 from .constants import *
-
+from typing import Union, cast
 
 
 class TcpClient(Client):

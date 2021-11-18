@@ -1,6 +1,6 @@
 from jacdac.bus import Bus, Client
 from .constants import *
-from typing import Union
+from typing import Union, cast
 from jacdac.events import EventHandlerFn, UnsubscribeFn
 
 class ButtonClient(Client):
@@ -18,7 +18,8 @@ class ButtonClient(Client):
         Indicates the pressure state of the button, where ``0`` is open., /
         """
         reg = self.register(JD_BUTTON_REG_PRESSURE)
-        return reg.value(0)
+        value = reg.value(0)
+        return cast(Union[float, None], value)
 
     @property
     def analog(self) -> Union[bool, None]:
@@ -26,7 +27,8 @@ class ButtonClient(Client):
         (Optional) Indicates if the button provides analog ``pressure`` readings.
         """
         reg = self.register(JD_BUTTON_REG_ANALOG)
-        return reg.value(0)
+        value = reg.value(0)
+        return cast(Union[bool, None], value)
 
     @property
     def pressed(self) -> Union[bool, None]:

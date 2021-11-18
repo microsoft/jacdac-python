@@ -1,6 +1,6 @@
 from jacdac.bus import Bus, Client
 from .constants import *
-from typing import Union
+from typing import Union, cast
 
 
 class SensorAggregatorClient(Client):
@@ -19,7 +19,8 @@ class SensorAggregatorClient(Client):
         Number of input samples collected so far.
         """
         reg = self.register(JD_SENSOR_AGGREGATOR_REG_NUM_SAMPLES)
-        return reg.value(0)
+        value = reg.value(0)
+        return cast(Union[int, None], value)
 
     @property
     def sample_size(self) -> Union[int, None]:
@@ -27,7 +28,8 @@ class SensorAggregatorClient(Client):
         Size of a single sample., B
         """
         reg = self.register(JD_SENSOR_AGGREGATOR_REG_SAMPLE_SIZE)
-        return reg.value(0)
+        value = reg.value(0)
+        return cast(Union[int, None], value)
 
     @property
     def streaming_samples(self) -> Union[int, None]:
@@ -35,7 +37,8 @@ class SensorAggregatorClient(Client):
         When set to `N`, will stream `N` samples as `current_sample` reading., #
         """
         reg = self.register(JD_SENSOR_AGGREGATOR_REG_STREAMING_SAMPLES)
-        return reg.value(0)
+        value = reg.value(0)
+        return cast(Union[int, None], value)
 
     @streaming_samples.setter
     def streaming_samples(self, value: int) -> None:
@@ -49,6 +52,7 @@ class SensorAggregatorClient(Client):
         Last collected sample.
         """
         reg = self.register(JD_SENSOR_AGGREGATOR_REG_CURRENT_SAMPLE)
-        return reg.value(0)
+        value = reg.value(0)
+        return cast(Union[bytes, None], value)
 
     

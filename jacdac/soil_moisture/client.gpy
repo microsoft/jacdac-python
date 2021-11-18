@@ -1,6 +1,6 @@
 from jacdac.bus import Bus, Client
 from .constants import *
-from typing import Union
+from typing import Union, cast
 
 
 class SoilMoistureClient(Client):
@@ -18,7 +18,8 @@ class SoilMoistureClient(Client):
         Indicates the wetness of the soil, from ``dry`` to ``wet``., /
         """
         reg = self.register(JD_SOIL_MOISTURE_REG_MOISTURE)
-        return reg.value(0)
+        value = reg.value(0)
+        return cast(Union[float, None], value)
 
     @property
     def moisture_error(self) -> Union[float, None]:
@@ -26,7 +27,8 @@ class SoilMoistureClient(Client):
         (Optional) The error on the moisture reading., /
         """
         reg = self.register(JD_SOIL_MOISTURE_REG_MOISTURE_ERROR)
-        return reg.value(0)
+        value = reg.value(0)
+        return cast(Union[float, None], value)
 
     @property
     def variant(self) -> Union[SoilMoistureVariant, None]:
@@ -34,6 +36,7 @@ class SoilMoistureClient(Client):
         (Optional) Describe the type of physical sensor.
         """
         reg = self.register(JD_SOIL_MOISTURE_REG_VARIANT)
-        return reg.value(0)
+        value = reg.value(0)
+        return cast(Union[SoilMoistureVariant, None], value)
 
     

@@ -1,6 +1,6 @@
 from jacdac.bus import Bus, Client
 from .constants import *
-from typing import Union
+from typing import Union, cast
 from jacdac.events import EventHandlerFn, UnsubscribeFn
 
 class WifiClient(Client):
@@ -28,7 +28,8 @@ class WifiClient(Client):
         Determines whether the WiFi radio is enabled. It starts enabled upon reset.
         """
         reg = self.register(JD_WIFI_REG_ENABLED)
-        return reg.value(0)
+        value = reg.value(0)
+        return cast(Union[bool, None], value)
 
     @enabled.setter
     def enabled(self, value: bool) -> None:
@@ -42,7 +43,8 @@ class WifiClient(Client):
         0, 4 or 16 byte buffer with the IPv4 or IPv6 address assigned to device if any.
         """
         reg = self.register(JD_WIFI_REG_IP_ADDRESS)
-        return reg.value(0)
+        value = reg.value(0)
+        return cast(Union[bytes, None], value)
 
     @property
     def eui_48(self) -> Union[bytes, None]:
@@ -50,7 +52,8 @@ class WifiClient(Client):
         The 6-byte MAC address of the device. If a device does MAC address randomization it will have to "restart".
         """
         reg = self.register(JD_WIFI_REG_EUI_48)
-        return reg.value(0)
+        value = reg.value(0)
+        return cast(Union[bytes, None], value)
 
     @property
     def ssid(self) -> Union[str, None]:
@@ -59,7 +62,8 @@ class WifiClient(Client):
         Empty string if not connected.
         """
         reg = self.register(JD_WIFI_REG_SSID)
-        return reg.value(0)
+        value = reg.value(0)
+        return cast(Union[str, None], value)
 
     @property
     def rssi(self) -> Union[int, None]:
@@ -67,7 +71,8 @@ class WifiClient(Client):
         Current signal strength. Returns -128 when not connected., dB
         """
         reg = self.register(JD_WIFI_REG_RSSI)
-        return reg.value(0)
+        value = reg.value(0)
+        return cast(Union[int, None], value)
 
     def on_got_ip(self, handler: EventHandlerFn) -> UnsubscribeFn:
         """
@@ -108,38 +113,38 @@ class WifiClient(Client):
         """
         Automatically connect to named network if available. Also set password if network is not open.
         """
-        self.send_cmd_packed(JD_WIFI_CMD_ADD_NETWORK, [ssid, password])
+        self.send_cmd_packed(JD_WIFI_CMD_ADD_NETWORK, ssid, password)
 
     def reconnect(self, ) -> None:
         """
         Enable the WiFi (if disabled), initiate a scan, wait for results, disconnect from current WiFi network if any,
         and then reconnect (using regular algorithm, see `set_network_priority`).
         """
-        self.send_cmd_packed(JD_WIFI_CMD_RECONNECT, [])
+        self.send_cmd_packed(JD_WIFI_CMD_RECONNECT, )
 
     def forget_network(self, ssid: str) -> None:
         """
         Prevent from automatically connecting to named network in future.
         Forgetting a network resets its priority to `0`.
         """
-        self.send_cmd_packed(JD_WIFI_CMD_FORGET_NETWORK, [ssid])
+        self.send_cmd_packed(JD_WIFI_CMD_FORGET_NETWORK, ssid)
 
     def forget_all_networks(self, ) -> None:
         """
         Clear the list of known networks.
         """
-        self.send_cmd_packed(JD_WIFI_CMD_FORGET_ALL_NETWORKS, [])
+        self.send_cmd_packed(JD_WIFI_CMD_FORGET_ALL_NETWORKS, )
 
     def set_network_priority(self, priority: int, ssid: str) -> None:
         """
         Set connection priority for a network.
         By default, all known networks have priority of `0`.
         """
-        self.send_cmd_packed(JD_WIFI_CMD_SET_NETWORK_PRIORITY, [priority, ssid])
+        self.send_cmd_packed(JD_WIFI_CMD_SET_NETWORK_PRIORITY, priority, ssid)
 
     def scan(self, ) -> None:
         """
         Initiate search for WiFi networks. Generates `scan_complete` event.
         """
-        self.send_cmd_packed(JD_WIFI_CMD_SCAN, [])
+        self.send_cmd_packed(JD_WIFI_CMD_SCAN, )
     

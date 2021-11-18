@@ -1,6 +1,6 @@
 from jacdac.bus import Bus, Client
 from .constants import *
-from typing import Union
+from typing import Union, cast
 from jacdac.events import EventHandlerFn, UnsubscribeFn
 
 class MotionClient(Client):
@@ -18,7 +18,8 @@ class MotionClient(Client):
         Reports is movement is currently detected by the sensor.
         """
         reg = self.register(JD_MOTION_REG_MOVING)
-        return reg.value(0)
+        value = reg.value(0)
+        return cast(Union[bool, None], value)
 
     @property
     def max_distance(self) -> Union[float, None]:
@@ -26,7 +27,8 @@ class MotionClient(Client):
         (Optional) Maximum distance where objects can be detected., m
         """
         reg = self.register(JD_MOTION_REG_MAX_DISTANCE)
-        return reg.value(0)
+        value = reg.value(0)
+        return cast(Union[float, None], value)
 
     @property
     def angle(self) -> Union[int, None]:
@@ -34,7 +36,8 @@ class MotionClient(Client):
         (Optional) Opening of the field of view, °
         """
         reg = self.register(JD_MOTION_REG_ANGLE)
-        return reg.value(0)
+        value = reg.value(0)
+        return cast(Union[int, None], value)
 
     @property
     def variant(self) -> Union[MotionVariant, None]:
@@ -42,7 +45,8 @@ class MotionClient(Client):
         (Optional) Type of physical sensor
         """
         reg = self.register(JD_MOTION_REG_VARIANT)
-        return reg.value(0)
+        value = reg.value(0)
+        return cast(Union[MotionVariant, None], value)
 
     def on_movement(self, handler: EventHandlerFn) -> UnsubscribeFn:
         """

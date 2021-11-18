@@ -1,6 +1,6 @@
 from jacdac.bus import Bus, Client
 from .constants import *
-from typing import Union
+from typing import Union, cast
 
 
 class HumidityClient(Client):
@@ -18,7 +18,8 @@ class HumidityClient(Client):
         The relative humidity in percentage of full water saturation., %RH
         """
         reg = self.register(JD_HUMIDITY_REG_HUMIDITY)
-        return reg.value(0)
+        value = reg.value(0)
+        return cast(Union[float, None], value)
 
     @property
     def humidity_error(self) -> Union[float, None]:
@@ -26,7 +27,8 @@ class HumidityClient(Client):
         The real humidity is between `humidity - humidity_error` and `humidity + humidity_error`., %RH
         """
         reg = self.register(JD_HUMIDITY_REG_HUMIDITY_ERROR)
-        return reg.value(0)
+        value = reg.value(0)
+        return cast(Union[float, None], value)
 
     @property
     def min_humidity(self) -> Union[float, None]:
@@ -34,7 +36,8 @@ class HumidityClient(Client):
         Lowest humidity that can be reported., %RH
         """
         reg = self.register(JD_HUMIDITY_REG_MIN_HUMIDITY)
-        return reg.value(0)
+        value = reg.value(0)
+        return cast(Union[float, None], value)
 
     @property
     def max_humidity(self) -> Union[float, None]:
@@ -42,6 +45,7 @@ class HumidityClient(Client):
         Highest humidity that can be reported., %RH
         """
         reg = self.register(JD_HUMIDITY_REG_MAX_HUMIDITY)
-        return reg.value(0)
+        value = reg.value(0)
+        return cast(Union[float, None], value)
 
     

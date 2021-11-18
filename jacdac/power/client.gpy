@@ -1,6 +1,6 @@
 from jacdac.bus import Bus, Client
 from .constants import *
-from typing import Union
+from typing import Union, cast
 from jacdac.events import EventHandlerFn, UnsubscribeFn
 
 class PowerClient(Client):
@@ -20,7 +20,8 @@ class PowerClient(Client):
         `power_status` for the actual current state.
         """
         reg = self.register(JD_POWER_REG_ALLOWED)
-        return reg.value(0)
+        value = reg.value(0)
+        return cast(Union[bool, None], value)
 
     @allowed.setter
     def allowed(self, value: bool) -> None:
@@ -35,7 +36,8 @@ class PowerClient(Client):
         This field may be read-only in some implementations - you should read it back after setting., mA
         """
         reg = self.register(JD_POWER_REG_MAX_POWER)
-        return reg.value(0)
+        value = reg.value(0)
+        return cast(Union[int, None], value)
 
     @max_power.setter
     def max_power(self, value: int) -> None:
@@ -50,7 +52,8 @@ class PowerClient(Client):
         `Overprovision` means there was another power provider, and we stopped not to overprovision the bus.
         """
         reg = self.register(JD_POWER_REG_POWER_STATUS)
-        return reg.value(0)
+        value = reg.value(0)
+        return cast(Union[PowerPowerStatus, None], value)
 
     @property
     def current_draw(self) -> Union[int, None]:
@@ -58,7 +61,8 @@ class PowerClient(Client):
         (Optional) Present current draw from the bus., mA
         """
         reg = self.register(JD_POWER_REG_CURRENT_DRAW)
-        return reg.value(0)
+        value = reg.value(0)
+        return cast(Union[int, None], value)
 
     @property
     def battery_voltage(self) -> Union[int, None]:
@@ -66,7 +70,8 @@ class PowerClient(Client):
         (Optional) Voltage on input., mV
         """
         reg = self.register(JD_POWER_REG_BATTERY_VOLTAGE)
-        return reg.value(0)
+        value = reg.value(0)
+        return cast(Union[int, None], value)
 
     @property
     def battery_charge(self) -> Union[float, None]:
@@ -74,7 +79,8 @@ class PowerClient(Client):
         (Optional) Fraction of charge in the battery., /
         """
         reg = self.register(JD_POWER_REG_BATTERY_CHARGE)
-        return reg.value(0)
+        value = reg.value(0)
+        return cast(Union[float, None], value)
 
     @property
     def battery_capacity(self) -> Union[int, None]:
@@ -83,7 +89,8 @@ class PowerClient(Client):
         This excludes conversion overheads if any., mWh
         """
         reg = self.register(JD_POWER_REG_BATTERY_CAPACITY)
-        return reg.value(0)
+        value = reg.value(0)
+        return cast(Union[int, None], value)
 
     @property
     def keep_on_pulse_duration(self) -> Union[int, None]:
@@ -93,7 +100,8 @@ class PowerClient(Client):
         Typically a 1/8W 22 ohm resistor is used as load. This limits the duty cycle to 10%., ms
         """
         reg = self.register(JD_POWER_REG_KEEP_ON_PULSE_DURATION)
-        return reg.value(0)
+        value = reg.value(0)
+        return cast(Union[int, None], value)
 
     @keep_on_pulse_duration.setter
     def keep_on_pulse_duration(self, value: int) -> None:
@@ -109,7 +117,8 @@ class PowerClient(Client):
         Typically a 1/8W 22 ohm resistor is used as load. This limits the duty cycle to 10%., ms
         """
         reg = self.register(JD_POWER_REG_KEEP_ON_PULSE_PERIOD)
-        return reg.value(0)
+        value = reg.value(0)
+        return cast(Union[int, None], value)
 
     @keep_on_pulse_period.setter
     def keep_on_pulse_period(self, value: int) -> None:
@@ -128,5 +137,5 @@ class PowerClient(Client):
         """
         Sent by the power service periodically, as broadcast.
         """
-        self.send_cmd_packed(JD_POWER_CMD_SHUTDOWN, [])
+        self.send_cmd_packed(JD_POWER_CMD_SHUTDOWN, )
     

@@ -1,6 +1,6 @@
 from jacdac.bus import Bus, Client
 from .constants import *
-from typing import Union
+from typing import Union, cast
 
 
 class SpeechSynthesisClient(Client):
@@ -18,7 +18,8 @@ class SpeechSynthesisClient(Client):
         Determines if the speech engine is in a non-paused state.
         """
         reg = self.register(JD_SPEECH_SYNTHESIS_REG_ENABLED)
-        return reg.value(0)
+        value = reg.value(0)
+        return cast(Union[bool, None], value)
 
     @enabled.setter
     def enabled(self, value: bool) -> None:
@@ -32,7 +33,8 @@ class SpeechSynthesisClient(Client):
         (Optional) Language used for utterances as defined in https://www.ietf.org/rfc/bcp/bcp47.txt.
         """
         reg = self.register(JD_SPEECH_SYNTHESIS_REG_LANG)
-        return reg.value(0)
+        value = reg.value(0)
+        return cast(Union[str, None], value)
 
     @lang.setter
     def lang(self, value: str) -> None:
@@ -46,7 +48,8 @@ class SpeechSynthesisClient(Client):
         (Optional) Volume for utterances., /
         """
         reg = self.register(JD_SPEECH_SYNTHESIS_REG_VOLUME)
-        return reg.value(0)
+        value = reg.value(0)
+        return cast(Union[float, None], value)
 
     @volume.setter
     def volume(self, value: float) -> None:
@@ -60,7 +63,8 @@ class SpeechSynthesisClient(Client):
         (Optional) Pitch for utterances
         """
         reg = self.register(JD_SPEECH_SYNTHESIS_REG_PITCH)
-        return reg.value(0)
+        value = reg.value(0)
+        return cast(Union[float, None], value)
 
     @pitch.setter
     def pitch(self, value: float) -> None:
@@ -74,7 +78,8 @@ class SpeechSynthesisClient(Client):
         (Optional) Rate for utterances
         """
         reg = self.register(JD_SPEECH_SYNTHESIS_REG_RATE)
-        return reg.value(0)
+        value = reg.value(0)
+        return cast(Union[float, None], value)
 
     @rate.setter
     def rate(self, value: float) -> None:
@@ -87,11 +92,11 @@ class SpeechSynthesisClient(Client):
         """
         Adds an utterance to the utterance queue; it will be spoken when any other utterances queued before it have been spoken.
         """
-        self.send_cmd_packed(JD_SPEECH_SYNTHESIS_CMD_SPEAK, [text])
+        self.send_cmd_packed(JD_SPEECH_SYNTHESIS_CMD_SPEAK, text)
 
     def cancel(self, ) -> None:
         """
         Cancels current utterance and all utterances from the utterance queue.
         """
-        self.send_cmd_packed(JD_SPEECH_SYNTHESIS_CMD_CANCEL, [])
+        self.send_cmd_packed(JD_SPEECH_SYNTHESIS_CMD_CANCEL, )
     

@@ -1,6 +1,6 @@
 from jacdac.bus import Bus, Client
 from .constants import *
-
+from typing import Union, cast
 
 
 class HidKeyboardClient(Client):
@@ -23,5 +23,5 @@ class HidKeyboardClient(Client):
         """
         Clears all pressed keys.
         """
-        self.send_cmd_packed(JD_HID_KEYBOARD_CMD_CLEAR, [])
+        self.send_cmd_packed(JD_HID_KEYBOARD_CMD_CLEAR, )
     

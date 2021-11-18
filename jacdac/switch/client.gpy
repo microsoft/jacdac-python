@@ -1,6 +1,6 @@
 from jacdac.bus import Bus, Client
 from .constants import *
-from typing import Union
+from typing import Union, cast
 from jacdac.events import EventHandlerFn, UnsubscribeFn
 
 class SwitchClient(Client):
@@ -18,7 +18,8 @@ class SwitchClient(Client):
         Indicates whether the switch is currently active (on).
         """
         reg = self.register(JD_SWITCH_REG_ACTIVE)
-        return reg.value(0)
+        value = reg.value(0)
+        return cast(Union[bool, None], value)
 
     @property
     def variant(self) -> Union[SwitchVariant, None]:
@@ -26,7 +27,8 @@ class SwitchClient(Client):
         (Optional) Describes the type of switch used.
         """
         reg = self.register(JD_SWITCH_REG_VARIANT)
-        return reg.value(0)
+        value = reg.value(0)
+        return cast(Union[SwitchVariant, None], value)
 
     @property
     def auto_off_delay(self) -> Union[float, None]:
@@ -35,7 +37,8 @@ class SwitchClient(Client):
         For example, some light switches in staircases have such a capability., s
         """
         reg = self.register(JD_SWITCH_REG_AUTO_OFF_DELAY)
-        return reg.value(0)
+        value = reg.value(0)
+        return cast(Union[float, None], value)
 
     def on_on(self, handler: EventHandlerFn) -> UnsubscribeFn:
         """

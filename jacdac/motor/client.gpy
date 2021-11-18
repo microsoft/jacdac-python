@@ -1,6 +1,6 @@
 from jacdac.bus import Bus, Client
 from .constants import *
-from typing import Union
+from typing import Union, cast
 
 
 class MotorClient(Client):
@@ -20,10 +20,12 @@ class MotorClient(Client):
         while ``enabled`` acts as brake., /
         """
         reg = self.register(JD_MOTOR_REG_DUTY)
-        return reg.value(0)
+        value = reg.value(0)
+        return cast(Union[float, None], value)
 
     @duty.setter
     def duty(self, value: float) -> None:
+        self.enabled = True
         reg = self.register(JD_MOTOR_REG_DUTY)
         reg.set_value(0, value)
 
@@ -34,7 +36,8 @@ class MotorClient(Client):
         Turn the power to the motor on/off.
         """
         reg = self.register(JD_MOTOR_REG_ENABLED)
-        return reg.value(0)
+        value = reg.value(0)
+        return cast(Union[bool, None], value)
 
     @enabled.setter
     def enabled(self, value: bool) -> None:
@@ -48,7 +51,8 @@ class MotorClient(Client):
         (Optional) Torque required to produce the rated power of an electrical motor at load speed., kg/cm
         """
         reg = self.register(JD_MOTOR_REG_LOAD_TORQUE)
-        return reg.value(0)
+        value = reg.value(0)
+        return cast(Union[float, None], value)
 
     @property
     def load_speed(self) -> Union[float, None]:
@@ -56,6 +60,7 @@ class MotorClient(Client):
         (Optional) Revolutions per minute of the motor under full load., rpm
         """
         reg = self.register(JD_MOTOR_REG_LOAD_SPEED)
-        return reg.value(0)
+        value = reg.value(0)
+        return cast(Union[float, None], value)
 
     

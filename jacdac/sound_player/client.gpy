@@ -1,6 +1,6 @@
 from jacdac.bus import Bus, Client
 from .constants import *
-from typing import Union
+from typing import Union, cast
 
 
 class SoundPlayerClient(Client):
@@ -18,7 +18,8 @@ class SoundPlayerClient(Client):
         Global volume of the output. ``0`` means completely off. This volume is mixed with each play volumes., /
         """
         reg = self.register(JD_SOUND_PLAYER_REG_VOLUME)
-        return reg.value(0)
+        value = reg.value(0)
+        return cast(Union[float, None], value)
 
     @volume.setter
     def volume(self, value: float) -> None:
@@ -31,5 +32,5 @@ class SoundPlayerClient(Client):
         """
         Starts playing a sound.
         """
-        self.send_cmd_packed(JD_SOUND_PLAYER_CMD_PLAY, [name])
+        self.send_cmd_packed(JD_SOUND_PLAYER_CMD_PLAY, name)
     

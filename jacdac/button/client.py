@@ -1,9 +1,8 @@
 from jacdac.bus import Bus, Client
-from jacdac.button.client_mixin import ButtonClientMixin
 from .constants import *
-from typing import Union
+from typing import Union, cast
 from jacdac.events import EventHandlerFn, UnsubscribeFn
-
+from .client_mixin import ButtonClientMixin
 
 class ButtonClient(Client, ButtonClientMixin):
     """
@@ -12,7 +11,7 @@ class ButtonClient(Client, ButtonClientMixin):
 
     def __init__(self, bus: Bus, role: str) -> None:
         super().__init__(bus, JD_SERVICE_CLASS_BUTTON, JD_BUTTON_PACK_FORMATS, role)
-        self.init_mixin(self)
+    
 
     @property
     def pressure(self) -> Union[float, None]:
@@ -20,7 +19,8 @@ class ButtonClient(Client, ButtonClientMixin):
         Indicates the pressure state of the button, where ``0`` is open., /
         """
         reg = self.register(JD_BUTTON_REG_PRESSURE)
-        return reg.value(0)
+        value = reg.value(0)
+        return cast(Union[float, None], value)
 
     @property
     def analog(self) -> Union[bool, None]:
@@ -28,7 +28,8 @@ class ButtonClient(Client, ButtonClientMixin):
         (Optional) Indicates if the button provides analog ``pressure`` readings.
         """
         reg = self.register(JD_BUTTON_REG_ANALOG)
-        return reg.value(0)
+        value = reg.value(0)
+        return cast(Union[bool, None], value)
 
     def on_down(self, handler: EventHandlerFn) -> UnsubscribeFn:
         """
@@ -50,3 +51,5 @@ class ButtonClient(Client, ButtonClientMixin):
         that the button has been held (since the down event).
         """
         return self.on_event(JD_BUTTON_EV_HOLD, handler)
+
+    

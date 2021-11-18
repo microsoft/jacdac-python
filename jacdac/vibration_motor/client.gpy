@@ -1,6 +1,6 @@
 from jacdac.bus import Bus, Client
 from .constants import *
-from typing import Union
+from typing import Union, cast
 
 
 class VibrationMotorClient(Client):
@@ -18,7 +18,8 @@ class VibrationMotorClient(Client):
         Determines if the vibration motor responds to vibrate commands.
         """
         reg = self.register(JD_VIBRATION_MOTOR_REG_ENABLED)
-        return reg.value(0)
+        value = reg.value(0)
+        return cast(Union[bool, None], value)
 
     @enabled.setter
     def enabled(self, value: bool) -> None:

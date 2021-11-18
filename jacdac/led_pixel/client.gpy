@@ -1,6 +1,6 @@
 from jacdac.bus import Bus, Client
 from .constants import *
-from typing import Union
+from typing import Union, cast
 
 
 class LedPixelClient(Client):
@@ -19,7 +19,8 @@ class LedPixelClient(Client):
         At `0` the power to the strip is completely shut down., /
         """
         reg = self.register(JD_LED_PIXEL_REG_BRIGHTNESS)
-        return reg.value(0)
+        value = reg.value(0)
+        return cast(Union[float, None], value)
 
     @brightness.setter
     def brightness(self, value: float) -> None:
@@ -35,7 +36,8 @@ class LedPixelClient(Client):
         It will rise slowly (few seconds) back to `brightness` is limits are no longer required., /
         """
         reg = self.register(JD_LED_PIXEL_REG_ACTUAL_BRIGHTNESS)
-        return reg.value(0)
+        value = reg.value(0)
+        return cast(Union[float, None], value)
 
     @property
     def light_type(self) -> Union[LedPixelLightType, None]:
@@ -45,7 +47,8 @@ class LedPixelClient(Client):
         and could not allow change.
         """
         reg = self.register(JD_LED_PIXEL_REG_LIGHT_TYPE)
-        return reg.value(0)
+        value = reg.value(0)
+        return cast(Union[LedPixelLightType, None], value)
 
     @light_type.setter
     def light_type(self, value: LedPixelLightType) -> None:
@@ -61,7 +64,8 @@ class LedPixelClient(Client):
         and could not allow change. Increasing length at runtime leads to ineffective use of memory and may lead to controller reboot., #
         """
         reg = self.register(JD_LED_PIXEL_REG_NUM_PIXELS)
-        return reg.value(0)
+        value = reg.value(0)
+        return cast(Union[int, None], value)
 
     @num_pixels.setter
     def num_pixels(self, value: int) -> None:
@@ -76,7 +80,8 @@ class LedPixelClient(Client):
         and could not allow change. Increasing length at runtime leads to ineffective use of memory and may lead to controller reboot., #
         """
         reg = self.register(JD_LED_PIXEL_REG_NUM_COLUMNS)
-        return reg.value(0)
+        value = reg.value(0)
+        return cast(Union[int, None], value)
 
     @num_columns.setter
     def num_columns(self, value: int) -> None:
@@ -90,7 +95,8 @@ class LedPixelClient(Client):
         Limit the power drawn by the light-strip (and controller)., mA
         """
         reg = self.register(JD_LED_PIXEL_REG_MAX_POWER)
-        return reg.value(0)
+        value = reg.value(0)
+        return cast(Union[int, None], value)
 
     @max_power.setter
     def max_power(self, value: int) -> None:
@@ -105,7 +111,8 @@ class LedPixelClient(Client):
         All writes to `num_pixels` are clamped to `max_pixels`., #
         """
         reg = self.register(JD_LED_PIXEL_REG_MAX_PIXELS)
-        return reg.value(0)
+        value = reg.value(0)
+        return cast(Union[int, None], value)
 
     @property
     def num_repeats(self) -> Union[int, None]:
@@ -115,7 +122,8 @@ class LedPixelClient(Client):
         Setting to `0` means to repeat forever., #
         """
         reg = self.register(JD_LED_PIXEL_REG_NUM_REPEATS)
-        return reg.value(0)
+        value = reg.value(0)
+        return cast(Union[int, None], value)
 
     @num_repeats.setter
     def num_repeats(self, value: int) -> None:
@@ -129,12 +137,13 @@ class LedPixelClient(Client):
         (Optional) Specifies the shape of the light strip.
         """
         reg = self.register(JD_LED_PIXEL_REG_VARIANT)
-        return reg.value(0)
+        value = reg.value(0)
+        return cast(Union[LedPixelVariant, None], value)
 
 
     def run(self, program: bytes) -> None:
         """
         Run the given light "program". See service description for details.
         """
-        self.send_cmd_packed(JD_LED_PIXEL_CMD_RUN, [program])
+        self.send_cmd_packed(JD_LED_PIXEL_CMD_RUN, program)
     

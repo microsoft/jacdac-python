@@ -39,6 +39,7 @@ _ACK_DELAY = const(40)
 
 RegType = TypeVar('RegType', bound=Union[int, tuple[int, ...]])
 
+
 def _service_matches(dev: 'Device', serv: bytearray):
     ds = dev.services
     if not ds or len(ds) != len(serv):
@@ -50,6 +51,9 @@ def _service_matches(dev: 'Device', serv: bytearray):
 
 
 class Bus(EventEmitter):
+    """A Jacdac bus that managed devices, service client, registers...
+    """
+
     def __init__(self, transport: Transport, *, device_id: str = None) -> None:
         super().__init__(self)
         self.devices: list['Device'] = []
@@ -314,6 +318,9 @@ class Bus(EventEmitter):
 
 
 class RawRegisterClient(EventEmitter):
+    """A Jacdac register client
+    """
+
     def __init__(self, client: 'Client', code: int, pack_format: Union[str, None]) -> None:
         super().__init__(client.bus)
         self.code = code

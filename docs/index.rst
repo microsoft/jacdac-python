@@ -1,5 +1,5 @@
-Welcome to Jacdac-Python's documentation!
-=========================================
+Welcome to Jacdac Python documentation!
+=======================================
 
 **Jacdac** is a plug-and-play hardware/software stack
 for **microcontrollers** and their peripherals (sensors/actuators),

@@ -60,12 +60,6 @@ To launch the developer tools server (once per session)
 sh scripts/devtools.sh
 ```
 
-To launch `jacdac.devtools` in watch mode
-
-```
-sh scripts/watch.sh
-```
-
 ## Contributing
 
 This project welcomes contributions and suggestions. Most contributions require you to agree to a

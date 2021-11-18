@@ -335,7 +335,7 @@ class RawRegisterClient(EventEmitter):
         return None
 
     def values(self) -> Optional[list[PackType]]:
-        data = self.query()
+        data = self.query_no_wait()
         if data and self.pack_format:
             return jdunpack(data, self.pack_format)
         return None

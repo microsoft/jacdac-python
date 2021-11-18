@@ -14,115 +14,43 @@ class RealTimeClockClient(Client):
     
 
     @property
-    def year(self) -> Optional[int]:
+    def local_time(self) -> Optional[tuple[int, int, int, int, int, int, int]]:
         """
         Current time in 24h representation. 
         * ``day_of_month`` is day of the month, starting at ``1``
         * ``day_of_week`` is day of the week, starting at ``1`` as monday
-        Default streaming period is 1 second.
+        Default streaming period is 1 second., 
         """
         reg = self.register(JD_REAL_TIME_CLOCK_REG_LOCAL_TIME)
-        value = reg.value(0)
-        return cast(Optional[int], value)
-
-    @property
-    def month(self) -> Optional[int]:
-        """
-        Current time in 24h representation. 
-        * ``day_of_month`` is day of the month, starting at ``1``
-        * ``day_of_week`` is day of the week, starting at ``1`` as monday
-        Default streaming period is 1 second.
-        """
-        reg = self.register(JD_REAL_TIME_CLOCK_REG_LOCAL_TIME)
-        value = reg.value(1)
-        return cast(Optional[int], value)
-
-    @property
-    def day_of_month(self) -> Optional[int]:
-        """
-        Current time in 24h representation. 
-        * ``day_of_month`` is day of the month, starting at ``1``
-        * ``day_of_week`` is day of the week, starting at ``1`` as monday
-        Default streaming period is 1 second.
-        """
-        reg = self.register(JD_REAL_TIME_CLOCK_REG_LOCAL_TIME)
-        value = reg.value(2)
-        return cast(Optional[int], value)
-
-    @property
-    def day_of_week(self) -> Optional[int]:
-        """
-        Current time in 24h representation. 
-        * ``day_of_month`` is day of the month, starting at ``1``
-        * ``day_of_week`` is day of the week, starting at ``1`` as monday
-        Default streaming period is 1 second.
-        """
-        reg = self.register(JD_REAL_TIME_CLOCK_REG_LOCAL_TIME)
-        value = reg.value(3)
-        return cast(Optional[int], value)
-
-    @property
-    def hour(self) -> Optional[int]:
-        """
-        Current time in 24h representation. 
-        * ``day_of_month`` is day of the month, starting at ``1``
-        * ``day_of_week`` is day of the week, starting at ``1`` as monday
-        Default streaming period is 1 second.
-        """
-        reg = self.register(JD_REAL_TIME_CLOCK_REG_LOCAL_TIME)
-        value = reg.value(4)
-        return cast(Optional[int], value)
-
-    @property
-    def min(self) -> Optional[int]:
-        """
-        Current time in 24h representation. 
-        * ``day_of_month`` is day of the month, starting at ``1``
-        * ``day_of_week`` is day of the week, starting at ``1`` as monday
-        Default streaming period is 1 second.
-        """
-        reg = self.register(JD_REAL_TIME_CLOCK_REG_LOCAL_TIME)
-        value = reg.value(5)
-        return cast(Optional[int], value)
-
-    @property
-    def sec(self) -> Optional[int]:
-        """
-        Current time in 24h representation. 
-        * ``day_of_month`` is day of the month, starting at ``1``
-        * ``day_of_week`` is day of the week, starting at ``1`` as monday
-        Default streaming period is 1 second.
-        """
-        reg = self.register(JD_REAL_TIME_CLOCK_REG_LOCAL_TIME)
-        value = reg.value(6)
-        return cast(Optional[int], value)
+        values = reg.values()
+        return cast(Optional[tuple[int, int, int, int, int, int, int]], values)
 
     @property
     def error(self) -> Optional[float]:
         """
-        (Optional) Time drift since the last call to the ``set_time`` command., s
+        (Optional) Time drift since the last call to the ``set_time`` command., _: s
         """
         reg = self.register(JD_REAL_TIME_CLOCK_REG_ERROR)
-        value = reg.value(0)
-        return cast(Optional[float], value)
+        values = reg.values()
+        return cast(Optional[float], values[0] if values else None)
 
     @property
     def precision(self) -> Optional[float]:
         """
-        (Optional) Error on the clock, in parts per million of seconds., ppm
+        (Optional) Error on the clock, in parts per million of seconds., _: ppm
         """
         reg = self.register(JD_REAL_TIME_CLOCK_REG_PRECISION)
-        value = reg.value(0)
-        return cast(Optional[float], value)
+        values = reg.values()
+        return cast(Optional[float], values[0] if values else None)
 
     @property
     def variant(self) -> Optional[RealTimeClockVariant]:
         """
-        (Optional) The type of physical clock used by the sensor.
+        (Optional) The type of physical clock used by the sensor., 
         """
         reg = self.register(JD_REAL_TIME_CLOCK_REG_VARIANT)
-        value = reg.value(0)
-        return cast(Optional[RealTimeClockVariant], value)
+        values = reg.values()
+        return cast(Optional[RealTimeClockVariant], values[0] if values else None)
 
 
     def set_time(self, year: int, month: int, day_of_month: int, day_of_week: int, hour: int, min: int, sec: int) -> None:

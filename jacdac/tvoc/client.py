@@ -16,46 +16,46 @@ class TvocClient(Client):
     @property
     def TVOC(self) -> Optional[float]:
         """
-        Total volatile organic compound readings in parts per billion., ppb
+        Total volatile organic compound readings in parts per billion., _: ppb
         """
         reg = self.register(JD_TVOC_REG_TVOC)
-        value = reg.value(0)
-        return cast(Optional[float], value)
+        values = reg.values()
+        return cast(Optional[float], values[0] if values else None)
 
     @property
     def TVOC_error(self) -> Optional[float]:
         """
-        (Optional) Error on the reading data, ppb
+        (Optional) Error on the reading data, _: ppb
         """
         reg = self.register(JD_TVOC_REG_TVOC_ERROR)
-        value = reg.value(0)
-        return cast(Optional[float], value)
+        values = reg.values()
+        return cast(Optional[float], values[0] if values else None)
 
     @property
     def min_TVOC(self) -> Optional[float]:
         """
-        (Optional) Minimum measurable value, ppb
+        (Optional) Minimum measurable value, _: ppb
         """
         reg = self.register(JD_TVOC_REG_MIN_TVOC)
-        value = reg.value(0)
-        return cast(Optional[float], value)
+        values = reg.values()
+        return cast(Optional[float], values[0] if values else None)
 
     @property
     def max_TVOC(self) -> Optional[float]:
         """
-        (Optional) Minimum measurable value, ppb
+        (Optional) Minimum measurable value, _: ppb
         """
         reg = self.register(JD_TVOC_REG_MAX_TVOC)
-        value = reg.value(0)
-        return cast(Optional[float], value)
+        values = reg.values()
+        return cast(Optional[float], values[0] if values else None)
 
     @property
     def conditioning_period(self) -> Optional[int]:
         """
-        (Optional) Time required to achieve good sensor stability before measuring after long idle period., s
+        (Optional) Time required to achieve good sensor stability before measuring after long idle period., _: s
         """
         reg = self.register(JD_TVOC_REG_CONDITIONING_PERIOD)
-        value = reg.value(0)
-        return cast(Optional[int], value)
+        values = reg.values()
+        return cast(Optional[int], values[0] if values else None)
 
     

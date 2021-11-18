@@ -16,19 +16,19 @@ class WaterLevelClient(Client):
     @property
     def level(self) -> Optional[float]:
         """
-        The reported water level., /
+        The reported water level., _: /
         """
         reg = self.register(JD_WATER_LEVEL_REG_LEVEL)
-        value = reg.value(0)
-        return cast(Optional[float], value)
+        values = reg.values()
+        return cast(Optional[float], values[0] if values else None)
 
     @property
     def variant(self) -> Optional[WaterLevelVariant]:
         """
-        (Optional) The type of physical sensor.
+        (Optional) The type of physical sensor., 
         """
         reg = self.register(JD_WATER_LEVEL_REG_VARIANT)
-        value = reg.value(0)
-        return cast(Optional[WaterLevelVariant], value)
+        values = reg.values()
+        return cast(Optional[WaterLevelVariant], values[0] if values else None)
 
     

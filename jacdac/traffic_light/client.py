@@ -16,46 +16,46 @@ class TrafficLightClient(Client):
     @property
     def red(self) -> Optional[bool]:
         """
-        The on/off state of the red light.
+        The on/off state of the red light., 
         """
         reg = self.register(JD_TRAFFIC_LIGHT_REG_RED)
-        value = reg.value(0)
-        return cast(Optional[bool], value)
+        values = reg.values()
+        return cast(Optional[bool], values[0] if values else None)
 
     @red.setter
     def red(self, value: bool) -> None:
         reg = self.register(JD_TRAFFIC_LIGHT_REG_RED)
-        reg.set_value(0, value)
+        reg.set_values(value) # type: ignore
 
 
     @property
     def orange(self) -> Optional[bool]:
         """
-        The on/off state of the red light.
+        The on/off state of the red light., 
         """
         reg = self.register(JD_TRAFFIC_LIGHT_REG_ORANGE)
-        value = reg.value(0)
-        return cast(Optional[bool], value)
+        values = reg.values()
+        return cast(Optional[bool], values[0] if values else None)
 
     @orange.setter
     def orange(self, value: bool) -> None:
         reg = self.register(JD_TRAFFIC_LIGHT_REG_ORANGE)
-        reg.set_value(0, value)
+        reg.set_values(value) # type: ignore
 
 
     @property
     def green(self) -> Optional[bool]:
         """
-        The on/off state of the red light.
+        The on/off state of the red light., 
         """
         reg = self.register(JD_TRAFFIC_LIGHT_REG_GREEN)
-        value = reg.value(0)
-        return cast(Optional[bool], value)
+        values = reg.values()
+        return cast(Optional[bool], values[0] if values else None)
 
     @green.setter
     def green(self, value: bool) -> None:
         reg = self.register(JD_TRAFFIC_LIGHT_REG_GREEN)
-        reg.set_value(0, value)
+        reg.set_values(value) # type: ignore
 
 
     

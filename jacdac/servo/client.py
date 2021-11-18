@@ -18,122 +18,122 @@ class ServoClient(Client):
     @property
     def angle(self) -> Optional[float]:
         """
-        Specifies the angle of the arm (request)., °
+        Specifies the angle of the arm (request)., _: °
         """
         reg = self.register(JD_SERVO_REG_ANGLE)
-        value = reg.value(0)
-        return cast(Optional[float], value)
+        values = reg.values()
+        return cast(Optional[float], values[0] if values else None)
 
     @angle.setter
     def angle(self, value: float) -> None:
         self.enabled = True
         reg = self.register(JD_SERVO_REG_ANGLE)
-        reg.set_value(0, value)
+        reg.set_values(value) # type: ignore
 
 
     @property
     def enabled(self) -> Optional[bool]:
         """
-        Turn the power to the servo on/off.
+        Turn the power to the servo on/off., 
         """
         reg = self.register(JD_SERVO_REG_ENABLED)
-        value = reg.value(0)
-        return cast(Optional[bool], value)
+        values = reg.values()
+        return cast(Optional[bool], values[0] if values else None)
 
     @enabled.setter
     def enabled(self, value: bool) -> None:
         reg = self.register(JD_SERVO_REG_ENABLED)
-        reg.set_value(0, value)
+        reg.set_values(value) # type: ignore
 
 
     @property
     def offset(self) -> Optional[float]:
         """
-        Correction applied to the angle to account for the servo arm drift., °
+        Correction applied to the angle to account for the servo arm drift., _: °
         """
         reg = self.register(JD_SERVO_REG_OFFSET)
-        value = reg.value(0)
-        return cast(Optional[float], value)
+        values = reg.values()
+        return cast(Optional[float], values[0] if values else None)
 
     @offset.setter
     def offset(self, value: float) -> None:
         reg = self.register(JD_SERVO_REG_OFFSET)
-        reg.set_value(0, value)
+        reg.set_values(value) # type: ignore
 
 
     @property
     def min_angle(self) -> Optional[float]:
         """
-        Lowest angle that can be set., °
+        Lowest angle that can be set., _: °
         """
         reg = self.register(JD_SERVO_REG_MIN_ANGLE)
-        value = reg.value(0)
-        return cast(Optional[float], value)
+        values = reg.values()
+        return cast(Optional[float], values[0] if values else None)
 
     @property
     def min_pulse(self) -> Optional[int]:
         """
-        The length of pulse corresponding to lowest angle., us
+        The length of pulse corresponding to lowest angle., _: us
         """
         reg = self.register(JD_SERVO_REG_MIN_PULSE)
-        value = reg.value(0)
-        return cast(Optional[int], value)
+        values = reg.values()
+        return cast(Optional[int], values[0] if values else None)
 
     @min_pulse.setter
     def min_pulse(self, value: int) -> None:
         reg = self.register(JD_SERVO_REG_MIN_PULSE)
-        reg.set_value(0, value)
+        reg.set_values(value) # type: ignore
 
 
     @property
     def max_angle(self) -> Optional[float]:
         """
-        Highest angle that can be set., °
+        Highest angle that can be set., _: °
         """
         reg = self.register(JD_SERVO_REG_MAX_ANGLE)
-        value = reg.value(0)
-        return cast(Optional[float], value)
+        values = reg.values()
+        return cast(Optional[float], values[0] if values else None)
 
     @property
     def max_pulse(self) -> Optional[int]:
         """
-        The length of pulse corresponding to highest angle., us
+        The length of pulse corresponding to highest angle., _: us
         """
         reg = self.register(JD_SERVO_REG_MAX_PULSE)
-        value = reg.value(0)
-        return cast(Optional[int], value)
+        values = reg.values()
+        return cast(Optional[int], values[0] if values else None)
 
     @max_pulse.setter
     def max_pulse(self, value: int) -> None:
         reg = self.register(JD_SERVO_REG_MAX_PULSE)
-        reg.set_value(0, value)
+        reg.set_values(value) # type: ignore
 
 
     @property
     def stall_torque(self) -> Optional[float]:
         """
-        (Optional) The servo motor will stop rotating when it is trying to move a ``stall_torque`` weight at a radial distance of ``1.0`` cm., kg/cm
+        (Optional) The servo motor will stop rotating when it is trying to move a ``stall_torque`` weight at a radial distance of ``1.0`` cm., _: kg/cm
         """
         reg = self.register(JD_SERVO_REG_STALL_TORQUE)
-        value = reg.value(0)
-        return cast(Optional[float], value)
+        values = reg.values()
+        return cast(Optional[float], values[0] if values else None)
 
     @property
     def response_speed(self) -> Optional[float]:
         """
-        (Optional) Time to move 60°., s/60°
+        (Optional) Time to move 60°., _: s/60°
         """
         reg = self.register(JD_SERVO_REG_RESPONSE_SPEED)
-        value = reg.value(0)
-        return cast(Optional[float], value)
+        values = reg.values()
+        return cast(Optional[float], values[0] if values else None)
 
     @property
     def current_angle(self) -> Optional[float]:
         """
-        (Optional) The current physical position of the arm., °
+        (Optional) The current physical position of the arm., _: °
         """
         reg = self.register(JD_SERVO_REG_CURRENT_ANGLE)
-        value = reg.value(0)
-        return cast(Optional[float], value)
+        values = reg.values()
+        return cast(Optional[float], values[0] if values else None)
 
     

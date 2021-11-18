@@ -16,19 +16,19 @@ class PotentiometerClient(Client):
     @property
     def position(self) -> Optional[float]:
         """
-        The relative position of the slider., /
+        The relative position of the slider., _: /
         """
         reg = self.register(JD_POTENTIOMETER_REG_POSITION)
-        value = reg.value(0)
-        return cast(Optional[float], value)
+        values = reg.values()
+        return cast(Optional[float], values[0] if values else None)
 
     @property
     def variant(self) -> Optional[PotentiometerVariant]:
         """
-        (Optional) Specifies the physical layout of the potentiometer.
+        (Optional) Specifies the physical layout of the potentiometer., 
         """
         reg = self.register(JD_POTENTIOMETER_REG_VARIANT)
-        value = reg.value(0)
-        return cast(Optional[PotentiometerVariant], value)
+        values = reg.values()
+        return cast(Optional[PotentiometerVariant], values[0] if values else None)
 
     

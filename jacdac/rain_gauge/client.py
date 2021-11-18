@@ -16,19 +16,19 @@ class RainGaugeClient(Client):
     @property
     def precipitation(self) -> Optional[float]:
         """
-        Total precipitation recorded so far., mm
+        Total precipitation recorded so far., _: mm
         """
         reg = self.register(JD_RAIN_GAUGE_REG_PRECIPITATION)
-        value = reg.value(0)
-        return cast(Optional[float], value)
+        values = reg.values()
+        return cast(Optional[float], values[0] if values else None)
 
     @property
     def precipitation_precision(self) -> Optional[float]:
         """
-        (Optional) Typically the amount of rain needed for tipping the bucket., mm
+        (Optional) Typically the amount of rain needed for tipping the bucket., _: mm
         """
         reg = self.register(JD_RAIN_GAUGE_REG_PRECIPITATION_PRECISION)
-        value = reg.value(0)
-        return cast(Optional[float], value)
+        values = reg.values()
+        return cast(Optional[float], values[0] if values else None)
 
     

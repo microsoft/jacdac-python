@@ -17,43 +17,43 @@ class SensorAggregatorClient(Client):
     @property
     def num_samples(self) -> Optional[int]:
         """
-        Number of input samples collected so far.
+        Number of input samples collected so far., 
         """
         reg = self.register(JD_SENSOR_AGGREGATOR_REG_NUM_SAMPLES)
-        value = reg.value(0)
-        return cast(Optional[int], value)
+        values = reg.values()
+        return cast(Optional[int], values[0] if values else None)
 
     @property
     def sample_size(self) -> Optional[int]:
         """
-        Size of a single sample., B
+        Size of a single sample., _: B
         """
         reg = self.register(JD_SENSOR_AGGREGATOR_REG_SAMPLE_SIZE)
-        value = reg.value(0)
-        return cast(Optional[int], value)
+        values = reg.values()
+        return cast(Optional[int], values[0] if values else None)
 
     @property
     def streaming_samples(self) -> Optional[int]:
         """
-        When set to `N`, will stream `N` samples as `current_sample` reading., #
+        When set to `N`, will stream `N` samples as `current_sample` reading., _: #
         """
         reg = self.register(JD_SENSOR_AGGREGATOR_REG_STREAMING_SAMPLES)
-        value = reg.value(0)
-        return cast(Optional[int], value)
+        values = reg.values()
+        return cast(Optional[int], values[0] if values else None)
 
     @streaming_samples.setter
     def streaming_samples(self, value: int) -> None:
         reg = self.register(JD_SENSOR_AGGREGATOR_REG_STREAMING_SAMPLES)
-        reg.set_value(0, value)
+        reg.set_values(value) # type: ignore
 
 
     @property
     def current_sample(self) -> Optional[bytes]:
         """
-        Last collected sample.
+        Last collected sample., 
         """
         reg = self.register(JD_SENSOR_AGGREGATOR_REG_CURRENT_SAMPLE)
-        value = reg.value(0)
-        return cast(Optional[bytes], value)
+        values = reg.values()
+        return cast(Optional[bytes], values[0] if values else None)
 
     

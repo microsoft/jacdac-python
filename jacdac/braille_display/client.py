@@ -16,41 +16,41 @@ class BrailleDisplayClient(Client):
     @property
     def enabled(self) -> Optional[bool]:
         """
-        Determins if the braille display is active.
+        Determins if the braille display is active., 
         """
         reg = self.register(JD_BRAILLE_DISPLAY_REG_ENABLED)
-        value = reg.value(0)
-        return cast(Optional[bool], value)
+        values = reg.values()
+        return cast(Optional[bool], values[0] if values else None)
 
     @enabled.setter
     def enabled(self, value: bool) -> None:
         reg = self.register(JD_BRAILLE_DISPLAY_REG_ENABLED)
-        reg.set_value(0, value)
+        reg.set_values(value) # type: ignore
 
 
     @property
     def patterns(self) -> Optional[str]:
         """
-        Braille patterns to show. Must be unicode characters between `0x2800` and `0x28ff`.
+        Braille patterns to show. Must be unicode characters between `0x2800` and `0x28ff`., 
         """
         reg = self.register(JD_BRAILLE_DISPLAY_REG_PATTERNS)
-        value = reg.value(0)
-        return cast(Optional[str], value)
+        values = reg.values()
+        return cast(Optional[str], values[0] if values else None)
 
     @patterns.setter
     def patterns(self, value: str) -> None:
         self.enabled = True
         reg = self.register(JD_BRAILLE_DISPLAY_REG_PATTERNS)
-        reg.set_value(0, value)
+        reg.set_values(value) # type: ignore
 
 
     @property
     def length(self) -> Optional[int]:
         """
-        Gets the number of patterns that can be displayed., #
+        Gets the number of patterns that can be displayed., _: #
         """
         reg = self.register(JD_BRAILLE_DISPLAY_REG_LENGTH)
-        value = reg.value(0)
-        return cast(Optional[int], value)
+        values = reg.values()
+        return cast(Optional[int], values[0] if values else None)
 
     

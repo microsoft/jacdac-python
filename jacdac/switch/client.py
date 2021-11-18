@@ -16,30 +16,30 @@ class SwitchClient(Client):
     @property
     def active(self) -> Optional[bool]:
         """
-        Indicates whether the switch is currently active (on).
+        Indicates whether the switch is currently active (on)., 
         """
         reg = self.register(JD_SWITCH_REG_ACTIVE)
-        value = reg.value(0)
-        return cast(Optional[bool], value)
+        values = reg.values()
+        return cast(Optional[bool], values[0] if values else None)
 
     @property
     def variant(self) -> Optional[SwitchVariant]:
         """
-        (Optional) Describes the type of switch used.
+        (Optional) Describes the type of switch used., 
         """
         reg = self.register(JD_SWITCH_REG_VARIANT)
-        value = reg.value(0)
-        return cast(Optional[SwitchVariant], value)
+        values = reg.values()
+        return cast(Optional[SwitchVariant], values[0] if values else None)
 
     @property
     def auto_off_delay(self) -> Optional[float]:
         """
         (Optional) Specifies the delay without activity to automatically turn off after turning on.
-        For example, some light switches in staircases have such a capability., s
+        For example, some light switches in staircases have such a capability., _: s
         """
         reg = self.register(JD_SWITCH_REG_AUTO_OFF_DELAY)
-        value = reg.value(0)
-        return cast(Optional[float], value)
+        values = reg.values()
+        return cast(Optional[float], values[0] if values else None)
 
     def on_on(self, handler: EventHandlerFn) -> UnsubscribeFn:
         """

@@ -16,87 +16,87 @@ class WeightScaleClient(Client):
     @property
     def weight(self) -> Optional[float]:
         """
-        The reported weight., kg
+        The reported weight., _: kg
         """
         reg = self.register(JD_WEIGHT_SCALE_REG_WEIGHT)
-        value = reg.value(0)
-        return cast(Optional[float], value)
+        values = reg.values()
+        return cast(Optional[float], values[0] if values else None)
 
     @property
     def weight_error(self) -> Optional[float]:
         """
-        (Optional) The estimate error on the reported reading., kg
+        (Optional) The estimate error on the reported reading., _: kg
         """
         reg = self.register(JD_WEIGHT_SCALE_REG_WEIGHT_ERROR)
-        value = reg.value(0)
-        return cast(Optional[float], value)
+        values = reg.values()
+        return cast(Optional[float], values[0] if values else None)
 
     @property
     def zero_offset(self) -> Optional[float]:
         """
         (Optional) Calibrated zero offset error on the scale, i.e. the measured weight when nothing is on the scale.
-        You do not need to subtract that from the reading, it has already been done., kg
+        You do not need to subtract that from the reading, it has already been done., _: kg
         """
         reg = self.register(JD_WEIGHT_SCALE_REG_ZERO_OFFSET)
-        value = reg.value(0)
-        return cast(Optional[float], value)
+        values = reg.values()
+        return cast(Optional[float], values[0] if values else None)
 
     @zero_offset.setter
     def zero_offset(self, value: float) -> None:
         reg = self.register(JD_WEIGHT_SCALE_REG_ZERO_OFFSET)
-        reg.set_value(0, value)
+        reg.set_values(value) # type: ignore
 
 
     @property
     def gain(self) -> Optional[float]:
         """
-        (Optional) Calibrated gain on the weight scale error.
+        (Optional) Calibrated gain on the weight scale error., 
         """
         reg = self.register(JD_WEIGHT_SCALE_REG_GAIN)
-        value = reg.value(0)
-        return cast(Optional[float], value)
+        values = reg.values()
+        return cast(Optional[float], values[0] if values else None)
 
     @gain.setter
     def gain(self, value: float) -> None:
         reg = self.register(JD_WEIGHT_SCALE_REG_GAIN)
-        reg.set_value(0, value)
+        reg.set_values(value) # type: ignore
 
 
     @property
     def max_weight(self) -> Optional[float]:
         """
-        (Optional) Maximum supported weight on the scale., kg
+        (Optional) Maximum supported weight on the scale., _: kg
         """
         reg = self.register(JD_WEIGHT_SCALE_REG_MAX_WEIGHT)
-        value = reg.value(0)
-        return cast(Optional[float], value)
+        values = reg.values()
+        return cast(Optional[float], values[0] if values else None)
 
     @property
     def min_weight(self) -> Optional[float]:
         """
-        (Optional) Minimum recommend weight on the scale., kg
+        (Optional) Minimum recommend weight on the scale., _: kg
         """
         reg = self.register(JD_WEIGHT_SCALE_REG_MIN_WEIGHT)
-        value = reg.value(0)
-        return cast(Optional[float], value)
+        values = reg.values()
+        return cast(Optional[float], values[0] if values else None)
 
     @property
     def weight_resolution(self) -> Optional[float]:
         """
-        (Optional) Smallest, yet distinguishable change in reading., kg
+        (Optional) Smallest, yet distinguishable change in reading., _: kg
         """
         reg = self.register(JD_WEIGHT_SCALE_REG_WEIGHT_RESOLUTION)
-        value = reg.value(0)
-        return cast(Optional[float], value)
+        values = reg.values()
+        return cast(Optional[float], values[0] if values else None)
 
     @property
     def variant(self) -> Optional[WeightScaleVariant]:
         """
-        (Optional) The type of physical scale
+        (Optional) The type of physical scale, 
         """
         reg = self.register(JD_WEIGHT_SCALE_REG_VARIANT)
-        value = reg.value(0)
-        return cast(Optional[WeightScaleVariant], value)
+        values = reg.values()
+        return cast(Optional[WeightScaleVariant], values[0] if values else None)
 
 
     def calibrate_zero_offset(self, ) -> None:

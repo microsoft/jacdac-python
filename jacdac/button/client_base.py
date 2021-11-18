@@ -16,20 +16,20 @@ class ButtonClientBase(Client):
     @property
     def pressure(self) -> Optional[float]:
         """
-        Indicates the pressure state of the button, where ``0`` is open., /
+        Indicates the pressure state of the button, where ``0`` is open., _: /
         """
         reg = self.register(JD_BUTTON_REG_PRESSURE)
-        value = reg.value(0)
-        return cast(Optional[float], value)
+        values = reg.values()
+        return cast(Optional[float], values[0] if values else None)
 
     @property
     def analog(self) -> Optional[bool]:
         """
-        (Optional) Indicates if the button provides analog ``pressure`` readings.
+        (Optional) Indicates if the button provides analog ``pressure`` readings., 
         """
         reg = self.register(JD_BUTTON_REG_ANALOG)
-        value = reg.value(0)
-        return cast(Optional[bool], value)
+        values = reg.values()
+        return cast(Optional[bool], values[0] if values else None)
 
     @property
     def pressed(self) -> Optional[bool]:
@@ -37,7 +37,7 @@ class ButtonClientBase(Client):
         Determines if the button is pressed currently.
         
         If the event ``down`` is observed, ``pressed`` is true; if ``up`` or ``hold`` are observed, ``pressed`` is false.
-        To initialize, wait for any event or timeout to ``pressed`` is true after 750ms (1.5x hold time).
+        To initialize, wait for any event or timeout to ``pressed`` is true after 750ms (1.5x hold time)., 
         """
         # TODO: implement client register
         raise  RuntimeError("client register not implemented")

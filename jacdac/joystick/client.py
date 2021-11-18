@@ -14,60 +14,36 @@ class JoystickClient(Client):
     
 
     @property
-    def buttons(self) -> Optional[JoystickButtons]:
+    def direction(self) -> Optional[tuple[JoystickButtons, float, float]]:
         """
         If the joystick is analog, the directional buttons should be "simulated", based on joystick position
         (`Left` is `{ x = -1, y = 0 }`, `Up` is `{ x = 0, y = -1}`).
         If the joystick is digital, then each direction will read as either `-1`, `0`, or `1` (in fixed representation).
-        The primary button on the joystick is `A`.
+        The primary button on the joystick is `A`., x: /,y: /
         """
         reg = self.register(JD_JOYSTICK_REG_DIRECTION)
-        value = reg.value(0)
-        return cast(Optional[JoystickButtons], value)
-
-    @property
-    def x(self) -> Optional[float]:
-        """
-        If the joystick is analog, the directional buttons should be "simulated", based on joystick position
-        (`Left` is `{ x = -1, y = 0 }`, `Up` is `{ x = 0, y = -1}`).
-        If the joystick is digital, then each direction will read as either `-1`, `0`, or `1` (in fixed representation).
-        The primary button on the joystick is `A`., /
-        """
-        reg = self.register(JD_JOYSTICK_REG_DIRECTION)
-        value = reg.value(1)
-        return cast(Optional[float], value)
-
-    @property
-    def y(self) -> Optional[float]:
-        """
-        If the joystick is analog, the directional buttons should be "simulated", based on joystick position
-        (`Left` is `{ x = -1, y = 0 }`, `Up` is `{ x = 0, y = -1}`).
-        If the joystick is digital, then each direction will read as either `-1`, `0`, or `1` (in fixed representation).
-        The primary button on the joystick is `A`., /
-        """
-        reg = self.register(JD_JOYSTICK_REG_DIRECTION)
-        value = reg.value(2)
-        return cast(Optional[float], value)
+        values = reg.values()
+        return cast(Optional[tuple[JoystickButtons, float, float]], values)
 
     @property
     def variant(self) -> Optional[JoystickVariant]:
         """
-        (Optional) The type of physical joystick.
+        (Optional) The type of physical joystick., 
         """
         reg = self.register(JD_JOYSTICK_REG_VARIANT)
-        value = reg.value(0)
-        return cast(Optional[JoystickVariant], value)
+        values = reg.values()
+        return cast(Optional[JoystickVariant], values[0] if values else None)
 
     @property
     def buttons_available(self) -> Optional[JoystickButtons]:
         """
         Indicates a bitmask of the buttons that are mounted on the joystick.
         If the `Left`/`Up`/`Right`/`Down` buttons are marked as available here, the joystick is digital.
-        Even when marked as not available, they will still be simulated based on the analog joystick.
+        Even when marked as not available, they will still be simulated based on the analog joystick., 
         """
         reg = self.register(JD_JOYSTICK_REG_BUTTONS_AVAILABLE)
-        value = reg.value(0)
-        return cast(Optional[JoystickButtons], value)
+        values = reg.values()
+        return cast(Optional[JoystickButtons], values[0] if values else None)
 
     def on_buttons_changed(self, handler: EventHandlerFn) -> UnsubscribeFn:
         """

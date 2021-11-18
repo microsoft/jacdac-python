@@ -16,61 +16,61 @@ class BitRadioClient(Client):
     @property
     def enabled(self) -> Optional[bool]:
         """
-        Turns on/off the radio antenna.
+        Turns on/off the radio antenna., 
         """
         reg = self.register(JD_BIT_RADIO_REG_ENABLED)
-        value = reg.value(0)
-        return cast(Optional[bool], value)
+        values = reg.values()
+        return cast(Optional[bool], values[0] if values else None)
 
     @enabled.setter
     def enabled(self, value: bool) -> None:
         reg = self.register(JD_BIT_RADIO_REG_ENABLED)
-        reg.set_value(0, value)
+        reg.set_values(value) # type: ignore
 
 
     @property
     def group(self) -> Optional[int]:
         """
-        Group used to filter packets
+        Group used to filter packets, 
         """
         reg = self.register(JD_BIT_RADIO_REG_GROUP)
-        value = reg.value(0)
-        return cast(Optional[int], value)
+        values = reg.values()
+        return cast(Optional[int], values[0] if values else None)
 
     @group.setter
     def group(self, value: int) -> None:
         reg = self.register(JD_BIT_RADIO_REG_GROUP)
-        reg.set_value(0, value)
+        reg.set_values(value) # type: ignore
 
 
     @property
     def transmission_power(self) -> Optional[int]:
         """
-        Antenna power to increase or decrease range.
+        Antenna power to increase or decrease range., 
         """
         reg = self.register(JD_BIT_RADIO_REG_TRANSMISSION_POWER)
-        value = reg.value(0)
-        return cast(Optional[int], value)
+        values = reg.values()
+        return cast(Optional[int], values[0] if values else None)
 
     @transmission_power.setter
     def transmission_power(self, value: int) -> None:
         reg = self.register(JD_BIT_RADIO_REG_TRANSMISSION_POWER)
-        reg.set_value(0, value)
+        reg.set_values(value) # type: ignore
 
 
     @property
     def frequency_band(self) -> Optional[int]:
         """
-        Change the transmission and reception band of the radio to the given channel.
+        Change the transmission and reception band of the radio to the given channel., 
         """
         reg = self.register(JD_BIT_RADIO_REG_FREQUENCY_BAND)
-        value = reg.value(0)
-        return cast(Optional[int], value)
+        values = reg.values()
+        return cast(Optional[int], values[0] if values else None)
 
     @frequency_band.setter
     def frequency_band(self, value: int) -> None:
         reg = self.register(JD_BIT_RADIO_REG_FREQUENCY_BAND)
-        reg.set_value(0, value)
+        reg.set_values(value) # type: ignore
 
 
 

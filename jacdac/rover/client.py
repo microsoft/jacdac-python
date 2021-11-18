@@ -14,48 +14,12 @@ class RoverClient(Client):
     
 
     @property
-    def x(self) -> Optional[float]:
+    def kinematics(self) -> Optional[tuple[float, float, float, float, float]]:
         """
-        The current position and orientation of the robot., cm
-        """
-        reg = self.register(JD_ROVER_REG_KINEMATICS)
-        value = reg.value(0)
-        return cast(Optional[float], value)
-
-    @property
-    def y(self) -> Optional[float]:
-        """
-        The current position and orientation of the robot., cm
+        The current position and orientation of the robot., x: cm,y: cm,vx: cm/s,vy: cm/s,heading: °
         """
         reg = self.register(JD_ROVER_REG_KINEMATICS)
-        value = reg.value(1)
-        return cast(Optional[float], value)
-
-    @property
-    def vx(self) -> Optional[float]:
-        """
-        The current position and orientation of the robot., cm/s
-        """
-        reg = self.register(JD_ROVER_REG_KINEMATICS)
-        value = reg.value(2)
-        return cast(Optional[float], value)
-
-    @property
-    def vy(self) -> Optional[float]:
-        """
-        The current position and orientation of the robot., cm/s
-        """
-        reg = self.register(JD_ROVER_REG_KINEMATICS)
-        value = reg.value(3)
-        return cast(Optional[float], value)
-
-    @property
-    def heading(self) -> Optional[float]:
-        """
-        The current position and orientation of the robot., °
-        """
-        reg = self.register(JD_ROVER_REG_KINEMATICS)
-        value = reg.value(4)
-        return cast(Optional[float], value)
+        values = reg.values()
+        return cast(Optional[tuple[float, float, float, float, float]], values)
 
     

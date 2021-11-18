@@ -16,25 +16,25 @@ class DimmerClient(Client):
     @property
     def intensity(self) -> Optional[float]:
         """
-        The intensity of the current. Set to ``0`` to turn off completely the current., /
+        The intensity of the current. Set to ``0`` to turn off completely the current., _: /
         """
         reg = self.register(JD_DIMMER_REG_INTENSITY)
-        value = reg.value(0)
-        return cast(Optional[float], value)
+        values = reg.values()
+        return cast(Optional[float], values[0] if values else None)
 
     @intensity.setter
     def intensity(self, value: float) -> None:
         reg = self.register(JD_DIMMER_REG_INTENSITY)
-        reg.set_value(0, value)
+        reg.set_values(value) # type: ignore
 
 
     @property
     def variant(self) -> Optional[DimmerVariant]:
         """
-        (Optional) The type of physical device
+        (Optional) The type of physical device, 
         """
         reg = self.register(JD_DIMMER_REG_VARIANT)
-        value = reg.value(0)
-        return cast(Optional[DimmerVariant], value)
+        values = reg.values()
+        return cast(Optional[DimmerVariant], values[0] if values else None)
 
     

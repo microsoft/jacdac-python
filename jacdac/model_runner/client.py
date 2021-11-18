@@ -23,53 +23,53 @@ class ModelRunnerClient(Client):
         When register contains `N > 0`, run the model automatically every time new `N` samples are collected.
         Model may be run less often if it takes longer to run than `N * sampling_interval`.
         The `outputs` register will stream its value after each run.
-        This register is not stored in flash.
+        This register is not stored in flash., 
         """
         reg = self.register(JD_MODEL_RUNNER_REG_AUTO_INVOKE_EVERY)
-        value = reg.value(0)
-        return cast(Optional[int], value)
+        values = reg.values()
+        return cast(Optional[int], values[0] if values else None)
 
     @auto_invoke_every.setter
     def auto_invoke_every(self, value: int) -> None:
         reg = self.register(JD_MODEL_RUNNER_REG_AUTO_INVOKE_EVERY)
-        reg.set_value(0, value)
+        reg.set_values(value) # type: ignore
 
 
     @property
     def last_run_time(self) -> Optional[int]:
         """
-        The time consumed in last model execution., us
+        The time consumed in last model execution., _: us
         """
         reg = self.register(JD_MODEL_RUNNER_REG_LAST_RUN_TIME)
-        value = reg.value(0)
-        return cast(Optional[int], value)
+        values = reg.values()
+        return cast(Optional[int], values[0] if values else None)
 
     @property
     def allocated_arena_size(self) -> Optional[int]:
         """
-        Number of RAM bytes allocated for model execution., B
+        Number of RAM bytes allocated for model execution., _: B
         """
         reg = self.register(JD_MODEL_RUNNER_REG_ALLOCATED_ARENA_SIZE)
-        value = reg.value(0)
-        return cast(Optional[int], value)
+        values = reg.values()
+        return cast(Optional[int], values[0] if values else None)
 
     @property
     def model_size(self) -> Optional[int]:
         """
-        The size of the model in bytes., B
+        The size of the model in bytes., _: B
         """
         reg = self.register(JD_MODEL_RUNNER_REG_MODEL_SIZE)
-        value = reg.value(0)
-        return cast(Optional[int], value)
+        values = reg.values()
+        return cast(Optional[int], values[0] if values else None)
 
     @property
     def last_error(self) -> Optional[str]:
         """
-        Textual description of last error when running or loading model (if any).
+        Textual description of last error when running or loading model (if any)., 
         """
         reg = self.register(JD_MODEL_RUNNER_REG_LAST_ERROR)
-        value = reg.value(0)
-        return cast(Optional[str], value)
+        values = reg.values()
+        return cast(Optional[str], values[0] if values else None)
 
     @property
     def format(self) -> Optional[ModelRunnerModelFormat]:
@@ -77,30 +77,30 @@ class ModelRunnerClient(Client):
         The type of ML models supported by this service.
         `TFLite` is flatbuffer `.tflite` file.
         `ML4F` is compiled machine code model for Cortex-M4F.
-        The format is typically present as first or second little endian word of model file.
+        The format is typically present as first or second little endian word of model file., 
         """
         reg = self.register(JD_MODEL_RUNNER_REG_FORMAT)
-        value = reg.value(0)
-        return cast(Optional[ModelRunnerModelFormat], value)
+        values = reg.values()
+        return cast(Optional[ModelRunnerModelFormat], values[0] if values else None)
 
     @property
     def format_version(self) -> Optional[int]:
         """
-        A version number for the format.
+        A version number for the format., 
         """
         reg = self.register(JD_MODEL_RUNNER_REG_FORMAT_VERSION)
-        value = reg.value(0)
-        return cast(Optional[int], value)
+        values = reg.values()
+        return cast(Optional[int], values[0] if values else None)
 
     @property
     def parallel(self) -> Optional[bool]:
         """
         (Optional) If present and true this service can run models independently of other
-        instances of this service on the device.
+        instances of this service on the device., 
         """
         reg = self.register(JD_MODEL_RUNNER_REG_PARALLEL)
-        value = reg.value(0)
-        return cast(Optional[bool], value)
+        values = reg.values()
+        return cast(Optional[bool], values[0] if values else None)
 
 
     def set_model(self, model_size: int) -> None:

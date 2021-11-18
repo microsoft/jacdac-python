@@ -334,20 +334,17 @@ class RawRegisterClient(EventEmitter):
             return self._data
         return None
 
-    def unpacked(self) -> Optional[list[PackType]]:
+    def values(self) -> Optional[list[PackType]]:
         data = self.query()
         if data and self.pack_format:
             return jdunpack(data, self.pack_format)
         return None
 
-    def value(self, index: int = 0):
-        values = self.unpacked()
-        return values[index] if values else None
-
     def set_values(self, *args: PackType):
         if self.pack_format is None:
             raise RuntimeError("set_value not supported")
         data = jdpack(self.pack_format, *args)
+
         def send():
             pkt = JDPacket(cmd=JD_SET(self.code), data=data)
             self.client.send_cmd(pkt)
@@ -355,12 +352,12 @@ class RawRegisterClient(EventEmitter):
 
         self.bus.run(send)
 
-    def float_value(self, index: int = 0, scale: int = 1) -> Union[float, None]:
-        value = self.value(index)
-        if value is None:
+    def float_value(self, scale: int = 1) -> Union[float, None]:
+        values = self.values()
+        if values is None:
             return None
         else:
-            return float(value) * scale  # type: ignore
+            return float(values[0]) * scale  # type: ignore
 
     def _query(self):
         pkt = JDPacket(cmd=JD_GET(self.code))

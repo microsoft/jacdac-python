@@ -16,16 +16,16 @@ class BarcodeReaderClient(Client):
     @property
     def enabled(self) -> Optional[bool]:
         """
-        Turns on or off the detection of barcodes.
+        Turns on or off the detection of barcodes., 
         """
         reg = self.register(JD_BARCODE_READER_REG_ENABLED)
-        value = reg.value(0)
-        return cast(Optional[bool], value)
+        values = reg.values()
+        return cast(Optional[bool], values[0] if values else None)
 
     @enabled.setter
     def enabled(self, value: bool) -> None:
         reg = self.register(JD_BARCODE_READER_REG_ENABLED)
-        reg.set_value(0, value)
+        reg.set_values(value) # type: ignore
 
 
     def on_detect(self, handler: EventHandlerFn) -> UnsubscribeFn:

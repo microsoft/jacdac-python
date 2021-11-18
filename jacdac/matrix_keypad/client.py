@@ -16,31 +16,31 @@ class MatrixKeypadClient(Client):
     @property
     def rows(self) -> Optional[int]:
         """
-        Number of rows in the matrix, #
+        Number of rows in the matrix, _: #
         """
         reg = self.register(JD_MATRIX_KEYPAD_REG_ROWS)
-        value = reg.value(0)
-        return cast(Optional[int], value)
+        values = reg.values()
+        return cast(Optional[int], values[0] if values else None)
 
     @property
     def columns(self) -> Optional[int]:
         """
-        Number of columns in the matrix, #
+        Number of columns in the matrix, _: #
         """
         reg = self.register(JD_MATRIX_KEYPAD_REG_COLUMNS)
-        value = reg.value(0)
-        return cast(Optional[int], value)
+        values = reg.values()
+        return cast(Optional[int], values[0] if values else None)
 
     @property
     def variant(self) -> Optional[MatrixKeypadVariant]:
         """
         (Optional) The type of physical keypad. If the variant is ``ElastomerLEDPixel``
         and the next service on the device is a ``LEDPixel`` service, it is considered
-        as the service controlling the LED pixel on the keypad.
+        as the service controlling the LED pixel on the keypad., 
         """
         reg = self.register(JD_MATRIX_KEYPAD_REG_VARIANT)
-        value = reg.value(0)
-        return cast(Optional[MatrixKeypadVariant], value)
+        values = reg.values()
+        return cast(Optional[MatrixKeypadVariant], values[0] if values else None)
 
     def on_down(self, handler: EventHandlerFn) -> UnsubscribeFn:
         """

@@ -16,19 +16,19 @@ class FlexClient(Client):
     @property
     def bending(self) -> Optional[float]:
         """
-        The relative position of the slider., /
+        The relative position of the slider., _: /
         """
         reg = self.register(JD_FLEX_REG_BENDING)
-        value = reg.value(0)
-        return cast(Optional[float], value)
+        values = reg.values()
+        return cast(Optional[float], values[0] if values else None)
 
     @property
     def variant(self) -> Optional[FlexVariant]:
         """
-        (Optional) Specifies the physical layout of the flex sensor.
+        (Optional) Specifies the physical layout of the flex sensor., 
         """
         reg = self.register(JD_FLEX_REG_VARIANT)
-        value = reg.value(0)
-        return cast(Optional[FlexVariant], value)
+        values = reg.values()
+        return cast(Optional[FlexVariant], values[0] if values else None)
 
     

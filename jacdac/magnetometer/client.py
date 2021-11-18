@@ -14,43 +14,23 @@ class MagnetometerClient(Client):
     
 
     @property
-    def x(self) -> Optional[int]:
+    def forces(self) -> Optional[tuple[int, int, int]]:
         """
         Indicates the current magnetic field on magnetometer.
-        For reference: `1 mgauss` is `100 nT` (and `1 gauss` is `100 000 nT`)., nT
+        For reference: `1 mgauss` is `100 nT` (and `1 gauss` is `100 000 nT`)., x: nT,y: nT,z: nT
         """
         reg = self.register(JD_MAGNETOMETER_REG_FORCES)
-        value = reg.value(0)
-        return cast(Optional[int], value)
-
-    @property
-    def y(self) -> Optional[int]:
-        """
-        Indicates the current magnetic field on magnetometer.
-        For reference: `1 mgauss` is `100 nT` (and `1 gauss` is `100 000 nT`)., nT
-        """
-        reg = self.register(JD_MAGNETOMETER_REG_FORCES)
-        value = reg.value(1)
-        return cast(Optional[int], value)
-
-    @property
-    def z(self) -> Optional[int]:
-        """
-        Indicates the current magnetic field on magnetometer.
-        For reference: `1 mgauss` is `100 nT` (and `1 gauss` is `100 000 nT`)., nT
-        """
-        reg = self.register(JD_MAGNETOMETER_REG_FORCES)
-        value = reg.value(2)
-        return cast(Optional[int], value)
+        values = reg.values()
+        return cast(Optional[tuple[int, int, int]], values)
 
     @property
     def forces_error(self) -> Optional[int]:
         """
-        (Optional) Error on the readings., nT
+        (Optional) Error on the readings., _: nT
         """
         reg = self.register(JD_MAGNETOMETER_REG_FORCES_ERROR)
-        value = reg.value(0)
-        return cast(Optional[int], value)
+        values = reg.values()
+        return cast(Optional[int], values[0] if values else None)
 
 
     def calibrate(self, ) -> None:

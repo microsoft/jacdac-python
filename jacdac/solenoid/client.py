@@ -16,25 +16,25 @@ class SolenoidClient(Client):
     @property
     def pulled(self) -> Optional[bool]:
         """
-        Indicates whether the solenoid is energized and pulled (on) or pushed (off).
+        Indicates whether the solenoid is energized and pulled (on) or pushed (off)., 
         """
         reg = self.register(JD_SOLENOID_REG_PULLED)
-        value = reg.value(0)
-        return cast(Optional[bool], value)
+        values = reg.values()
+        return cast(Optional[bool], values[0] if values else None)
 
     @pulled.setter
     def pulled(self, value: bool) -> None:
         reg = self.register(JD_SOLENOID_REG_PULLED)
-        reg.set_value(0, value)
+        reg.set_values(value) # type: ignore
 
 
     @property
     def variant(self) -> Optional[SolenoidVariant]:
         """
-        (Optional) Describes the type of solenoid used.
+        (Optional) Describes the type of solenoid used., 
         """
         reg = self.register(JD_SOLENOID_REG_VARIANT)
-        value = reg.value(0)
-        return cast(Optional[SolenoidVariant], value)
+        values = reg.values()
+        return cast(Optional[SolenoidVariant], values[0] if values else None)
 
     

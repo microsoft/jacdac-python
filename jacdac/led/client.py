@@ -14,82 +14,64 @@ class LedClient(Client):
     
 
     @property
-    def color_Red(self) -> Optional[int]:
+    def color(self) -> Optional[tuple[int, int, int]]:
         """
-        The current color of the LED.
-        """
-        reg = self.register(JD_LED_REG_COLOR)
-        value = reg.value(0)
-        return cast(Optional[int], value)
-
-    @property
-    def color_Green(self) -> Optional[int]:
-        """
-        The current color of the LED.
+        The current color of the LED., 
         """
         reg = self.register(JD_LED_REG_COLOR)
-        value = reg.value(1)
-        return cast(Optional[int], value)
-
-    @property
-    def color_Blue(self) -> Optional[int]:
-        """
-        The current color of the LED.
-        """
-        reg = self.register(JD_LED_REG_COLOR)
-        value = reg.value(2)
-        return cast(Optional[int], value)
+        values = reg.values()
+        return cast(Optional[tuple[int, int, int]], values)
 
     @property
     def max_power(self) -> Optional[int]:
         """
-        (Optional) Limit the power drawn by the light-strip (and controller)., mA
+        (Optional) Limit the power drawn by the light-strip (and controller)., _: mA
         """
         reg = self.register(JD_LED_REG_MAX_POWER)
-        value = reg.value(0)
-        return cast(Optional[int], value)
+        values = reg.values()
+        return cast(Optional[int], values[0] if values else None)
 
     @max_power.setter
     def max_power(self, value: int) -> None:
         reg = self.register(JD_LED_REG_MAX_POWER)
-        reg.set_value(0, value)
+        reg.set_values(value) # type: ignore
 
 
     @property
     def led_count(self) -> Optional[int]:
         """
-        (Optional) If known, specifies the number of LEDs in parallel on this device.
+        (Optional) If known, specifies the number of LEDs in parallel on this device., 
         """
         reg = self.register(JD_LED_REG_LED_COUNT)
-        value = reg.value(0)
-        return cast(Optional[int], value)
+        values = reg.values()
+        return cast(Optional[int], values[0] if values else None)
 
     @property
     def wave_length(self) -> Optional[int]:
         """
-        (Optional) If monochrome LED, specifies the wave length of the LED., nm
+        (Optional) If monochrome LED, specifies the wave length of the LED., _: nm
         """
         reg = self.register(JD_LED_REG_WAVE_LENGTH)
-        value = reg.value(0)
-        return cast(Optional[int], value)
+        values = reg.values()
+        return cast(Optional[int], values[0] if values else None)
 
     @property
     def luminous_intensity(self) -> Optional[int]:
         """
-        (Optional) The luminous intensity of the LED, at full value, in micro candella., mcd
+        (Optional) The luminous intensity of the LED, at full value, in micro candella., _: mcd
         """
         reg = self.register(JD_LED_REG_LUMINOUS_INTENSITY)
-        value = reg.value(0)
-        return cast(Optional[int], value)
+        values = reg.values()
+        return cast(Optional[int], values[0] if values else None)
 
     @property
     def variant(self) -> Optional[LedVariant]:
         """
-        (Optional) The physical type of LED.
+        (Optional) The physical type of LED., 
         """
         reg = self.register(JD_LED_REG_VARIANT)
-        value = reg.value(0)
-        return cast(Optional[LedVariant], value)
+        values = reg.values()
+        return cast(Optional[LedVariant], values[0] if values else None)
 
 
     def animate(self, to_red: int, to_green: int, to_blue: int, speed: int) -> None:

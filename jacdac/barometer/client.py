@@ -16,19 +16,19 @@ class BarometerClient(Client):
     @property
     def pressure(self) -> Optional[float]:
         """
-        The air pressure., hPa
+        The air pressure., _: hPa
         """
         reg = self.register(JD_BAROMETER_REG_PRESSURE)
-        value = reg.value(0)
-        return cast(Optional[float], value)
+        values = reg.values()
+        return cast(Optional[float], values[0] if values else None)
 
     @property
     def pressure_error(self) -> Optional[float]:
         """
-        The real pressure is between `pressure - pressure_error` and `pressure + pressure_error`., hPa
+        The real pressure is between `pressure - pressure_error` and `pressure + pressure_error`., _: hPa
         """
         reg = self.register(JD_BAROMETER_REG_PRESSURE_ERROR)
-        value = reg.value(0)
-        return cast(Optional[float], value)
+        values = reg.values()
+        return cast(Optional[float], values[0] if values else None)
 
     

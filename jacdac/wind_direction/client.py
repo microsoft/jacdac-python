@@ -16,19 +16,19 @@ class WindDirectionClient(Client):
     @property
     def wind_direction(self) -> Optional[int]:
         """
-        The direction of the wind., °
+        The direction of the wind., _: °
         """
         reg = self.register(JD_WIND_DIRECTION_REG_WIND_DIRECTION)
-        value = reg.value(0)
-        return cast(Optional[int], value)
+        values = reg.values()
+        return cast(Optional[int], values[0] if values else None)
 
     @property
     def wind_direction_error(self) -> Optional[int]:
         """
-        (Optional) Error on the wind direction reading, °
+        (Optional) Error on the wind direction reading, _: °
         """
         reg = self.register(JD_WIND_DIRECTION_REG_WIND_DIRECTION_ERROR)
-        value = reg.value(0)
-        return cast(Optional[int], value)
+        values = reg.values()
+        return cast(Optional[int], values[0] if values else None)
 
     

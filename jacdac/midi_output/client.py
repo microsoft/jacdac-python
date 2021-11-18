@@ -16,16 +16,16 @@ class MidiOutputClient(Client):
     @property
     def enabled(self) -> Optional[bool]:
         """
-        Opens or closes the port to the MIDI device
+        Opens or closes the port to the MIDI device, 
         """
         reg = self.register(JD_MIDI_OUTPUT_REG_ENABLED)
-        value = reg.value(0)
-        return cast(Optional[bool], value)
+        values = reg.values()
+        return cast(Optional[bool], values[0] if values else None)
 
     @enabled.setter
     def enabled(self, value: bool) -> None:
         reg = self.register(JD_MIDI_OUTPUT_REG_ENABLED)
-        reg.set_value(0, value)
+        reg.set_values(value) # type: ignore
 
 
 

@@ -32,26 +32,26 @@ class RoleManagerClient(Client):
         Such automatic assignment happens every second or so, and is trying to be smart about 
         co-locating roles that share "host" (part before first slash),
         as well as reasonably stable assignments.
-        Once user start assigning roles manually using this service, auto-binding should be disabled to avoid confusion.
+        Once user start assigning roles manually using this service, auto-binding should be disabled to avoid confusion., 
         """
         reg = self.register(JD_ROLE_MANAGER_REG_AUTO_BIND)
-        value = reg.value(0)
-        return cast(Optional[bool], value)
+        values = reg.values()
+        return cast(Optional[bool], values[0] if values else None)
 
     @auto_bind.setter
     def auto_bind(self, value: bool) -> None:
         reg = self.register(JD_ROLE_MANAGER_REG_AUTO_BIND)
-        reg.set_value(0, value)
+        reg.set_values(value) # type: ignore
 
 
     @property
     def all_roles_allocated(self) -> Optional[bool]:
         """
-        Indicates if all required roles have been allocated to devices.
+        Indicates if all required roles have been allocated to devices., 
         """
         reg = self.register(JD_ROLE_MANAGER_REG_ALL_ROLES_ALLOCATED)
-        value = reg.value(0)
-        return cast(Optional[bool], value)
+        values = reg.values()
+        return cast(Optional[bool], values[0] if values else None)
 
     def on_change(self, handler: EventHandlerFn) -> UnsubscribeFn:
         """

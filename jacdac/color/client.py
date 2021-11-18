@@ -14,30 +14,12 @@ class ColorClient(Client):
     
 
     @property
-    def red(self) -> Optional[float]:
+    def color(self) -> Optional[tuple[float, float, float]]:
         """
-        Detected color in the RGB color space., /
-        """
-        reg = self.register(JD_COLOR_REG_COLOR)
-        value = reg.value(0)
-        return cast(Optional[float], value)
-
-    @property
-    def green(self) -> Optional[float]:
-        """
-        Detected color in the RGB color space., /
+        Detected color in the RGB color space., red: /,green: /,blue: /
         """
         reg = self.register(JD_COLOR_REG_COLOR)
-        value = reg.value(1)
-        return cast(Optional[float], value)
-
-    @property
-    def blue(self) -> Optional[float]:
-        """
-        Detected color in the RGB color space., /
-        """
-        reg = self.register(JD_COLOR_REG_COLOR)
-        value = reg.value(2)
-        return cast(Optional[float], value)
+        values = reg.values()
+        return cast(Optional[tuple[float, float, float]], values)
 
     

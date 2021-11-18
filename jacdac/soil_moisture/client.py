@@ -16,28 +16,28 @@ class SoilMoistureClient(Client):
     @property
     def moisture(self) -> Optional[float]:
         """
-        Indicates the wetness of the soil, from ``dry`` to ``wet``., /
+        Indicates the wetness of the soil, from ``dry`` to ``wet``., _: /
         """
         reg = self.register(JD_SOIL_MOISTURE_REG_MOISTURE)
-        value = reg.value(0)
-        return cast(Optional[float], value)
+        values = reg.values()
+        return cast(Optional[float], values[0] if values else None)
 
     @property
     def moisture_error(self) -> Optional[float]:
         """
-        (Optional) The error on the moisture reading., /
+        (Optional) The error on the moisture reading., _: /
         """
         reg = self.register(JD_SOIL_MOISTURE_REG_MOISTURE_ERROR)
-        value = reg.value(0)
-        return cast(Optional[float], value)
+        values = reg.values()
+        return cast(Optional[float], values[0] if values else None)
 
     @property
     def variant(self) -> Optional[SoilMoistureVariant]:
         """
-        (Optional) Describe the type of physical sensor.
+        (Optional) Describe the type of physical sensor., 
         """
         reg = self.register(JD_SOIL_MOISTURE_REG_VARIANT)
-        value = reg.value(0)
-        return cast(Optional[SoilMoistureVariant], value)
+        values = reg.values()
+        return cast(Optional[SoilMoistureVariant], values[0] if values else None)
 
     

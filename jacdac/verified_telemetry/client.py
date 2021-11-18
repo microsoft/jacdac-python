@@ -16,53 +16,44 @@ class VerifiedTelemetryClient(Client):
     @property
     def telemetry_status(self) -> Optional[VerifiedTelemetryStatus]:
         """
-        Reads the telemetry working status, where ``true`` is working and ``false`` is faulty.
+        Reads the telemetry working status, where ``true`` is working and ``false`` is faulty., 
         """
         reg = self.register(JD_VERIFIED_TELEMETRY_REG_TELEMETRY_STATUS)
-        value = reg.value(0)
-        return cast(Optional[VerifiedTelemetryStatus], value)
+        values = reg.values()
+        return cast(Optional[VerifiedTelemetryStatus], values[0] if values else None)
 
     @property
     def telemetry_status_interval(self) -> Optional[int]:
         """
-        (Optional) Specifies the interval between computing the fingerprint information., ms
+        (Optional) Specifies the interval between computing the fingerprint information., _: ms
         """
         reg = self.register(JD_VERIFIED_TELEMETRY_REG_TELEMETRY_STATUS_INTERVAL)
-        value = reg.value(0)
-        return cast(Optional[int], value)
+        values = reg.values()
+        return cast(Optional[int], values[0] if values else None)
 
     @telemetry_status_interval.setter
     def telemetry_status_interval(self, value: int) -> None:
         reg = self.register(JD_VERIFIED_TELEMETRY_REG_TELEMETRY_STATUS_INTERVAL)
-        reg.set_value(0, value)
+        reg.set_values(value) # type: ignore
 
 
     @property
     def fingerprint_type(self) -> Optional[VerifiedTelemetryFingerprintType]:
         """
-        Type of the fingerprint.
+        Type of the fingerprint., 
         """
         reg = self.register(JD_VERIFIED_TELEMETRY_REG_FINGERPRINT_TYPE)
-        value = reg.value(0)
-        return cast(Optional[VerifiedTelemetryFingerprintType], value)
+        values = reg.values()
+        return cast(Optional[VerifiedTelemetryFingerprintType], values[0] if values else None)
 
     @property
-    def fingerprint_template_Confidence(self) -> Optional[int]:
+    def fingerprint_template(self) -> Optional[tuple[int, bytes]]:
         """
-        Template Fingerprint information of a working sensor., %
-        """
-        reg = self.register(JD_VERIFIED_TELEMETRY_REG_FINGERPRINT_TEMPLATE)
-        value = reg.value(0)
-        return cast(Optional[int], value)
-
-    @property
-    def fingerprint_template_Template(self) -> Optional[bytes]:
-        """
-        Template Fingerprint information of a working sensor.
+        Template Fingerprint information of a working sensor., confidence: %
         """
         reg = self.register(JD_VERIFIED_TELEMETRY_REG_FINGERPRINT_TEMPLATE)
-        value = reg.value(1)
-        return cast(Optional[bytes], value)
+        values = reg.values()
+        return cast(Optional[tuple[int, bytes]], values)
 
     def on_telemetry_status_change(self, handler: EventHandlerFn) -> UnsubscribeFn:
         """

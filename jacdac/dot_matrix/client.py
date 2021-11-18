@@ -17,58 +17,58 @@ class DotMatrixClient(Client):
     def dots(self) -> Optional[bytes]:
         """
         The state of the screen where dot on/off state is
-        stored as a bit, column by column. The column should be byte aligned.
+        stored as a bit, column by column. The column should be byte aligned., 
         """
         reg = self.register(JD_DOT_MATRIX_REG_DOTS)
-        value = reg.value(0)
-        return cast(Optional[bytes], value)
+        values = reg.values()
+        return cast(Optional[bytes], values[0] if values else None)
 
     @dots.setter
     def dots(self, value: bytes) -> None:
         reg = self.register(JD_DOT_MATRIX_REG_DOTS)
-        reg.set_value(0, value)
+        reg.set_values(value) # type: ignore
 
 
     @property
     def brightness(self) -> Optional[float]:
         """
-        (Optional) Reads the general brightness of the display, brightness for LEDs. `0` when the screen is off., /
+        (Optional) Reads the general brightness of the display, brightness for LEDs. `0` when the screen is off., _: /
         """
         reg = self.register(JD_DOT_MATRIX_REG_BRIGHTNESS)
-        value = reg.value(0)
-        return cast(Optional[float], value)
+        values = reg.values()
+        return cast(Optional[float], values[0] if values else None)
 
     @brightness.setter
     def brightness(self, value: float) -> None:
         reg = self.register(JD_DOT_MATRIX_REG_BRIGHTNESS)
-        reg.set_value(0, value)
+        reg.set_values(value) # type: ignore
 
 
     @property
     def rows(self) -> Optional[int]:
         """
-        Number of rows on the screen, #
+        Number of rows on the screen, _: #
         """
         reg = self.register(JD_DOT_MATRIX_REG_ROWS)
-        value = reg.value(0)
-        return cast(Optional[int], value)
+        values = reg.values()
+        return cast(Optional[int], values[0] if values else None)
 
     @property
     def columns(self) -> Optional[int]:
         """
-        Number of columns on the screen, #
+        Number of columns on the screen, _: #
         """
         reg = self.register(JD_DOT_MATRIX_REG_COLUMNS)
-        value = reg.value(0)
-        return cast(Optional[int], value)
+        values = reg.values()
+        return cast(Optional[int], values[0] if values else None)
 
     @property
     def variant(self) -> Optional[DotMatrixVariant]:
         """
-        (Optional) Describes the type of matrix used.
+        (Optional) Describes the type of matrix used., 
         """
         reg = self.register(JD_DOT_MATRIX_REG_VARIANT)
-        value = reg.value(0)
-        return cast(Optional[DotMatrixVariant], value)
+        values = reg.values()
+        return cast(Optional[DotMatrixVariant], values[0] if values else None)
 
     

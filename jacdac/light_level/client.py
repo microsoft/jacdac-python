@@ -16,19 +16,19 @@ class LightLevelClient(Client):
     @property
     def light_level(self) -> Optional[float]:
         """
-        Detect light level, /
+        Detect light level, _: /
         """
         reg = self.register(JD_LIGHT_LEVEL_REG_LIGHT_LEVEL)
-        value = reg.value(0)
-        return cast(Optional[float], value)
+        values = reg.values()
+        return cast(Optional[float], values[0] if values else None)
 
     @property
     def variant(self) -> Optional[LightLevelVariant]:
         """
-        (Optional) The type of physical sensor.
+        (Optional) The type of physical sensor., 
         """
         reg = self.register(JD_LIGHT_LEVEL_REG_VARIANT)
-        value = reg.value(0)
-        return cast(Optional[LightLevelVariant], value)
+        values = reg.values()
+        return cast(Optional[LightLevelVariant], values[0] if values else None)
 
     

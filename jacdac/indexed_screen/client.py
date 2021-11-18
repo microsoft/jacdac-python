@@ -19,45 +19,45 @@ class IndexedScreenClient(Client):
     def brightness(self) -> Optional[float]:
         """
         Set backlight brightness.
-        If set to `0` the display may go to sleep., /
+        If set to `0` the display may go to sleep., _: /
         """
         reg = self.register(JD_INDEXED_SCREEN_REG_BRIGHTNESS)
-        value = reg.value(0)
-        return cast(Optional[float], value)
+        values = reg.values()
+        return cast(Optional[float], values[0] if values else None)
 
     @brightness.setter
     def brightness(self, value: float) -> None:
         reg = self.register(JD_INDEXED_SCREEN_REG_BRIGHTNESS)
-        reg.set_value(0, value)
+        reg.set_values(value) # type: ignore
 
 
     @property
     def bits_per_pixel(self) -> Optional[int]:
         """
         Determines the number of palette entries.
-        Typical values are 1, 2, 4, or 8., bit
+        Typical values are 1, 2, 4, or 8., _: bit
         """
         reg = self.register(JD_INDEXED_SCREEN_REG_BITS_PER_PIXEL)
-        value = reg.value(0)
-        return cast(Optional[int], value)
+        values = reg.values()
+        return cast(Optional[int], values[0] if values else None)
 
     @property
     def width(self) -> Optional[int]:
         """
-        Screen width in "natural" orientation., px
+        Screen width in "natural" orientation., _: px
         """
         reg = self.register(JD_INDEXED_SCREEN_REG_WIDTH)
-        value = reg.value(0)
-        return cast(Optional[int], value)
+        values = reg.values()
+        return cast(Optional[int], values[0] if values else None)
 
     @property
     def height(self) -> Optional[int]:
         """
-        Screen height in "natural" orientation., px
+        Screen height in "natural" orientation., _: px
         """
         reg = self.register(JD_INDEXED_SCREEN_REG_HEIGHT)
-        value = reg.value(0)
-        return cast(Optional[int], value)
+        values = reg.values()
+        return cast(Optional[int], values[0] if values else None)
 
     @property
     def width_major(self) -> Optional[bool]:
@@ -67,16 +67,16 @@ class IndexedScreenClient(Client):
         For embedded screen controllers, this is typically true iff `width < height`
         (in other words, it's only true for portrait orientation screens).
         Some controllers may allow the user to change this (though the refresh order may not be optimal then).
-        This is independent of the `rotation` register.
+        This is independent of the `rotation` register., 
         """
         reg = self.register(JD_INDEXED_SCREEN_REG_WIDTH_MAJOR)
-        value = reg.value(0)
-        return cast(Optional[bool], value)
+        values = reg.values()
+        return cast(Optional[bool], values[0] if values else None)
 
     @width_major.setter
     def width_major(self, value: bool) -> None:
         reg = self.register(JD_INDEXED_SCREEN_REG_WIDTH_MAJOR)
-        reg.set_value(0, value)
+        reg.set_values(value) # type: ignore
 
 
     @property
@@ -84,16 +84,16 @@ class IndexedScreenClient(Client):
         """
         Every pixel sent over wire is represented by `up_sampling x up_sampling` square of physical pixels.
         Some displays may allow changing this (which will also result in changes to `width` and `height`).
-        Typical values are 1 and 2., px
+        Typical values are 1 and 2., _: px
         """
         reg = self.register(JD_INDEXED_SCREEN_REG_UP_SAMPLING)
-        value = reg.value(0)
-        return cast(Optional[int], value)
+        values = reg.values()
+        return cast(Optional[int], values[0] if values else None)
 
     @up_sampling.setter
     def up_sampling(self, value: int) -> None:
         reg = self.register(JD_INDEXED_SCREEN_REG_UP_SAMPLING)
-        reg.set_value(0, value)
+        reg.set_values(value) # type: ignore
 
 
     @property
@@ -101,16 +101,16 @@ class IndexedScreenClient(Client):
         """
         Possible values are 0, 90, 180 and 270 only.
         Write to this register do not affect `width` and `height` registers,
-        and may be ignored by some screens., °
+        and may be ignored by some screens., _: °
         """
         reg = self.register(JD_INDEXED_SCREEN_REG_ROTATION)
-        value = reg.value(0)
-        return cast(Optional[int], value)
+        values = reg.values()
+        return cast(Optional[int], values[0] if values else None)
 
     @rotation.setter
     def rotation(self, value: int) -> None:
         reg = self.register(JD_INDEXED_SCREEN_REG_ROTATION)
-        reg.set_value(0, value)
+        reg.set_values(value) # type: ignore
 
 
 

@@ -14,55 +14,37 @@ class AccelerometerClient(Client):
     
 
     @property
-    def x(self) -> Optional[float]:
+    def forces(self) -> Optional[tuple[float, float, float]]:
         """
-        Indicates the current forces acting on accelerometer., g
-        """
-        reg = self.register(JD_ACCELEROMETER_REG_FORCES)
-        value = reg.value(0)
-        return cast(Optional[float], value)
-
-    @property
-    def y(self) -> Optional[float]:
-        """
-        Indicates the current forces acting on accelerometer., g
+        Indicates the current forces acting on accelerometer., x: g,y: g,z: g
         """
         reg = self.register(JD_ACCELEROMETER_REG_FORCES)
-        value = reg.value(1)
-        return cast(Optional[float], value)
-
-    @property
-    def z(self) -> Optional[float]:
-        """
-        Indicates the current forces acting on accelerometer., g
-        """
-        reg = self.register(JD_ACCELEROMETER_REG_FORCES)
-        value = reg.value(2)
-        return cast(Optional[float], value)
+        values = reg.values()
+        return cast(Optional[tuple[float, float, float]], values)
 
     @property
     def forces_error(self) -> Optional[float]:
         """
-        (Optional) Error on the reading value., g
+        (Optional) Error on the reading value., _: g
         """
         reg = self.register(JD_ACCELEROMETER_REG_FORCES_ERROR)
-        value = reg.value(0)
-        return cast(Optional[float], value)
+        values = reg.values()
+        return cast(Optional[float], values[0] if values else None)
 
     @property
     def max_force(self) -> Optional[float]:
         """
         (Optional) Configures the range forces detected.
-        The value will be "rounded up" to one of `max_forces_supported`., g
+        The value will be "rounded up" to one of `max_forces_supported`., _: g
         """
         reg = self.register(JD_ACCELEROMETER_REG_MAX_FORCE)
-        value = reg.value(0)
-        return cast(Optional[float], value)
+        values = reg.values()
+        return cast(Optional[float], values[0] if values else None)
 
     @max_force.setter
     def max_force(self, value: float) -> None:
         reg = self.register(JD_ACCELEROMETER_REG_MAX_FORCE)
-        reg.set_value(0, value)
+        reg.set_values(value) # type: ignore
 
 
     def on_tilt_up(self, handler: EventHandlerFn) -> UnsubscribeFn:

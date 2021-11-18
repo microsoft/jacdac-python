@@ -18,50 +18,50 @@ class MotorClient(Client):
         """
         PWM duty cycle of the motor. Use negative/positive values to run the motor forwards and backwards.
         Positive is recommended to be clockwise rotation and negative counterclockwise. A duty of ``0`` 
-        while ``enabled`` acts as brake., /
+        while ``enabled`` acts as brake., _: /
         """
         reg = self.register(JD_MOTOR_REG_DUTY)
-        value = reg.value(0)
-        return cast(Optional[float], value)
+        values = reg.values()
+        return cast(Optional[float], values[0] if values else None)
 
     @duty.setter
     def duty(self, value: float) -> None:
         self.enabled = True
         reg = self.register(JD_MOTOR_REG_DUTY)
-        reg.set_value(0, value)
+        reg.set_values(value) # type: ignore
 
 
     @property
     def enabled(self) -> Optional[bool]:
         """
-        Turn the power to the motor on/off.
+        Turn the power to the motor on/off., 
         """
         reg = self.register(JD_MOTOR_REG_ENABLED)
-        value = reg.value(0)
-        return cast(Optional[bool], value)
+        values = reg.values()
+        return cast(Optional[bool], values[0] if values else None)
 
     @enabled.setter
     def enabled(self, value: bool) -> None:
         reg = self.register(JD_MOTOR_REG_ENABLED)
-        reg.set_value(0, value)
+        reg.set_values(value) # type: ignore
 
 
     @property
     def load_torque(self) -> Optional[float]:
         """
-        (Optional) Torque required to produce the rated power of an electrical motor at load speed., kg/cm
+        (Optional) Torque required to produce the rated power of an electrical motor at load speed., _: kg/cm
         """
         reg = self.register(JD_MOTOR_REG_LOAD_TORQUE)
-        value = reg.value(0)
-        return cast(Optional[float], value)
+        values = reg.values()
+        return cast(Optional[float], values[0] if values else None)
 
     @property
     def load_speed(self) -> Optional[float]:
         """
-        (Optional) Revolutions per minute of the motor under full load., rpm
+        (Optional) Revolutions per minute of the motor under full load., _: rpm
         """
         reg = self.register(JD_MOTOR_REG_LOAD_SPEED)
-        value = reg.value(0)
-        return cast(Optional[float], value)
+        values = reg.values()
+        return cast(Optional[float], values[0] if values else None)
 
     

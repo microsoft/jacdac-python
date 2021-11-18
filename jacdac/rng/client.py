@@ -20,11 +20,11 @@ class RngClient(Client):
     def random(self) -> Optional[bytes]:
         """
         A register that returns a 64 bytes random buffer on every request.
-        This never blocks for a long time. If you need additional random bytes, keep querying the register.
+        This never blocks for a long time. If you need additional random bytes, keep querying the register., 
         """
         reg = self.register(JD_RNG_REG_RANDOM)
-        value = reg.value(0)
-        return cast(Optional[bytes], value)
+        values = reg.values()
+        return cast(Optional[bytes], values[0] if values else None)
 
     @property
     def variant(self) -> Optional[RngVariant]:
@@ -32,10 +32,10 @@ class RngClient(Client):
         (Optional) The type of algorithm/technique used to generate the number.
         `Quantum` refers to dedicated hardware device generating random noise due to quantum effects.
         `ADCNoise` is the noise from quick readings of analog-digital converter, which reads temperature of the MCU or some floating pin.
-        `WebCrypto` refers is used in simulators, where the source of randomness comes from an advanced operating system.
+        `WebCrypto` refers is used in simulators, where the source of randomness comes from an advanced operating system., 
         """
         reg = self.register(JD_RNG_REG_VARIANT)
-        value = reg.value(0)
-        return cast(Optional[RngVariant], value)
+        values = reg.values()
+        return cast(Optional[RngVariant], values[0] if values else None)
 
     

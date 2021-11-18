@@ -16,20 +16,20 @@ class ReflectedLightClient(Client):
     @property
     def brightness(self) -> Optional[float]:
         """
-        Reports the reflected brightness. It may be a digital value or, for some sensor, analog value., /
+        Reports the reflected brightness. It may be a digital value or, for some sensor, analog value., _: /
         """
         reg = self.register(JD_REFLECTED_LIGHT_REG_BRIGHTNESS)
-        value = reg.value(0)
-        return cast(Optional[float], value)
+        values = reg.values()
+        return cast(Optional[float], values[0] if values else None)
 
     @property
     def variant(self) -> Optional[ReflectedLightVariant]:
         """
-        (Optional) Type of physical sensor used
+        (Optional) Type of physical sensor used, 
         """
         reg = self.register(JD_REFLECTED_LIGHT_REG_VARIANT)
-        value = reg.value(0)
-        return cast(Optional[ReflectedLightVariant], value)
+        values = reg.values()
+        return cast(Optional[ReflectedLightVariant], values[0] if values else None)
 
     def on_dark(self, handler: EventHandlerFn) -> UnsubscribeFn:
         """

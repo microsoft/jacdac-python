@@ -17,26 +17,26 @@ class LightBulbClient(Client):
     def brightness(self) -> Optional[float]:
         """
         Indicates the brightness of the light bulb. Zero means completely off and 0xffff means completely on.
-        For non-dimmeable lights, the value should be clamp to 0xffff for any non-zero value., /
+        For non-dimmeable lights, the value should be clamp to 0xffff for any non-zero value., _: /
         """
         reg = self.register(JD_LIGHT_BULB_REG_BRIGHTNESS)
-        value = reg.value(0)
-        return cast(Optional[float], value)
+        values = reg.values()
+        return cast(Optional[float], values[0] if values else None)
 
     @brightness.setter
     def brightness(self, value: float) -> None:
         reg = self.register(JD_LIGHT_BULB_REG_BRIGHTNESS)
-        reg.set_value(0, value)
+        reg.set_values(value) # type: ignore
 
 
     @property
     def dimmeable(self) -> Optional[bool]:
         """
-        (Optional) Indicates if the light supports dimming.
+        (Optional) Indicates if the light supports dimming., 
         """
         reg = self.register(JD_LIGHT_BULB_REG_DIMMEABLE)
-        value = reg.value(0)
-        return cast(Optional[bool], value)
+        values = reg.values()
+        return cast(Optional[bool], values[0] if values else None)
 
     def on_on(self, handler: EventHandlerFn) -> UnsubscribeFn:
         """

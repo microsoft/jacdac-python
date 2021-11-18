@@ -19,26 +19,26 @@ class ArcadeSoundClient(Client):
     def sample_rate(self) -> Optional[float]:
         """
         Get or set playback sample rate (in samples per second).
-        If you set it, read it back, as the value may be rounded up or down., Hz
+        If you set it, read it back, as the value may be rounded up or down., _: Hz
         """
         reg = self.register(JD_ARCADE_SOUND_REG_SAMPLE_RATE)
-        value = reg.value(0)
-        return cast(Optional[float], value)
+        values = reg.values()
+        return cast(Optional[float], values[0] if values else None)
 
     @sample_rate.setter
     def sample_rate(self, value: float) -> None:
         reg = self.register(JD_ARCADE_SOUND_REG_SAMPLE_RATE)
-        reg.set_value(0, value)
+        reg.set_values(value) # type: ignore
 
 
     @property
     def buffer_size(self) -> Optional[int]:
         """
-        The size of the internal audio buffer., B
+        The size of the internal audio buffer., _: B
         """
         reg = self.register(JD_ARCADE_SOUND_REG_BUFFER_SIZE)
-        value = reg.value(0)
-        return cast(Optional[int], value)
+        values = reg.values()
+        return cast(Optional[int], values[0] if values else None)
 
     @property
     def buffer_pending(self) -> Optional[int]:
@@ -46,11 +46,11 @@ class ArcadeSoundClient(Client):
         How much data is still left in the buffer to play.
         Clients should not send more data than `buffer_size - buffer_pending`,
         but can keep the `buffer_pending` as low as they want to ensure low latency
-        of audio playback., B
+        of audio playback., _: B
         """
         reg = self.register(JD_ARCADE_SOUND_REG_BUFFER_PENDING)
-        value = reg.value(0)
-        return cast(Optional[int], value)
+        values = reg.values()
+        return cast(Optional[int], values[0] if values else None)
 
 
     def play(self, samples: bytes) -> None:

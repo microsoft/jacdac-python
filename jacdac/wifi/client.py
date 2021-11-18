@@ -26,54 +26,54 @@ class WifiClient(Client):
     @property
     def enabled(self) -> Optional[bool]:
         """
-        Determines whether the WiFi radio is enabled. It starts enabled upon reset.
+        Determines whether the WiFi radio is enabled. It starts enabled upon reset., 
         """
         reg = self.register(JD_WIFI_REG_ENABLED)
-        value = reg.value(0)
-        return cast(Optional[bool], value)
+        values = reg.values()
+        return cast(Optional[bool], values[0] if values else None)
 
     @enabled.setter
     def enabled(self, value: bool) -> None:
         reg = self.register(JD_WIFI_REG_ENABLED)
-        reg.set_value(0, value)
+        reg.set_values(value) # type: ignore
 
 
     @property
     def ip_address(self) -> Optional[bytes]:
         """
-        0, 4 or 16 byte buffer with the IPv4 or IPv6 address assigned to device if any.
+        0, 4 or 16 byte buffer with the IPv4 or IPv6 address assigned to device if any., 
         """
         reg = self.register(JD_WIFI_REG_IP_ADDRESS)
-        value = reg.value(0)
-        return cast(Optional[bytes], value)
+        values = reg.values()
+        return cast(Optional[bytes], values[0] if values else None)
 
     @property
     def eui_48(self) -> Optional[bytes]:
         """
-        The 6-byte MAC address of the device. If a device does MAC address randomization it will have to "restart".
+        The 6-byte MAC address of the device. If a device does MAC address randomization it will have to "restart"., 
         """
         reg = self.register(JD_WIFI_REG_EUI_48)
-        value = reg.value(0)
-        return cast(Optional[bytes], value)
+        values = reg.values()
+        return cast(Optional[bytes], values[0] if values else None)
 
     @property
     def ssid(self) -> Optional[str]:
         """
         SSID of the access-point to which device is currently connected.
-        Empty string if not connected.
+        Empty string if not connected., 
         """
         reg = self.register(JD_WIFI_REG_SSID)
-        value = reg.value(0)
-        return cast(Optional[str], value)
+        values = reg.values()
+        return cast(Optional[str], values[0] if values else None)
 
     @property
     def rssi(self) -> Optional[int]:
         """
-        Current signal strength. Returns -128 when not connected., dB
+        Current signal strength. Returns -128 when not connected., _: dB
         """
         reg = self.register(JD_WIFI_REG_RSSI)
-        value = reg.value(0)
-        return cast(Optional[int], value)
+        values = reg.values()
+        return cast(Optional[int], values[0] if values else None)
 
     def on_got_ip(self, handler: EventHandlerFn) -> UnsubscribeFn:
         """

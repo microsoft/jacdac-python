@@ -16,55 +16,55 @@ class ECO2Client(Client):
     @property
     def e_CO2(self) -> Optional[float]:
         """
-        Equivalent CO₂ (eCO₂) readings., ppm
+        Equivalent CO₂ (eCO₂) readings., _: ppm
         """
         reg = self.register(JD_E_CO2_REG_E_CO2)
-        value = reg.value(0)
-        return cast(Optional[float], value)
+        values = reg.values()
+        return cast(Optional[float], values[0] if values else None)
 
     @property
     def e_CO2_error(self) -> Optional[float]:
         """
-        Error on the reading value., ppm
+        Error on the reading value., _: ppm
         """
         reg = self.register(JD_E_CO2_REG_E_CO2_ERROR)
-        value = reg.value(0)
-        return cast(Optional[float], value)
+        values = reg.values()
+        return cast(Optional[float], values[0] if values else None)
 
     @property
     def min_e_CO2(self) -> Optional[float]:
         """
-        (Optional) Minimum measurable value, ppm
+        (Optional) Minimum measurable value, _: ppm
         """
         reg = self.register(JD_E_CO2_REG_MIN_E_CO2)
-        value = reg.value(0)
-        return cast(Optional[float], value)
+        values = reg.values()
+        return cast(Optional[float], values[0] if values else None)
 
     @property
     def max_e_CO2(self) -> Optional[float]:
         """
-        (Optional) Minimum measurable value, ppm
+        (Optional) Minimum measurable value, _: ppm
         """
         reg = self.register(JD_E_CO2_REG_MAX_E_CO2)
-        value = reg.value(0)
-        return cast(Optional[float], value)
+        values = reg.values()
+        return cast(Optional[float], values[0] if values else None)
 
     @property
     def conditioning_period(self) -> Optional[int]:
         """
-        (Optional) Time required to achieve good sensor stability before measuring after long idle period., s
+        (Optional) Time required to achieve good sensor stability before measuring after long idle period., _: s
         """
         reg = self.register(JD_E_CO2_REG_CONDITIONING_PERIOD)
-        value = reg.value(0)
-        return cast(Optional[int], value)
+        values = reg.values()
+        return cast(Optional[int], values[0] if values else None)
 
     @property
     def variant(self) -> Optional[ECO2Variant]:
         """
-        (Optional) Type of physical sensor and capabilities.
+        (Optional) Type of physical sensor and capabilities., 
         """
         reg = self.register(JD_E_CO2_REG_VARIANT)
-        value = reg.value(0)
-        return cast(Optional[ECO2Variant], value)
+        values = reg.values()
+        return cast(Optional[ECO2Variant], values[0] if values else None)
 
     

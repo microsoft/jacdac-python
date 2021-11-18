@@ -16,46 +16,46 @@ class ThermocoupleClient(Client):
     @property
     def temperature(self) -> Optional[float]:
         """
-        The temperature., °C
+        The temperature., _: °C
         """
         reg = self.register(JD_THERMOCOUPLE_REG_TEMPERATURE)
-        value = reg.value(0)
-        return cast(Optional[float], value)
+        values = reg.values()
+        return cast(Optional[float], values[0] if values else None)
 
     @property
     def min_temperature(self) -> Optional[float]:
         """
-        Lowest temperature that can be reported., °C
+        Lowest temperature that can be reported., _: °C
         """
         reg = self.register(JD_THERMOCOUPLE_REG_MIN_TEMPERATURE)
-        value = reg.value(0)
-        return cast(Optional[float], value)
+        values = reg.values()
+        return cast(Optional[float], values[0] if values else None)
 
     @property
     def max_temperature(self) -> Optional[float]:
         """
-        Highest temperature that can be reported., °C
+        Highest temperature that can be reported., _: °C
         """
         reg = self.register(JD_THERMOCOUPLE_REG_MAX_TEMPERATURE)
-        value = reg.value(0)
-        return cast(Optional[float], value)
+        values = reg.values()
+        return cast(Optional[float], values[0] if values else None)
 
     @property
     def temperature_error(self) -> Optional[float]:
         """
-        The real temperature is between `temperature - temperature_error` and `temperature + temperature_error`., °C
+        The real temperature is between `temperature - temperature_error` and `temperature + temperature_error`., _: °C
         """
         reg = self.register(JD_THERMOCOUPLE_REG_TEMPERATURE_ERROR)
-        value = reg.value(0)
-        return cast(Optional[float], value)
+        values = reg.values()
+        return cast(Optional[float], values[0] if values else None)
 
     @property
     def variant(self) -> Optional[ThermocoupleVariant]:
         """
-        (Optional) Specifies the type of thermometer.
+        (Optional) Specifies the type of thermometer., 
         """
         reg = self.register(JD_THERMOCOUPLE_REG_VARIANT)
-        value = reg.value(0)
-        return cast(Optional[ThermocoupleVariant], value)
+        values = reg.values()
+        return cast(Optional[ThermocoupleVariant], values[0] if values else None)
 
     

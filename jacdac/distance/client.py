@@ -16,37 +16,37 @@ class DistanceClient(Client):
     @property
     def distance(self) -> Optional[float]:
         """
-        Current distance from the object, m
+        Current distance from the object, _: m
         """
         reg = self.register(JD_DISTANCE_REG_DISTANCE)
-        value = reg.value(0)
-        return cast(Optional[float], value)
+        values = reg.values()
+        return cast(Optional[float], values[0] if values else None)
 
     @property
     def min_range(self) -> Optional[float]:
         """
-        (Optional) Minimum measurable distance, m
+        (Optional) Minimum measurable distance, _: m
         """
         reg = self.register(JD_DISTANCE_REG_MIN_RANGE)
-        value = reg.value(0)
-        return cast(Optional[float], value)
+        values = reg.values()
+        return cast(Optional[float], values[0] if values else None)
 
     @property
     def max_range(self) -> Optional[float]:
         """
-        (Optional) Maximum measurable distance, m
+        (Optional) Maximum measurable distance, _: m
         """
         reg = self.register(JD_DISTANCE_REG_MAX_RANGE)
-        value = reg.value(0)
-        return cast(Optional[float], value)
+        values = reg.values()
+        return cast(Optional[float], values[0] if values else None)
 
     @property
     def variant(self) -> Optional[DistanceVariant]:
         """
-        (Optional) Determines the type of sensor used.
+        (Optional) Determines the type of sensor used., 
         """
         reg = self.register(JD_DISTANCE_REG_VARIANT)
-        value = reg.value(0)
-        return cast(Optional[DistanceVariant], value)
+        values = reg.values()
+        return cast(Optional[DistanceVariant], values[0] if values else None)
 
     

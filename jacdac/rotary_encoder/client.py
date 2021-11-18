@@ -17,19 +17,19 @@ class RotaryEncoderClient(Client):
     def position(self) -> Optional[int]:
         """
         Upon device reset starts at `0` (regardless of the shaft position).
-        Increases by `1` for a clockwise "click", by `-1` for counter-clockwise., #
+        Increases by `1` for a clockwise "click", by `-1` for counter-clockwise., _: #
         """
         reg = self.register(JD_ROTARY_ENCODER_REG_POSITION)
-        value = reg.value(0)
-        return cast(Optional[int], value)
+        values = reg.values()
+        return cast(Optional[int], values[0] if values else None)
 
     @property
     def clicks_per_turn(self) -> Optional[int]:
         """
-        (Optional) This specifies by how much `position` changes when the crank does 360 degree turn. Typically 12 or 24., #
+        (Optional) This specifies by how much `position` changes when the crank does 360 degree turn. Typically 12 or 24., _: #
         """
         reg = self.register(JD_ROTARY_ENCODER_REG_CLICKS_PER_TURN)
-        value = reg.value(0)
-        return cast(Optional[int], value)
+        values = reg.values()
+        return cast(Optional[int], values[0] if values else None)
 
     

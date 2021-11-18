@@ -16,35 +16,35 @@ class CompassClient(Client):
     @property
     def heading(self) -> Optional[float]:
         """
-        The heading with respect to the magnetic north., °
+        The heading with respect to the magnetic north., _: °
         """
         reg = self.register(JD_COMPASS_REG_HEADING)
-        value = reg.value(0)
-        return cast(Optional[float], value)
+        values = reg.values()
+        return cast(Optional[float], values[0] if values else None)
 
     @property
     def enabled(self) -> Optional[bool]:
         """
-        Turn on or off the sensor. Turning on the sensor may start a calibration sequence.
+        Turn on or off the sensor. Turning on the sensor may start a calibration sequence., 
         """
         reg = self.register(JD_COMPASS_REG_ENABLED)
-        value = reg.value(0)
-        return cast(Optional[bool], value)
+        values = reg.values()
+        return cast(Optional[bool], values[0] if values else None)
 
     @enabled.setter
     def enabled(self, value: bool) -> None:
         reg = self.register(JD_COMPASS_REG_ENABLED)
-        reg.set_value(0, value)
+        reg.set_values(value) # type: ignore
 
 
     @property
     def heading_error(self) -> Optional[float]:
         """
-        (Optional) Error on the heading reading, °
+        (Optional) Error on the heading reading, _: °
         """
         reg = self.register(JD_COMPASS_REG_HEADING_ERROR)
-        value = reg.value(0)
-        return cast(Optional[float], value)
+        values = reg.values()
+        return cast(Optional[float], values[0] if values else None)
 
 
     def calibrate(self, ) -> None:

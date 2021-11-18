@@ -16,28 +16,28 @@ class UvIndexClient(Client):
     @property
     def uv_index(self) -> Optional[float]:
         """
-        Ultraviolet index, typically refreshed every second., uv
+        Ultraviolet index, typically refreshed every second., _: uv
         """
         reg = self.register(JD_UV_INDEX_REG_UV_INDEX)
-        value = reg.value(0)
-        return cast(Optional[float], value)
+        values = reg.values()
+        return cast(Optional[float], values[0] if values else None)
 
     @property
     def uv_index_error(self) -> Optional[float]:
         """
-        (Optional) Error on the UV measure., uv
+        (Optional) Error on the UV measure., _: uv
         """
         reg = self.register(JD_UV_INDEX_REG_UV_INDEX_ERROR)
-        value = reg.value(0)
-        return cast(Optional[float], value)
+        values = reg.values()
+        return cast(Optional[float], values[0] if values else None)
 
     @property
     def variant(self) -> Optional[UvIndexVariant]:
         """
-        (Optional) The type of physical sensor and capabilities.
+        (Optional) The type of physical sensor and capabilities., 
         """
         reg = self.register(JD_UV_INDEX_REG_VARIANT)
-        value = reg.value(0)
-        return cast(Optional[UvIndexVariant], value)
+        values = reg.values()
+        return cast(Optional[UvIndexVariant], values[0] if values else None)
 
     

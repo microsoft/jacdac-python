@@ -16,28 +16,28 @@ class WindSpeedClient(Client):
     @property
     def wind_speed(self) -> Optional[float]:
         """
-        The velocity of the wind., m/s
+        The velocity of the wind., _: m/s
         """
         reg = self.register(JD_WIND_SPEED_REG_WIND_SPEED)
-        value = reg.value(0)
-        return cast(Optional[float], value)
+        values = reg.values()
+        return cast(Optional[float], values[0] if values else None)
 
     @property
     def wind_speed_error(self) -> Optional[float]:
         """
-        Error on the reading, m/s
+        Error on the reading, _: m/s
         """
         reg = self.register(JD_WIND_SPEED_REG_WIND_SPEED_ERROR)
-        value = reg.value(0)
-        return cast(Optional[float], value)
+        values = reg.values()
+        return cast(Optional[float], values[0] if values else None)
 
     @property
     def max_wind_speed(self) -> Optional[float]:
         """
-        (Optional) Maximum speed that can be measured by the sensor., m/s
+        (Optional) Maximum speed that can be measured by the sensor., _: m/s
         """
         reg = self.register(JD_WIND_SPEED_REG_MAX_WIND_SPEED)
-        value = reg.value(0)
-        return cast(Optional[float], value)
+        values = reg.values()
+        return cast(Optional[float], values[0] if values else None)
 
     

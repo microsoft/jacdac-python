@@ -16,38 +16,38 @@ class MotionClient(Client):
     @property
     def moving(self) -> Optional[bool]:
         """
-        Reports is movement is currently detected by the sensor.
+        Reports is movement is currently detected by the sensor., 
         """
         reg = self.register(JD_MOTION_REG_MOVING)
-        value = reg.value(0)
-        return cast(Optional[bool], value)
+        values = reg.values()
+        return cast(Optional[bool], values[0] if values else None)
 
     @property
     def max_distance(self) -> Optional[float]:
         """
-        (Optional) Maximum distance where objects can be detected., m
+        (Optional) Maximum distance where objects can be detected., _: m
         """
         reg = self.register(JD_MOTION_REG_MAX_DISTANCE)
-        value = reg.value(0)
-        return cast(Optional[float], value)
+        values = reg.values()
+        return cast(Optional[float], values[0] if values else None)
 
     @property
     def angle(self) -> Optional[int]:
         """
-        (Optional) Opening of the field of view, °
+        (Optional) Opening of the field of view, _: °
         """
         reg = self.register(JD_MOTION_REG_ANGLE)
-        value = reg.value(0)
-        return cast(Optional[int], value)
+        values = reg.values()
+        return cast(Optional[int], values[0] if values else None)
 
     @property
     def variant(self) -> Optional[MotionVariant]:
         """
-        (Optional) Type of physical sensor
+        (Optional) Type of physical sensor, 
         """
         reg = self.register(JD_MOTION_REG_VARIANT)
-        value = reg.value(0)
-        return cast(Optional[MotionVariant], value)
+        values = reg.values()
+        return cast(Optional[MotionVariant], values[0] if values else None)
 
     def on_movement(self, handler: EventHandlerFn) -> UnsubscribeFn:
         """

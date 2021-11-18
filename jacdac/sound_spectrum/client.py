@@ -16,86 +16,86 @@ class SoundSpectrumClient(Client):
     @property
     def frequency_bins(self) -> Optional[bytes]:
         """
-        The computed frequency data.
+        The computed frequency data., 
         """
         reg = self.register(JD_SOUND_SPECTRUM_REG_FREQUENCY_BINS)
-        value = reg.value(0)
-        return cast(Optional[bytes], value)
+        values = reg.values()
+        return cast(Optional[bytes], values[0] if values else None)
 
     @property
     def enabled(self) -> Optional[bool]:
         """
-        Turns on/off the micropohone.
+        Turns on/off the micropohone., 
         """
         reg = self.register(JD_SOUND_SPECTRUM_REG_ENABLED)
-        value = reg.value(0)
-        return cast(Optional[bool], value)
+        values = reg.values()
+        return cast(Optional[bool], values[0] if values else None)
 
     @enabled.setter
     def enabled(self, value: bool) -> None:
         reg = self.register(JD_SOUND_SPECTRUM_REG_ENABLED)
-        reg.set_value(0, value)
+        reg.set_values(value) # type: ignore
 
 
     @property
     def fft_pow2_size(self) -> Optional[int]:
         """
-        The power of 2 used as the size of the FFT to be used to determine the frequency domain.
+        The power of 2 used as the size of the FFT to be used to determine the frequency domain., 
         """
         reg = self.register(JD_SOUND_SPECTRUM_REG_FFT_POW2_SIZE)
-        value = reg.value(0)
-        return cast(Optional[int], value)
+        values = reg.values()
+        return cast(Optional[int], values[0] if values else None)
 
     @fft_pow2_size.setter
     def fft_pow2_size(self, value: int) -> None:
         reg = self.register(JD_SOUND_SPECTRUM_REG_FFT_POW2_SIZE)
-        reg.set_value(0, value)
+        reg.set_values(value) # type: ignore
 
 
     @property
     def min_decibels(self) -> Optional[int]:
         """
-        The minimum power value in the scaling range for the FFT analysis data, dB
+        The minimum power value in the scaling range for the FFT analysis data, _: dB
         """
         reg = self.register(JD_SOUND_SPECTRUM_REG_MIN_DECIBELS)
-        value = reg.value(0)
-        return cast(Optional[int], value)
+        values = reg.values()
+        return cast(Optional[int], values[0] if values else None)
 
     @min_decibels.setter
     def min_decibels(self, value: int) -> None:
         reg = self.register(JD_SOUND_SPECTRUM_REG_MIN_DECIBELS)
-        reg.set_value(0, value)
+        reg.set_values(value) # type: ignore
 
 
     @property
     def max_decibels(self) -> Optional[int]:
         """
-        The maximum power value in the scaling range for the FFT analysis data, dB
+        The maximum power value in the scaling range for the FFT analysis data, _: dB
         """
         reg = self.register(JD_SOUND_SPECTRUM_REG_MAX_DECIBELS)
-        value = reg.value(0)
-        return cast(Optional[int], value)
+        values = reg.values()
+        return cast(Optional[int], values[0] if values else None)
 
     @max_decibels.setter
     def max_decibels(self, value: int) -> None:
         reg = self.register(JD_SOUND_SPECTRUM_REG_MAX_DECIBELS)
-        reg.set_value(0, value)
+        reg.set_values(value) # type: ignore
 
 
     @property
     def smoothing_time_constant(self) -> Optional[float]:
         """
         The averaging constant with the last analysis frame. 
-        If ``0`` is set, there is no averaging done, whereas a value of ``1`` means "overlap the previous and current buffer quite a lot while computing the value"., /
+        If ``0`` is set, there is no averaging done, whereas a value of ``1`` means "overlap the previous and current buffer quite a lot while computing the value"., _: /
         """
         reg = self.register(JD_SOUND_SPECTRUM_REG_SMOOTHING_TIME_CONSTANT)
-        value = reg.value(0)
-        return cast(Optional[float], value)
+        values = reg.values()
+        return cast(Optional[float], values[0] if values else None)
 
     @smoothing_time_constant.setter
     def smoothing_time_constant(self, value: float) -> None:
         reg = self.register(JD_SOUND_SPECTRUM_REG_SMOOTHING_TIME_CONSTANT)
-        reg.set_value(0, value)
+        reg.set_values(value) # type: ignore
 
 
     

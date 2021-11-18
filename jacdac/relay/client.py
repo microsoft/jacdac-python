@@ -16,35 +16,35 @@ class RelayClient(Client):
     @property
     def closed(self) -> Optional[bool]:
         """
-        Indicates whether the relay circuit is currently energized (closed) or not.
+        Indicates whether the relay circuit is currently energized (closed) or not., 
         """
         reg = self.register(JD_RELAY_REG_CLOSED)
-        value = reg.value(0)
-        return cast(Optional[bool], value)
+        values = reg.values()
+        return cast(Optional[bool], values[0] if values else None)
 
     @closed.setter
     def closed(self, value: bool) -> None:
         reg = self.register(JD_RELAY_REG_CLOSED)
-        reg.set_value(0, value)
+        reg.set_values(value) # type: ignore
 
 
     @property
     def variant(self) -> Optional[RelayVariant]:
         """
-        (Optional) Describes the type of relay used.
+        (Optional) Describes the type of relay used., 
         """
         reg = self.register(JD_RELAY_REG_VARIANT)
-        value = reg.value(0)
-        return cast(Optional[RelayVariant], value)
+        values = reg.values()
+        return cast(Optional[RelayVariant], values[0] if values else None)
 
     @property
     def max_switching_current(self) -> Optional[int]:
         """
-        (Optional) Maximum switching current for a resistive load., mA
+        (Optional) Maximum switching current for a resistive load., _: mA
         """
         reg = self.register(JD_RELAY_REG_MAX_SWITCHING_CURRENT)
-        value = reg.value(0)
-        return cast(Optional[int], value)
+        values = reg.values()
+        return cast(Optional[int], values[0] if values else None)
 
     def on_active(self, handler: EventHandlerFn) -> UnsubscribeFn:
         """

@@ -16,76 +16,76 @@ class SpeechSynthesisClient(Client):
     @property
     def enabled(self) -> Optional[bool]:
         """
-        Determines if the speech engine is in a non-paused state.
+        Determines if the speech engine is in a non-paused state., 
         """
         reg = self.register(JD_SPEECH_SYNTHESIS_REG_ENABLED)
-        value = reg.value(0)
-        return cast(Optional[bool], value)
+        values = reg.values()
+        return cast(Optional[bool], values[0] if values else None)
 
     @enabled.setter
     def enabled(self, value: bool) -> None:
         reg = self.register(JD_SPEECH_SYNTHESIS_REG_ENABLED)
-        reg.set_value(0, value)
+        reg.set_values(value) # type: ignore
 
 
     @property
     def lang(self) -> Optional[str]:
         """
-        (Optional) Language used for utterances as defined in https://www.ietf.org/rfc/bcp/bcp47.txt.
+        (Optional) Language used for utterances as defined in https://www.ietf.org/rfc/bcp/bcp47.txt., 
         """
         reg = self.register(JD_SPEECH_SYNTHESIS_REG_LANG)
-        value = reg.value(0)
-        return cast(Optional[str], value)
+        values = reg.values()
+        return cast(Optional[str], values[0] if values else None)
 
     @lang.setter
     def lang(self, value: str) -> None:
         reg = self.register(JD_SPEECH_SYNTHESIS_REG_LANG)
-        reg.set_value(0, value)
+        reg.set_values(value) # type: ignore
 
 
     @property
     def volume(self) -> Optional[float]:
         """
-        (Optional) Volume for utterances., /
+        (Optional) Volume for utterances., _: /
         """
         reg = self.register(JD_SPEECH_SYNTHESIS_REG_VOLUME)
-        value = reg.value(0)
-        return cast(Optional[float], value)
+        values = reg.values()
+        return cast(Optional[float], values[0] if values else None)
 
     @volume.setter
     def volume(self, value: float) -> None:
         reg = self.register(JD_SPEECH_SYNTHESIS_REG_VOLUME)
-        reg.set_value(0, value)
+        reg.set_values(value) # type: ignore
 
 
     @property
     def pitch(self) -> Optional[float]:
         """
-        (Optional) Pitch for utterances
+        (Optional) Pitch for utterances, 
         """
         reg = self.register(JD_SPEECH_SYNTHESIS_REG_PITCH)
-        value = reg.value(0)
-        return cast(Optional[float], value)
+        values = reg.values()
+        return cast(Optional[float], values[0] if values else None)
 
     @pitch.setter
     def pitch(self, value: float) -> None:
         reg = self.register(JD_SPEECH_SYNTHESIS_REG_PITCH)
-        reg.set_value(0, value)
+        reg.set_values(value) # type: ignore
 
 
     @property
     def rate(self) -> Optional[float]:
         """
-        (Optional) Rate for utterances
+        (Optional) Rate for utterances, 
         """
         reg = self.register(JD_SPEECH_SYNTHESIS_REG_RATE)
-        value = reg.value(0)
-        return cast(Optional[float], value)
+        values = reg.values()
+        return cast(Optional[float], values[0] if values else None)
 
     @rate.setter
     def rate(self, value: float) -> None:
         reg = self.register(JD_SPEECH_SYNTHESIS_REG_RATE)
-        reg.set_value(0, value)
+        reg.set_values(value) # type: ignore
 
 
 

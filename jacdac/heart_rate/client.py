@@ -19,28 +19,28 @@ class HeartRateClient(Client):
     @property
     def heart_rate(self) -> Optional[float]:
         """
-        The estimated heart rate., bpm
+        The estimated heart rate., _: bpm
         """
         reg = self.register(JD_HEART_RATE_REG_HEART_RATE)
-        value = reg.value(0)
-        return cast(Optional[float], value)
+        values = reg.values()
+        return cast(Optional[float], values[0] if values else None)
 
     @property
     def heart_rate_error(self) -> Optional[float]:
         """
-        (Optional) The estimated error on the reported sensor data., bpm
+        (Optional) The estimated error on the reported sensor data., _: bpm
         """
         reg = self.register(JD_HEART_RATE_REG_HEART_RATE_ERROR)
-        value = reg.value(0)
-        return cast(Optional[float], value)
+        values = reg.values()
+        return cast(Optional[float], values[0] if values else None)
 
     @property
     def variant(self) -> Optional[HeartRateVariant]:
         """
-        (Optional) The type of physical sensor
+        (Optional) The type of physical sensor, 
         """
         reg = self.register(JD_HEART_RATE_REG_VARIANT)
-        value = reg.value(0)
-        return cast(Optional[HeartRateVariant], value)
+        values = reg.values()
+        return cast(Optional[HeartRateVariant], values[0] if values else None)
 
     

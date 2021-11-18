@@ -16,31 +16,31 @@ class HidAdapterClient(Client):
     @property
     def num_configurations(self) -> Optional[int]:
         """
-        The number of configurations stored on the server.
+        The number of configurations stored on the server., 
         """
         reg = self.register(JD_HID_ADAPTER_REG_NUM_CONFIGURATIONS)
-        value = reg.value(0)
-        return cast(Optional[int], value)
+        values = reg.values()
+        return cast(Optional[int], values[0] if values else None)
 
     @num_configurations.setter
     def num_configurations(self, value: int) -> None:
         reg = self.register(JD_HID_ADAPTER_REG_NUM_CONFIGURATIONS)
-        reg.set_value(0, value)
+        reg.set_values(value) # type: ignore
 
 
     @property
     def current_configuration(self) -> Optional[int]:
         """
-        The current configuration the server is using.
+        The current configuration the server is using., 
         """
         reg = self.register(JD_HID_ADAPTER_REG_CURRENT_CONFIGURATION)
-        value = reg.value(0)
-        return cast(Optional[int], value)
+        values = reg.values()
+        return cast(Optional[int], values[0] if values else None)
 
     @current_configuration.setter
     def current_configuration(self, value: int) -> None:
         reg = self.register(JD_HID_ADAPTER_REG_CURRENT_CONFIGURATION)
-        reg.set_value(0, value)
+        reg.set_values(value) # type: ignore
 
 
     def on_changed(self, handler: EventHandlerFn) -> UnsubscribeFn:

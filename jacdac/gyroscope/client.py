@@ -14,55 +14,37 @@ class GyroscopeClient(Client):
     
 
     @property
-    def x(self) -> Optional[float]:
+    def rotation_rates(self) -> Optional[tuple[float, float, float]]:
         """
-        Indicates the current rates acting on gyroscope., °/s
-        """
-        reg = self.register(JD_GYROSCOPE_REG_ROTATION_RATES)
-        value = reg.value(0)
-        return cast(Optional[float], value)
-
-    @property
-    def y(self) -> Optional[float]:
-        """
-        Indicates the current rates acting on gyroscope., °/s
+        Indicates the current rates acting on gyroscope., x: °/s,y: °/s,z: °/s
         """
         reg = self.register(JD_GYROSCOPE_REG_ROTATION_RATES)
-        value = reg.value(1)
-        return cast(Optional[float], value)
-
-    @property
-    def z(self) -> Optional[float]:
-        """
-        Indicates the current rates acting on gyroscope., °/s
-        """
-        reg = self.register(JD_GYROSCOPE_REG_ROTATION_RATES)
-        value = reg.value(2)
-        return cast(Optional[float], value)
+        values = reg.values()
+        return cast(Optional[tuple[float, float, float]], values)
 
     @property
     def rotation_rates_error(self) -> Optional[float]:
         """
-        (Optional) Error on the reading value., °/s
+        (Optional) Error on the reading value., _: °/s
         """
         reg = self.register(JD_GYROSCOPE_REG_ROTATION_RATES_ERROR)
-        value = reg.value(0)
-        return cast(Optional[float], value)
+        values = reg.values()
+        return cast(Optional[float], values[0] if values else None)
 
     @property
     def max_rate(self) -> Optional[float]:
         """
         (Optional) Configures the range of rotation rates.
-        The value will be "rounded up" to one of `max_rates_supported`., °/s
+        The value will be "rounded up" to one of `max_rates_supported`., _: °/s
         """
         reg = self.register(JD_GYROSCOPE_REG_MAX_RATE)
-        value = reg.value(0)
-        return cast(Optional[float], value)
+        values = reg.values()
+        return cast(Optional[float], values[0] if values else None)
 
     @max_rate.setter
     def max_rate(self, value: float) -> None:
         reg = self.register(JD_GYROSCOPE_REG_MAX_RATE)
-        reg.set_value(0, value)
+        reg.set_values(value) # type: ignore
 
 
     

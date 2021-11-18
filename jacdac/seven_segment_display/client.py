@@ -29,66 +29,66 @@ class SevenSegmentDisplayClient(Client):
          |   |   -
          E   C  |DP|
          - D -   -
-        ```
+        ```, 
         """
         reg = self.register(JD_SEVEN_SEGMENT_DISPLAY_REG_DIGITS)
-        value = reg.value(0)
-        return cast(Optional[bytes], value)
+        values = reg.values()
+        return cast(Optional[bytes], values[0] if values else None)
 
     @digits.setter
     def digits(self, value: bytes) -> None:
         reg = self.register(JD_SEVEN_SEGMENT_DISPLAY_REG_DIGITS)
-        reg.set_value(0, value)
+        reg.set_values(value) # type: ignore
 
 
     @property
     def brightness(self) -> Optional[float]:
         """
-        Controls the brightness of the LEDs. ``0`` means off., /
+        Controls the brightness of the LEDs. ``0`` means off., _: /
         """
         reg = self.register(JD_SEVEN_SEGMENT_DISPLAY_REG_BRIGHTNESS)
-        value = reg.value(0)
-        return cast(Optional[float], value)
+        values = reg.values()
+        return cast(Optional[float], values[0] if values else None)
 
     @brightness.setter
     def brightness(self, value: float) -> None:
         reg = self.register(JD_SEVEN_SEGMENT_DISPLAY_REG_BRIGHTNESS)
-        reg.set_value(0, value)
+        reg.set_values(value) # type: ignore
 
 
     @property
     def double_dots(self) -> Optional[bool]:
         """
         (Optional) Turn on or off the column LEDs (separating minutes from hours, etc.) in of the segment.
-        If the column LEDs is not supported, the value remains false.
+        If the column LEDs is not supported, the value remains false., 
         """
         reg = self.register(JD_SEVEN_SEGMENT_DISPLAY_REG_DOUBLE_DOTS)
-        value = reg.value(0)
-        return cast(Optional[bool], value)
+        values = reg.values()
+        return cast(Optional[bool], values[0] if values else None)
 
     @double_dots.setter
     def double_dots(self, value: bool) -> None:
         reg = self.register(JD_SEVEN_SEGMENT_DISPLAY_REG_DOUBLE_DOTS)
-        reg.set_value(0, value)
+        reg.set_values(value) # type: ignore
 
 
     @property
     def digit_count(self) -> Optional[int]:
         """
-        The number of digits available on the display.
+        The number of digits available on the display., 
         """
         reg = self.register(JD_SEVEN_SEGMENT_DISPLAY_REG_DIGIT_COUNT)
-        value = reg.value(0)
-        return cast(Optional[int], value)
+        values = reg.values()
+        return cast(Optional[int], values[0] if values else None)
 
     @property
     def decimal_point(self) -> Optional[bool]:
         """
-        True if decimal points are available (on all digits).
+        True if decimal points are available (on all digits)., 
         """
         reg = self.register(JD_SEVEN_SEGMENT_DISPLAY_REG_DECIMAL_POINT)
-        value = reg.value(0)
-        return cast(Optional[bool], value)
+        values = reg.values()
+        return cast(Optional[bool], values[0] if values else None)
 
 
     def set_number(self, value: float) -> None:

@@ -16,74 +16,74 @@ class CharacterScreenClient(Client):
     @property
     def message(self) -> Optional[str]:
         """
-        Text to show. Use `\n` to break lines.
+        Text to show. Use `\n` to break lines., 
         """
         reg = self.register(JD_CHARACTER_SCREEN_REG_MESSAGE)
-        value = reg.value(0)
-        return cast(Optional[str], value)
+        values = reg.values()
+        return cast(Optional[str], values[0] if values else None)
 
     @message.setter
     def message(self, value: str) -> None:
         reg = self.register(JD_CHARACTER_SCREEN_REG_MESSAGE)
-        reg.set_value(0, value)
+        reg.set_values(value) # type: ignore
 
 
     @property
     def brightness(self) -> Optional[float]:
         """
-        (Optional) Brightness of the screen. `0` means off., /
+        (Optional) Brightness of the screen. `0` means off., _: /
         """
         reg = self.register(JD_CHARACTER_SCREEN_REG_BRIGHTNESS)
-        value = reg.value(0)
-        return cast(Optional[float], value)
+        values = reg.values()
+        return cast(Optional[float], values[0] if values else None)
 
     @brightness.setter
     def brightness(self, value: float) -> None:
         reg = self.register(JD_CHARACTER_SCREEN_REG_BRIGHTNESS)
-        reg.set_value(0, value)
+        reg.set_values(value) # type: ignore
 
 
     @property
     def variant(self) -> Optional[CharacterScreenVariant]:
         """
-        (Optional) Describes the type of character LED screen.
+        (Optional) Describes the type of character LED screen., 
         """
         reg = self.register(JD_CHARACTER_SCREEN_REG_VARIANT)
-        value = reg.value(0)
-        return cast(Optional[CharacterScreenVariant], value)
+        values = reg.values()
+        return cast(Optional[CharacterScreenVariant], values[0] if values else None)
 
     @property
     def text_direction(self) -> Optional[CharacterScreenTextDirection]:
         """
-        (Optional) Specifies the RTL or LTR direction of the text.
+        (Optional) Specifies the RTL or LTR direction of the text., 
         """
         reg = self.register(JD_CHARACTER_SCREEN_REG_TEXT_DIRECTION)
-        value = reg.value(0)
-        return cast(Optional[CharacterScreenTextDirection], value)
+        values = reg.values()
+        return cast(Optional[CharacterScreenTextDirection], values[0] if values else None)
 
     @text_direction.setter
     def text_direction(self, value: CharacterScreenTextDirection) -> None:
         reg = self.register(JD_CHARACTER_SCREEN_REG_TEXT_DIRECTION)
-        reg.set_value(0, value)
+        reg.set_values(value) # type: ignore
 
 
     @property
     def rows(self) -> Optional[int]:
         """
-        Gets the number of rows., #
+        Gets the number of rows., _: #
         """
         reg = self.register(JD_CHARACTER_SCREEN_REG_ROWS)
-        value = reg.value(0)
-        return cast(Optional[int], value)
+        values = reg.values()
+        return cast(Optional[int], values[0] if values else None)
 
     @property
     def columns(self) -> Optional[int]:
         """
-        Gets the number of columns., #
+        Gets the number of columns., _: #
         """
         reg = self.register(JD_CHARACTER_SCREEN_REG_COLUMNS)
-        value = reg.value(0)
-        return cast(Optional[int], value)
+        values = reg.values()
+        return cast(Optional[int], values[0] if values else None)
 
 
     def set_line(self, index: int, message: str) -> None:

@@ -16,25 +16,25 @@ class SoundLevelClient(Client):
     @property
     def sound_level(self) -> Optional[float]:
         """
-        The sound level detected by the microphone, /
+        The sound level detected by the microphone, _: /
         """
         reg = self.register(JD_SOUND_LEVEL_REG_SOUND_LEVEL)
-        value = reg.value(0)
-        return cast(Optional[float], value)
+        values = reg.values()
+        return cast(Optional[float], values[0] if values else None)
 
     @property
     def enabled(self) -> Optional[bool]:
         """
-        Turn on or off the microphone.
+        Turn on or off the microphone., 
         """
         reg = self.register(JD_SOUND_LEVEL_REG_ENABLED)
-        value = reg.value(0)
-        return cast(Optional[bool], value)
+        values = reg.values()
+        return cast(Optional[bool], values[0] if values else None)
 
     @enabled.setter
     def enabled(self, value: bool) -> None:
         reg = self.register(JD_SOUND_LEVEL_REG_ENABLED)
-        reg.set_value(0, value)
+        reg.set_values(value) # type: ignore
 
 
     @property
@@ -43,16 +43,16 @@ class SoundLevelClient(Client):
         (Optional) The minimum power value considered by the sensor.
         If both ``min_decibels`` and ``max_decibels`` are supported,
         the volume in deciment can be linearly interpolated between
-        ``[min_decibels, max_decibels]``., dB
+        ``[min_decibels, max_decibels]``., _: dB
         """
         reg = self.register(JD_SOUND_LEVEL_REG_MIN_DECIBELS)
-        value = reg.value(0)
-        return cast(Optional[int], value)
+        values = reg.values()
+        return cast(Optional[int], values[0] if values else None)
 
     @min_decibels.setter
     def min_decibels(self, value: int) -> None:
         reg = self.register(JD_SOUND_LEVEL_REG_MIN_DECIBELS)
-        reg.set_value(0, value)
+        reg.set_values(value) # type: ignore
 
 
     @property
@@ -61,46 +61,46 @@ class SoundLevelClient(Client):
         (Optional) The maximum power value considered by the sensor.
         If both ``min_decibels`` and ``max_decibels`` are supported,
         the volume in deciment can be linearly interpolated between
-        ``[min_decibels, max_decibels]``., dB
+        ``[min_decibels, max_decibels]``., _: dB
         """
         reg = self.register(JD_SOUND_LEVEL_REG_MAX_DECIBELS)
-        value = reg.value(0)
-        return cast(Optional[int], value)
+        values = reg.values()
+        return cast(Optional[int], values[0] if values else None)
 
     @max_decibels.setter
     def max_decibels(self, value: int) -> None:
         reg = self.register(JD_SOUND_LEVEL_REG_MAX_DECIBELS)
-        reg.set_value(0, value)
+        reg.set_values(value) # type: ignore
 
 
     @property
     def loud_threshold(self) -> Optional[float]:
         """
-        The sound level to trigger a loud event., /
+        The sound level to trigger a loud event., _: /
         """
         reg = self.register(JD_SOUND_LEVEL_REG_LOUD_THRESHOLD)
-        value = reg.value(0)
-        return cast(Optional[float], value)
+        values = reg.values()
+        return cast(Optional[float], values[0] if values else None)
 
     @loud_threshold.setter
     def loud_threshold(self, value: float) -> None:
         reg = self.register(JD_SOUND_LEVEL_REG_LOUD_THRESHOLD)
-        reg.set_value(0, value)
+        reg.set_values(value) # type: ignore
 
 
     @property
     def quiet_threshold(self) -> Optional[float]:
         """
-        The sound level to trigger a quiet event., /
+        The sound level to trigger a quiet event., _: /
         """
         reg = self.register(JD_SOUND_LEVEL_REG_QUIET_THRESHOLD)
-        value = reg.value(0)
-        return cast(Optional[float], value)
+        values = reg.values()
+        return cast(Optional[float], values[0] if values else None)
 
     @quiet_threshold.setter
     def quiet_threshold(self, value: float) -> None:
         reg = self.register(JD_SOUND_LEVEL_REG_QUIET_THRESHOLD)
-        reg.set_value(0, value)
+        reg.set_values(value) # type: ignore
 
 
     def on_loud(self, handler: EventHandlerFn) -> UnsubscribeFn:

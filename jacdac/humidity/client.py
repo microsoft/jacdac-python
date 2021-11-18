@@ -16,37 +16,37 @@ class HumidityClient(Client):
     @property
     def humidity(self) -> Optional[float]:
         """
-        The relative humidity in percentage of full water saturation., %RH
+        The relative humidity in percentage of full water saturation., _: %RH
         """
         reg = self.register(JD_HUMIDITY_REG_HUMIDITY)
-        value = reg.value(0)
-        return cast(Optional[float], value)
+        values = reg.values()
+        return cast(Optional[float], values[0] if values else None)
 
     @property
     def humidity_error(self) -> Optional[float]:
         """
-        The real humidity is between `humidity - humidity_error` and `humidity + humidity_error`., %RH
+        The real humidity is between `humidity - humidity_error` and `humidity + humidity_error`., _: %RH
         """
         reg = self.register(JD_HUMIDITY_REG_HUMIDITY_ERROR)
-        value = reg.value(0)
-        return cast(Optional[float], value)
+        values = reg.values()
+        return cast(Optional[float], values[0] if values else None)
 
     @property
     def min_humidity(self) -> Optional[float]:
         """
-        Lowest humidity that can be reported., %RH
+        Lowest humidity that can be reported., _: %RH
         """
         reg = self.register(JD_HUMIDITY_REG_MIN_HUMIDITY)
-        value = reg.value(0)
-        return cast(Optional[float], value)
+        values = reg.values()
+        return cast(Optional[float], values[0] if values else None)
 
     @property
     def max_humidity(self) -> Optional[float]:
         """
-        Highest humidity that can be reported., %RH
+        Highest humidity that can be reported., _: %RH
         """
         reg = self.register(JD_HUMIDITY_REG_MAX_HUMIDITY)
-        value = reg.value(0)
-        return cast(Optional[float], value)
+        values = reg.values()
+        return cast(Optional[float], values[0] if values else None)
 
     

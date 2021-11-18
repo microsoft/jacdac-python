@@ -16,16 +16,16 @@ class SoundPlayerClient(Client):
     @property
     def volume(self) -> Optional[float]:
         """
-        Global volume of the output. ``0`` means completely off. This volume is mixed with each play volumes., /
+        Global volume of the output. ``0`` means completely off. This volume is mixed with each play volumes., _: /
         """
         reg = self.register(JD_SOUND_PLAYER_REG_VOLUME)
-        value = reg.value(0)
-        return cast(Optional[float], value)
+        values = reg.values()
+        return cast(Optional[float], values[0] if values else None)
 
     @volume.setter
     def volume(self, value: float) -> None:
         reg = self.register(JD_SOUND_PLAYER_REG_VOLUME)
-        reg.set_value(0, value)
+        reg.set_values(value) # type: ignore
 
 
 

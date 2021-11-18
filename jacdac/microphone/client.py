@@ -17,16 +17,16 @@ class MicrophoneClient(Client):
     def sampling_period(self) -> Optional[int]:
         """
         Get or set microphone sampling period.
-        Sampling rate is `1_000_000 / sampling_period Hz`., us
+        Sampling rate is `1_000_000 / sampling_period Hz`., _: us
         """
         reg = self.register(JD_MICROPHONE_REG_SAMPLING_PERIOD)
-        value = reg.value(0)
-        return cast(Optional[int], value)
+        values = reg.values()
+        return cast(Optional[int], values[0] if values else None)
 
     @sampling_period.setter
     def sampling_period(self, value: int) -> None:
         reg = self.register(JD_MICROPHONE_REG_SAMPLING_PERIOD)
-        reg.set_value(0, value)
+        reg.set_values(value) # type: ignore
 
 
     

@@ -18,19 +18,19 @@ class IlluminanceClient(Client):
     @property
     def light(self) -> Optional[float]:
         """
-        The amount of illuminance, as lumens per square metre., lux
+        The amount of illuminance, as lumens per square metre., _: lux
         """
         reg = self.register(JD_ILLUMINANCE_REG_LIGHT)
-        value = reg.value(0)
-        return cast(Optional[float], value)
+        values = reg.values()
+        return cast(Optional[float], values[0] if values else None)
 
     @property
     def light_error(self) -> Optional[float]:
         """
-        (Optional) Error on the reported sensor value., lux
+        (Optional) Error on the reported sensor value., _: lux
         """
         reg = self.register(JD_ILLUMINANCE_REG_LIGHT_ERROR)
-        value = reg.value(0)
-        return cast(Optional[float], value)
+        values = reg.values()
+        return cast(Optional[float], values[0] if values else None)
 
     

@@ -18,19 +18,19 @@ class PulseOximeterClient(Client):
     @property
     def oxygen(self) -> Optional[float]:
         """
-        The estimated oxygen level in blood., %
+        The estimated oxygen level in blood., _: %
         """
         reg = self.register(JD_PULSE_OXIMETER_REG_OXYGEN)
-        value = reg.value(0)
-        return cast(Optional[float], value)
+        values = reg.values()
+        return cast(Optional[float], values[0] if values else None)
 
     @property
     def oxygen_error(self) -> Optional[float]:
         """
-        (Optional) The estimated error on the reported sensor data., %
+        (Optional) The estimated error on the reported sensor data., _: %
         """
         reg = self.register(JD_PULSE_OXIMETER_REG_OXYGEN_ERROR)
-        value = reg.value(0)
-        return cast(Optional[float], value)
+        values = reg.values()
+        return cast(Optional[float], values[0] if values else None)
 
     

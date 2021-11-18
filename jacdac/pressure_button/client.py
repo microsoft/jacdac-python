@@ -16,16 +16,16 @@ class PressureButtonClient(Client):
     @property
     def threshold(self) -> Optional[float]:
         """
-        Indicates the threshold for ``up`` events., /
+        Indicates the threshold for ``up`` events., _: /
         """
         reg = self.register(JD_PRESSURE_BUTTON_REG_THRESHOLD)
-        value = reg.value(0)
-        return cast(Optional[float], value)
+        values = reg.values()
+        return cast(Optional[float], values[0] if values else None)
 
     @threshold.setter
     def threshold(self, value: float) -> None:
         reg = self.register(JD_PRESSURE_BUTTON_REG_THRESHOLD)
-        reg.set_value(0, value)
+        reg.set_values(value) # type: ignore
 
 
     

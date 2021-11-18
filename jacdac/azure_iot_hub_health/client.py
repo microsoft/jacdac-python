@@ -16,29 +16,29 @@ class AzureIotHubHealthClient(Client):
     @property
     def hub_name(self) -> Optional[str]:
         """
-        Something like `my-iot-hub.azure-devices.net`; empty string when not properly configured
+        Something like `my-iot-hub.azure-devices.net`; empty string when not properly configured, 
         """
         reg = self.register(JD_AZURE_IOT_HUB_HEALTH_REG_HUB_NAME)
-        value = reg.value(0)
-        return cast(Optional[str], value)
+        values = reg.values()
+        return cast(Optional[str], values[0] if values else None)
 
     @property
     def hub_device_id(self) -> Optional[str]:
         """
-        Device identifier in Azure Iot Hub
+        Device identifier in Azure Iot Hub, 
         """
         reg = self.register(JD_AZURE_IOT_HUB_HEALTH_REG_HUB_DEVICE_ID)
-        value = reg.value(0)
-        return cast(Optional[str], value)
+        values = reg.values()
+        return cast(Optional[str], values[0] if values else None)
 
     @property
     def connection_status(self) -> Optional[AzureIotHubHealthConnectionStatus]:
         """
-        Indicates the status of connection. A message beyond the [0..3] range represents an HTTP error code.
+        Indicates the status of connection. A message beyond the [0..3] range represents an HTTP error code., 
         """
         reg = self.register(JD_AZURE_IOT_HUB_HEALTH_REG_CONNECTION_STATUS)
-        value = reg.value(0)
-        return cast(Optional[AzureIotHubHealthConnectionStatus], value)
+        values = reg.values()
+        return cast(Optional[AzureIotHubHealthConnectionStatus], values[0] if values else None)
 
     def on_connection_status_change(self, handler: EventHandlerFn) -> UnsubscribeFn:
         """

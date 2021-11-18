@@ -18,96 +18,96 @@ class PowerClient(Client):
         """
         Can be used to completely disable the service.
         When allowed, the service may still not be providing power, see 
-        `power_status` for the actual current state.
+        `power_status` for the actual current state., 
         """
         reg = self.register(JD_POWER_REG_ALLOWED)
-        value = reg.value(0)
-        return cast(Optional[bool], value)
+        values = reg.values()
+        return cast(Optional[bool], values[0] if values else None)
 
     @allowed.setter
     def allowed(self, value: bool) -> None:
         reg = self.register(JD_POWER_REG_ALLOWED)
-        reg.set_value(0, value)
+        reg.set_values(value) # type: ignore
 
 
     @property
     def max_power(self) -> Optional[int]:
         """
         (Optional) Limit the power provided by the service. The actual maximum limit will depend on hardware.
-        This field may be read-only in some implementations - you should read it back after setting., mA
+        This field may be read-only in some implementations - you should read it back after setting., _: mA
         """
         reg = self.register(JD_POWER_REG_MAX_POWER)
-        value = reg.value(0)
-        return cast(Optional[int], value)
+        values = reg.values()
+        return cast(Optional[int], values[0] if values else None)
 
     @max_power.setter
     def max_power(self, value: int) -> None:
         reg = self.register(JD_POWER_REG_MAX_POWER)
-        reg.set_value(0, value)
+        reg.set_values(value) # type: ignore
 
 
     @property
     def power_status(self) -> Optional[PowerPowerStatus]:
         """
         Indicates whether the power provider is currently providing power (`Powering` state), and if not, why not.
-        `Overprovision` means there was another power provider, and we stopped not to overprovision the bus.
+        `Overprovision` means there was another power provider, and we stopped not to overprovision the bus., 
         """
         reg = self.register(JD_POWER_REG_POWER_STATUS)
-        value = reg.value(0)
-        return cast(Optional[PowerPowerStatus], value)
+        values = reg.values()
+        return cast(Optional[PowerPowerStatus], values[0] if values else None)
 
     @property
     def current_draw(self) -> Optional[int]:
         """
-        (Optional) Present current draw from the bus., mA
+        (Optional) Present current draw from the bus., _: mA
         """
         reg = self.register(JD_POWER_REG_CURRENT_DRAW)
-        value = reg.value(0)
-        return cast(Optional[int], value)
+        values = reg.values()
+        return cast(Optional[int], values[0] if values else None)
 
     @property
     def battery_voltage(self) -> Optional[int]:
         """
-        (Optional) Voltage on input., mV
+        (Optional) Voltage on input., _: mV
         """
         reg = self.register(JD_POWER_REG_BATTERY_VOLTAGE)
-        value = reg.value(0)
-        return cast(Optional[int], value)
+        values = reg.values()
+        return cast(Optional[int], values[0] if values else None)
 
     @property
     def battery_charge(self) -> Optional[float]:
         """
-        (Optional) Fraction of charge in the battery., /
+        (Optional) Fraction of charge in the battery., _: /
         """
         reg = self.register(JD_POWER_REG_BATTERY_CHARGE)
-        value = reg.value(0)
-        return cast(Optional[float], value)
+        values = reg.values()
+        return cast(Optional[float], values[0] if values else None)
 
     @property
     def battery_capacity(self) -> Optional[int]:
         """
         (Optional) Energy that can be delivered to the bus when battery is fully charged.
-        This excludes conversion overheads if any., mWh
+        This excludes conversion overheads if any., _: mWh
         """
         reg = self.register(JD_POWER_REG_BATTERY_CAPACITY)
-        value = reg.value(0)
-        return cast(Optional[int], value)
+        values = reg.values()
+        return cast(Optional[int], values[0] if values else None)
 
     @property
     def keep_on_pulse_duration(self) -> Optional[int]:
         """
         (Optional) Many USB power packs need current to be drawn from time to time to prevent shutdown.
         This regulates how often and for how long such current is drawn.
-        Typically a 1/8W 22 ohm resistor is used as load. This limits the duty cycle to 10%., ms
+        Typically a 1/8W 22 ohm resistor is used as load. This limits the duty cycle to 10%., _: ms
         """
         reg = self.register(JD_POWER_REG_KEEP_ON_PULSE_DURATION)
-        value = reg.value(0)
-        return cast(Optional[int], value)
+        values = reg.values()
+        return cast(Optional[int], values[0] if values else None)
 
     @keep_on_pulse_duration.setter
     def keep_on_pulse_duration(self, value: int) -> None:
         reg = self.register(JD_POWER_REG_KEEP_ON_PULSE_DURATION)
-        reg.set_value(0, value)
+        reg.set_values(value) # type: ignore
 
 
     @property
@@ -115,16 +115,16 @@ class PowerClient(Client):
         """
         (Optional) Many USB power packs need current to be drawn from time to time to prevent shutdown.
         This regulates how often and for how long such current is drawn.
-        Typically a 1/8W 22 ohm resistor is used as load. This limits the duty cycle to 10%., ms
+        Typically a 1/8W 22 ohm resistor is used as load. This limits the duty cycle to 10%., _: ms
         """
         reg = self.register(JD_POWER_REG_KEEP_ON_PULSE_PERIOD)
-        value = reg.value(0)
-        return cast(Optional[int], value)
+        values = reg.values()
+        return cast(Optional[int], values[0] if values else None)
 
     @keep_on_pulse_period.setter
     def keep_on_pulse_period(self, value: int) -> None:
         reg = self.register(JD_POWER_REG_KEEP_ON_PULSE_PERIOD)
-        reg.set_value(0, value)
+        reg.set_values(value) # type: ignore
 
 
     def on_power_status_changed(self, handler: EventHandlerFn) -> UnsubscribeFn:

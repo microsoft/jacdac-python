@@ -1,4 +1,6 @@
 from typing import Optional
+
+from jacdac.pack import PackType, jdpack, jdunpack
 from .constants import *
 import jacdac.util as util
 
@@ -16,11 +18,11 @@ class JDPacket:
             self.service_command = cmd
 
     @staticmethod
-    def packed(cmd: int, fmt: str, *args: object):
-        return JDPacket(cmd=cmd, data=util.pack(fmt, *args))
+    def packed(cmd: int, fmt: str, *args: PackType):
+        return JDPacket(cmd=cmd, data=jdpack(fmt, *args))
 
     def unpack(self, fmt: str):
-        return util.unpack(self.data, fmt)
+        return jdunpack(self.data, fmt)
 
     @property
     def service_command(self):

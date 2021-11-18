@@ -15,7 +15,7 @@ from .transport import Transport
 import jacdac.util as util
 from .util import now, log, logv
 from .control.constants import *
-from .pack import PackType, jdpack, jdunpack
+from .pack import PackTuple, PackType, jdpack, jdunpack
 
 
 EV_CHANGE = "change"
@@ -37,7 +37,7 @@ EV_DISCONNECTED = "disconnected"
 _ACK_RETRIES = const(4)
 _ACK_DELAY = const(40)
 
-RegType = TypeVar('RegType', bound=Union[int, tuple[int, ...]])
+RegType = TypeVar('RegType', bound=Union[PackType, PackTuple])
 
 
 def _service_matches(dev: 'Device', serv: bytearray):
@@ -334,7 +334,7 @@ class RawRegisterClient(EventEmitter):
             return self._data
         return None
 
-    def values(self) -> Optional[list[PackType]]:
+    def values(self) -> Optional[PackTuple]:
         data = self.query_no_wait()
         if data and self.pack_format:
             return jdunpack(data, self.pack_format)
@@ -482,10 +482,10 @@ class Server(EventEmitter):
         self.handle_reg_u32(pkt, JD_REG_STATUS_CODE, self._status_code)
 
     def handle_reg_u32(self, pkt: JDPacket, register: int, current: int):
-        return self.handle_reg(pkt, register, "I", current)
+        return self.handle_reg(pkt, register, "u32", current)
 
     def handle_reg_i32(self, pkt: JDPacket, register: int, current: int):
-        return self.handle_reg(pkt, register, "i", current)
+        return self.handle_reg(pkt, register, "i32", current)
 
     def handle_reg(self, pkt: JDPacket, register: int, fmt: str, current: RegType) -> RegType:
         getset = pkt.service_command >> 12
@@ -495,8 +495,12 @@ class Server(EventEmitter):
         if reg != register:
             return current
         if getset == 1:
-            self.send_report(JDPacket.packed(
-                pkt.service_command, fmt, current))
+            if isinstance(current, tuple):
+                self.send_report(JDPacket.packed(
+                    pkt.service_command, fmt, *current))
+            else:
+                self.send_report(JDPacket.packed(
+                    pkt.service_command, fmt, current))
         else:
             if register >> 8 == 0x1:
                 return current  # read-only

@@ -1,8 +1,10 @@
 import time
 import sys
+
+from jacdac.pack import jdpack
 from .constants import *
 from jacdac.bus import Server, Bus, EV_IDENTIFY
-from jacdac.util import pack, logv
+from jacdac.util import logv
 from jacdac.packet import JDPacket
 
 
@@ -25,7 +27,7 @@ class ControlServer(Server):
             JD_CONTROL_ANNOUNCE_FLAGS_SUPPORTS_BROADCAST |
             JD_CONTROL_ANNOUNCE_FLAGS_SUPPORTS_FRAMES
         )
-        buf = pack("%dI" % len(ids), ids)
+        buf = jdpack("u32[]", *ids)
         self.send_report(JDPacket(cmd=0, data=buf))
 
         # auto bind
@@ -61,7 +63,7 @@ class ControlServer(Server):
         if pkt.is_reg_get:
             if pkt.reg_code == JD_CONTROL_REG_UPTIME:
                 self.send_report(JDPacket.packed(
-                    JD_GET(JD_CONTROL_REG_UPTIME), "Q",  time.monotonic_ns() // 1000))
+                    JD_GET(JD_CONTROL_REG_UPTIME), "u64",  time.monotonic_ns() // 1000))
         else:
             cmd = pkt.service_command
             if cmd == JD_CONTROL_CMD_SERVICES:

@@ -16,7 +16,7 @@ def acc_sample(bus: Bus):
     btn = ButtonClient(bus, "btn")
 
     async def btn_ev(pkt: JDPacket):
-        print("btn", pkt.event_code, len(pkt.data) and pkt.unpack("I"))
+        print("btn", pkt.event_code, len(pkt.data) and pkt.unpack("u32"))
         v = await btn.register(13).query_async()
         print(v.hex())
     btn.on(EV_EVENT, btn_ev)

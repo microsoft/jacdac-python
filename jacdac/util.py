@@ -1,4 +1,3 @@
-import struct
 import binascii
 import time
 from typing import Union
@@ -62,21 +61,6 @@ def set_u16(buf: bytearray, off: int, val: int):
 
 def u32(buf: bytes, off: int):
     return buf[off] | (buf[off+1] << 8) | (buf[off+2] << 16) | (buf[off+3] << 24)
-
-
-# TODO: do we need this?
-# TODO would we want the "u32 u16" kind of format strings?
-def unpack(buf: bytes, fmt: str):
-    if fmt is None:
-        raise ValueError()
-    return struct.unpack("<" + fmt, buf)
-
-
-# TODO: do we need this?
-def pack(fmt: str, *args: object):
-    if len(args) == 1 and isinstance(args[0], (tuple, list)):
-        args = args[0]  # type: ignore
-    return struct.pack("<" + fmt, *args)
 
 
 def hash(buf: bytes, bits: int = 30):

@@ -92,20 +92,20 @@ class _TokenParser:
 
 
 BasePackType = Union[int, float, str, bytes]
-PackType = Union[BasePackType, list[BasePackType]]
+PackType = Union[BasePackType, list[BasePackType], tuple[BasePackType]]
+PackTuple = tuple[PackType, ...]
 
-
-def _jdunpack_core(buf: bytes, fmt: str, repeat: int) -> list[PackType]:
-    repeat_res: list[list[PackType]] = []
+def _jdunpack_core(buf: bytes, fmt: str, repeat: int) -> PackTuple:
+    repeat_res: list[PackTuple] = []
     res: list[PackType] = []
     off: int = 0
     fp0 = 0
     parser = _TokenParser(fmt)
     if repeat and len(buf) == 0:
-        return []
+        return ()
     while parser.parse():
         if parser.is_array and not repeat:
-            return res + _jdunpack_core(buf[off:], fmt[fp0:], 1)
+            return tuple(res) + _jdunpack_core(buf[off:], fmt[fp0:], 1)
 
         fp0 = parser.fp
         sz = parser.size
@@ -136,7 +136,7 @@ def _jdunpack_core(buf: bytes, fmt: str, repeat: int) -> list[PackType]:
             elif c0 == "x":
                 pass  # skip padding
             elif c0 == "r":
-                return res + _jdunpack_core(subbuf, fmt[fp0:], 2)
+                return tuple(res) + _jdunpack_core(subbuf, fmt[fp0:], 2)
             else:
                 assert False
             off += len(subbuf)
@@ -146,23 +146,23 @@ def _jdunpack_core(buf: bytes, fmt: str, repeat: int) -> list[PackType]:
         if repeat and parser.fp >= len(fmt):
             parser.fp = 0
             if repeat == 2:
-                repeat_res.append(res)
+                repeat_res.append(tuple(res))
                 res = []
             if (off >= len(buf)):
                 break
 
     if repeat == 2:
         if len(res):
-            repeat_res.append(res)
-        return repeat_res  # type: ignore
+            repeat_res.append(tuple(res))
+        return tuple(repeat_res)  # type: ignore
     else:
-        return res
+        return tuple(res)
 
 
-def jdunpack(buf: bytes, fmt: str) -> list[PackType]:
+def jdunpack(buf: bytes, fmt: str) -> PackTuple:
     if fmt in _fmts:
         t = struct.unpack(_fmts[fmt], buf)
-        return [t[0]]
+        return (t[0],)
     return _jdunpack_core(buf, fmt, 0)
 
 

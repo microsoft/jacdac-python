@@ -1,7 +1,7 @@
 from jacdac.bus import Bus, Client
 from .constants import *
 
-from jacdac.events import HandlerFn
+from jacdac.events import EventHandlerFn, UnsubscribeFn
 
 class ArcadeGamepadClient(Client):
     """
@@ -14,16 +14,16 @@ class ArcadeGamepadClient(Client):
         super().__init__(bus, JD_SERVICE_CLASS_ARCADE_GAMEPAD, JD_ARCADE_GAMEPAD_PACK_FORMATS, role)
     
 
-    def on_down(self, handler: HandlerFn) -> None:
+    def on_down(self, handler: EventHandlerFn) -> UnsubscribeFn:
         """
         Emitted when button goes from inactive to active.
         """
-        # TODO
+        return self.on_event(JD_ARCADE_GAMEPAD_EV_DOWN, handler)
 
-    def on_up(self, handler: HandlerFn) -> None:
+    def on_up(self, handler: EventHandlerFn) -> UnsubscribeFn:
         """
         Emitted when button goes from active to inactive.
         """
-        # TODO
+        return self.on_event(JD_ARCADE_GAMEPAD_EV_UP, handler)
 
     

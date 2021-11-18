@@ -1,7 +1,7 @@
 from jacdac.bus import Bus, Client
 from .constants import *
 from typing import Union
-from jacdac.events import HandlerFn
+from jacdac.events import EventHandlerFn, UnsubscribeFn
 
 class PowerClient(Client):
     """
@@ -117,11 +117,11 @@ class PowerClient(Client):
         reg.set_value(0, value)
 
 
-    def on_power_status_changed(self, handler: HandlerFn) -> None:
+    def on_power_status_changed(self, handler: EventHandlerFn) -> UnsubscribeFn:
         """
         Emitted whenever `power_status` changes.
         """
-        # TODO
+        return self.on_event(JD_POWER_EV_POWER_STATUS_CHANGED, handler)
 
 
     def shutdown(self, ) -> None:

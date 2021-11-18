@@ -1,7 +1,7 @@
 from jacdac.bus import Bus, Client
 from .constants import *
 
-from jacdac.events import HandlerFn
+from jacdac.events import EventHandlerFn, UnsubscribeFn
 
 class CodalMessageBusClient(Client):
     """
@@ -15,11 +15,11 @@ class CodalMessageBusClient(Client):
         super().__init__(bus, JD_SERVICE_CLASS_CODAL_MESSAGE_BUS, JD_CODAL_MESSAGE_BUS_PACK_FORMATS, role)
     
 
-    def on_message(self, handler: HandlerFn) -> None:
+    def on_message(self, handler: EventHandlerFn) -> UnsubscribeFn:
         """
         Raised by the server is triggered by the server. The filtering logic of which event to send over JACDAC is up to the server implementation.
         """
-        # TODO
+        return self.on_event(JD_CODAL_MESSAGE_BUS_EV_MESSAGE, handler)
 
 
     def send(self, source: int, value: int) -> None:

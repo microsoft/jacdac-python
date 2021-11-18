@@ -1,7 +1,7 @@
 from jacdac.bus import Bus, Client
 from .constants import *
 from typing import Union
-from jacdac.events import HandlerFn
+from jacdac.events import EventHandlerFn, UnsubscribeFn
 
 class SwitchClient(Client):
     """
@@ -37,16 +37,16 @@ class SwitchClient(Client):
         reg = self.register(JD_SWITCH_REG_AUTO_OFF_DELAY)
         return reg.value(0)
 
-    def on_on(self, handler: HandlerFn) -> None:
+    def on_on(self, handler: EventHandlerFn) -> UnsubscribeFn:
         """
         Emitted when switch goes from ``off`` to ``on``.
         """
-        # TODO
+        return self.on_event(JD_SWITCH_EV_ON, handler)
 
-    def on_off(self, handler: HandlerFn) -> None:
+    def on_off(self, handler: EventHandlerFn) -> UnsubscribeFn:
         """
         Emitted when switch goes from ``on`` to ``off``.
         """
-        # TODO
+        return self.on_event(JD_SWITCH_EV_OFF, handler)
 
     

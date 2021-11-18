@@ -1,7 +1,7 @@
 from jacdac.bus import Bus, Client
 from .constants import *
 from typing import Union
-from jacdac.events import HandlerFn
+from jacdac.events import EventHandlerFn, UnsubscribeFn
 
 class ReflectedLightClient(Client):
     """
@@ -28,16 +28,16 @@ class ReflectedLightClient(Client):
         reg = self.register(JD_REFLECTED_LIGHT_REG_VARIANT)
         return reg.value(0)
 
-    def on_dark(self, handler: HandlerFn) -> None:
+    def on_dark(self, handler: EventHandlerFn) -> UnsubscribeFn:
         """
         The sensor detected a transition from light to dark
         """
-        # TODO
+        return self.on_event(JD_REFLECTED_LIGHT_EV_DARK, handler)
 
-    def on_light(self, handler: HandlerFn) -> None:
+    def on_light(self, handler: EventHandlerFn) -> UnsubscribeFn:
         """
         The sensor detected a transition from dark to light
         """
-        # TODO
+        return self.on_event(JD_REFLECTED_LIGHT_EV_LIGHT, handler)
 
     

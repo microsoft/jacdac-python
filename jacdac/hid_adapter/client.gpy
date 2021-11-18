@@ -1,7 +1,7 @@
 from jacdac.bus import Bus, Client
 from .constants import *
 from typing import Union
-from jacdac.events import HandlerFn
+from jacdac.events import EventHandlerFn, UnsubscribeFn
 
 class HidAdapterClient(Client):
     """
@@ -40,11 +40,11 @@ class HidAdapterClient(Client):
         reg.set_value(0, value)
 
 
-    def on_changed(self, handler: HandlerFn) -> None:
+    def on_changed(self, handler: EventHandlerFn) -> UnsubscribeFn:
         """
         Event that notifies clients that the server has swapped to a new configuration or changed key bindings.
         """
-        # TODO
+        return self.on_event(JD_HID_ADAPTER_EV_CHANGED, handler)
 
 
     def set_binding(self, configuration_number: int, binding_index: int, padding: int, device_id: int, service_class: int, trigger_value: int, trigger_context: int, service_index: int, selector: int, modifiers: undefined) -> None:

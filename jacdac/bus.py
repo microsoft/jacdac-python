@@ -15,7 +15,7 @@ from .transport import Transport
 import jacdac.util as util
 from .util import now, log, logv, unpack
 from .control.constants import *
-from pack import PackType, jdpack
+from pack import PackType, jdpack, jdunpack
 
 
 EV_CHANGE = "change"
@@ -38,6 +38,8 @@ _ACK_RETRIES = const(4)
 _ACK_DELAY = const(40)
 
 RegType = TypeVar('RegType', bound=Union[int, tuple[int, ...]])
+
+EventHandlerFn = Callable[[Union[list[PackType], None], JDPacket], None]
 
 
 def _service_matches(dev: 'Device', serv: bytearray):
@@ -598,6 +600,27 @@ class Client(EventEmitter):
             self.bus.unattached_clients.append(self)
             self.bus.clear_attach_cache()
         self.emit(EV_DISCONNECTED)
+
+    def on_event(self, code: int, handler: EventHandlerFn) -> UnsubscribeFn:
+        """Registers an event handler for the given event code
+
+        Args:
+            code (int): event identifier code
+            handler (EventHandlerFn): function to run with decoded event data and packet
+
+        Returns:
+            UnsubscribeFn: function to call to unregister handler
+        """
+        fmt = self.pack_formats[code]
+
+        def cb(pkt: JDPacket) -> None:
+            if pkt.event_code == code:
+                if fmt is None:
+                    data = None
+                else:
+                    data = jdunpack(pkt.data, fmt)
+                handler(data, pkt)
+        return self.on(EV_EVENT, cb)
 
 
 _JD_CONTROL_ANNOUNCE_FLAGS_RESTART_COUNTER_STEADY = const(0xf)

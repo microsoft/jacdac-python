@@ -1,7 +1,7 @@
 from jacdac.bus import Bus, Client
 from .constants import *
 from typing import Union
-from jacdac.events import HandlerFn
+from jacdac.events import EventHandlerFn, UnsubscribeFn
 
 class ProtoTestClient(Client):
     """
@@ -255,47 +255,47 @@ class ProtoTestClient(Client):
         reg = self.register(JD_PROTO_TEST_REG_RO_U8_STRING)
         return reg.value(1)
 
-    def on_e_bool(self, handler: HandlerFn) -> None:
+    def on_e_bool(self, handler: EventHandlerFn) -> UnsubscribeFn:
         """
         An event raised when rw_bool is modified
         """
-        # TODO
+        return self.on_event(JD_PROTO_TEST_EV_E_BOOL, handler)
 
-    def on_e_u32(self, handler: HandlerFn) -> None:
+    def on_e_u32(self, handler: EventHandlerFn) -> UnsubscribeFn:
         """
         An event raised when rw_u32 is modified
         """
-        # TODO
+        return self.on_event(JD_PROTO_TEST_EV_E_U32, handler)
 
-    def on_e_i32(self, handler: HandlerFn) -> None:
+    def on_e_i32(self, handler: EventHandlerFn) -> UnsubscribeFn:
         """
         An event raised when rw_i32 is modified
         """
-        # TODO
+        return self.on_event(JD_PROTO_TEST_EV_E_I32, handler)
 
-    def on_e_string(self, handler: HandlerFn) -> None:
+    def on_e_string(self, handler: EventHandlerFn) -> UnsubscribeFn:
         """
         An event raised when rw_string is modified
         """
-        # TODO
+        return self.on_event(JD_PROTO_TEST_EV_E_STRING, handler)
 
-    def on_e_bytes(self, handler: HandlerFn) -> None:
+    def on_e_bytes(self, handler: EventHandlerFn) -> UnsubscribeFn:
         """
         An event raised when rw_bytes is modified
         """
-        # TODO
+        return self.on_event(JD_PROTO_TEST_EV_E_BYTES, handler)
 
-    def on_e_i8_u8_u16_i32(self, handler: HandlerFn) -> None:
+    def on_e_i8_u8_u16_i32(self, handler: EventHandlerFn) -> UnsubscribeFn:
         """
         An event raised when rw_i8_u8_u16_i32 is modified
         """
-        # TODO
+        return self.on_event(JD_PROTO_TEST_EV_E_I8_U8_U16_I32, handler)
 
-    def on_e_u8_string(self, handler: HandlerFn) -> None:
+    def on_e_u8_string(self, handler: EventHandlerFn) -> UnsubscribeFn:
         """
         An event raised when rw_u8_string is modified
         """
-        # TODO
+        return self.on_event(JD_PROTO_TEST_EV_E_U8_STRING, handler)
 
 
     def c_bool(self, bool: bool) -> None:

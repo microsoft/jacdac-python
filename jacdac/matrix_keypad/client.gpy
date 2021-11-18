@@ -1,7 +1,7 @@
 from jacdac.bus import Bus, Client
 from .constants import *
 from typing import Union
-from jacdac.events import HandlerFn
+from jacdac.events import EventHandlerFn, UnsubscribeFn
 
 class MatrixKeypadClient(Client):
     """
@@ -38,28 +38,28 @@ class MatrixKeypadClient(Client):
         reg = self.register(JD_MATRIX_KEYPAD_REG_VARIANT)
         return reg.value(0)
 
-    def on_down(self, handler: HandlerFn) -> None:
+    def on_down(self, handler: EventHandlerFn) -> UnsubscribeFn:
         """
         Emitted when a key, at the given index, goes from inactive (`pressed == 0`) to active.
         """
-        # TODO
+        return self.on_event(JD_MATRIX_KEYPAD_EV_DOWN, handler)
 
-    def on_up(self, handler: HandlerFn) -> None:
+    def on_up(self, handler: EventHandlerFn) -> UnsubscribeFn:
         """
         Emitted when a key, at the given index, goes from active (`pressed == 1`) to inactive.
         """
-        # TODO
+        return self.on_event(JD_MATRIX_KEYPAD_EV_UP, handler)
 
-    def on_click(self, handler: HandlerFn) -> None:
+    def on_click(self, handler: EventHandlerFn) -> UnsubscribeFn:
         """
         Emitted together with `up` when the press time was not longer than 500ms.
         """
-        # TODO
+        return self.on_event(JD_MATRIX_KEYPAD_EV_CLICK, handler)
 
-    def on_long_click(self, handler: HandlerFn) -> None:
+    def on_long_click(self, handler: EventHandlerFn) -> UnsubscribeFn:
         """
         Emitted together with `up` when the press time was more than 500ms.
         """
-        # TODO
+        return self.on_event(JD_MATRIX_KEYPAD_EV_LONG_CLICK, handler)
 
     

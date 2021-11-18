@@ -1,7 +1,7 @@
 from jacdac.bus import Bus, Client
 from .constants import *
 from typing import Union
-from jacdac.events import HandlerFn
+from jacdac.events import EventHandlerFn, UnsubscribeFn
 
 class VerifiedTelemetryClient(Client):
     """
@@ -58,17 +58,17 @@ class VerifiedTelemetryClient(Client):
         reg = self.register(JD_VERIFIED_TELEMETRY_REG_FINGERPRINT_TEMPLATE)
         return reg.value(1)
 
-    def on_telemetry_status_change(self, handler: HandlerFn) -> None:
+    def on_telemetry_status_change(self, handler: EventHandlerFn) -> UnsubscribeFn:
         """
         The telemetry status of the device was updated.
         """
-        # TODO
+        return self.on_event(JD_VERIFIED_TELEMETRY_EV_TELEMETRY_STATUS_CHANGE, handler)
 
-    def on_fingerprint_template_change(self, handler: HandlerFn) -> None:
+    def on_fingerprint_template_change(self, handler: EventHandlerFn) -> UnsubscribeFn:
         """
         The fingerprint template was updated
         """
-        # TODO
+        return self.on_event(JD_VERIFIED_TELEMETRY_EV_FINGERPRINT_TEMPLATE_CHANGE, handler)
 
 
     def reset_fingerprint_template(self, ) -> None:

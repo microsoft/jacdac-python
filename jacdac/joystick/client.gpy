@@ -1,7 +1,7 @@
 from jacdac.bus import Bus, Client
 from .constants import *
 from typing import Union
-from jacdac.events import HandlerFn
+from jacdac.events import EventHandlerFn, UnsubscribeFn
 
 class JoystickClient(Client):
     """
@@ -63,10 +63,10 @@ class JoystickClient(Client):
         reg = self.register(JD_JOYSTICK_REG_BUTTONS_AVAILABLE)
         return reg.value(0)
 
-    def on_buttons_changed(self, handler: HandlerFn) -> None:
+    def on_buttons_changed(self, handler: EventHandlerFn) -> UnsubscribeFn:
         """
         Emitted whenever the state of buttons changes.
         """
-        # TODO
+        return self.on_event(JD_JOYSTICK_EV_BUTTONS_CHANGED, handler)
 
     

@@ -1,7 +1,7 @@
 from jacdac.bus import Bus, Client
 from .constants import *
 from typing import Union
-from jacdac.events import HandlerFn
+from jacdac.events import EventHandlerFn, UnsubscribeFn
 
 class WifiClient(Client):
     """
@@ -69,39 +69,39 @@ class WifiClient(Client):
         reg = self.register(JD_WIFI_REG_RSSI)
         return reg.value(0)
 
-    def on_got_ip(self, handler: HandlerFn) -> None:
+    def on_got_ip(self, handler: EventHandlerFn) -> UnsubscribeFn:
         """
         Emitted upon successful join and IP address assignment.
         """
-        # TODO
+        return self.on_event(JD_WIFI_EV_GOT_IP, handler)
 
-    def on_lost_ip(self, handler: HandlerFn) -> None:
+    def on_lost_ip(self, handler: EventHandlerFn) -> UnsubscribeFn:
         """
         Emitted when disconnected from network.
         """
-        # TODO
+        return self.on_event(JD_WIFI_EV_LOST_IP, handler)
 
-    def on_scan_complete(self, handler: HandlerFn) -> None:
+    def on_scan_complete(self, handler: EventHandlerFn) -> UnsubscribeFn:
         """
         A WiFi network scan has completed. Results can be read with the `last_scan_results` command.
         The event indicates how many networks where found, and how many are considered
         as candidates for connection.
         """
-        # TODO
+        return self.on_event(JD_WIFI_EV_SCAN_COMPLETE, handler)
 
-    def on_networks_changed(self, handler: HandlerFn) -> None:
+    def on_networks_changed(self, handler: EventHandlerFn) -> UnsubscribeFn:
         """
         Emitted whenever the list of known networks is updated.
         """
-        # TODO
+        return self.on_event(JD_WIFI_EV_NETWORKS_CHANGED, handler)
 
-    def on_connection_failed(self, handler: HandlerFn) -> None:
+    def on_connection_failed(self, handler: EventHandlerFn) -> UnsubscribeFn:
         """
         Emitted when when a network was detected in scan, the device tried to connect to it
         and failed.
         This may be because of wrong password or other random failure.
         """
-        # TODO
+        return self.on_event(JD_WIFI_EV_CONNECTION_FAILED, handler)
 
 
     def add_network(self, ssid: str, password: str) -> None:

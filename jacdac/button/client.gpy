@@ -1,7 +1,7 @@
 from jacdac.bus import Bus, Client
 from .constants import *
 from typing import Union
-from jacdac.events import HandlerFn
+from jacdac.events import EventHandlerFn, UnsubscribeFn
 
 class ButtonClient(Client):
     """
@@ -39,25 +39,25 @@ class ButtonClient(Client):
         # TODO: implement client register
         raise  RuntimeError("client register not implemented")
 
-    def on_down(self, handler: HandlerFn) -> None:
+    def on_down(self, handler: EventHandlerFn) -> UnsubscribeFn:
         """
         Emitted when button goes from inactive to active.
         """
-        # TODO
+        return self.on_event(JD_BUTTON_EV_DOWN, handler)
 
-    def on_up(self, handler: HandlerFn) -> None:
+    def on_up(self, handler: EventHandlerFn) -> UnsubscribeFn:
         """
         Emitted when button goes from active to inactive. The 'time' parameter 
         records the amount of time between the down and up events.
         """
-        # TODO
+        return self.on_event(JD_BUTTON_EV_UP, handler)
 
-    def on_hold(self, handler: HandlerFn) -> None:
+    def on_hold(self, handler: EventHandlerFn) -> UnsubscribeFn:
         """
         Emitted when the press time is greater than 500ms, and then at least every 500ms 
         as long as the button remains pressed. The 'time' parameter records the the amount of time
         that the button has been held (since the down event).
         """
-        # TODO
+        return self.on_event(JD_BUTTON_EV_HOLD, handler)
 
     

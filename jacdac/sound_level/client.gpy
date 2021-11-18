@@ -1,7 +1,7 @@
 from jacdac.bus import Bus, Client
 from .constants import *
 from typing import Union
-from jacdac.events import HandlerFn
+from jacdac.events import EventHandlerFn, UnsubscribeFn
 
 class SoundLevelClient(Client):
     """
@@ -96,16 +96,16 @@ class SoundLevelClient(Client):
         reg.set_value(0, value)
 
 
-    def on_loud(self, handler: HandlerFn) -> None:
+    def on_loud(self, handler: EventHandlerFn) -> UnsubscribeFn:
         """
         Raised when a loud sound is detected
         """
-        # TODO
+        return self.on_event(JD_SOUND_LEVEL_EV_LOUD, handler)
 
-    def on_quiet(self, handler: HandlerFn) -> None:
+    def on_quiet(self, handler: EventHandlerFn) -> UnsubscribeFn:
         """
         Raised when a period of quietness is detected
         """
-        # TODO
+        return self.on_event(JD_SOUND_LEVEL_EV_QUIET, handler)
 
     

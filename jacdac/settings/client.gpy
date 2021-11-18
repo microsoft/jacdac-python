@@ -1,7 +1,7 @@
 from jacdac.bus import Bus, Client
 from .constants import *
 
-from jacdac.events import HandlerFn
+from jacdac.events import EventHandlerFn, UnsubscribeFn
 
 class SettingsClient(Client):
     """
@@ -12,11 +12,11 @@ class SettingsClient(Client):
         super().__init__(bus, JD_SERVICE_CLASS_SETTINGS, JD_SETTINGS_PACK_FORMATS, role)
     
 
-    def on_change(self, handler: HandlerFn) -> None:
+    def on_change(self, handler: EventHandlerFn) -> UnsubscribeFn:
         """
         Notifies that some setting have been modified.
         """
-        # TODO
+        return self.on_event(JD_SETTINGS_EV_CHANGE, handler)
 
 
     def get(self, key: str) -> None:

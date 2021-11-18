@@ -1,7 +1,7 @@
 from jacdac.bus import Bus, Client
 from .constants import *
 from typing import Union
-from jacdac.events import HandlerFn
+from jacdac.events import EventHandlerFn, UnsubscribeFn
 
 class AccelerometerClient(Client):
     """
@@ -59,76 +59,76 @@ class AccelerometerClient(Client):
         reg.set_value(0, value)
 
 
-    def on_tilt_up(self, handler: HandlerFn) -> None:
+    def on_tilt_up(self, handler: EventHandlerFn) -> UnsubscribeFn:
         """
         Emitted when accelerometer is tilted in the given direction.
         """
-        # TODO
+        return self.on_event(JD_ACCELEROMETER_EV_TILT_UP, handler)
 
-    def on_tilt_down(self, handler: HandlerFn) -> None:
+    def on_tilt_down(self, handler: EventHandlerFn) -> UnsubscribeFn:
         """
         Emitted when accelerometer is tilted in the given direction.
         """
-        # TODO
+        return self.on_event(JD_ACCELEROMETER_EV_TILT_DOWN, handler)
 
-    def on_tilt_left(self, handler: HandlerFn) -> None:
+    def on_tilt_left(self, handler: EventHandlerFn) -> UnsubscribeFn:
         """
         Emitted when accelerometer is tilted in the given direction.
         """
-        # TODO
+        return self.on_event(JD_ACCELEROMETER_EV_TILT_LEFT, handler)
 
-    def on_tilt_right(self, handler: HandlerFn) -> None:
+    def on_tilt_right(self, handler: EventHandlerFn) -> UnsubscribeFn:
         """
         Emitted when accelerometer is tilted in the given direction.
         """
-        # TODO
+        return self.on_event(JD_ACCELEROMETER_EV_TILT_RIGHT, handler)
 
-    def on_face_up(self, handler: HandlerFn) -> None:
+    def on_face_up(self, handler: EventHandlerFn) -> UnsubscribeFn:
         """
         Emitted when accelerometer is laying flat in the given direction.
         """
-        # TODO
+        return self.on_event(JD_ACCELEROMETER_EV_FACE_UP, handler)
 
-    def on_face_down(self, handler: HandlerFn) -> None:
+    def on_face_down(self, handler: EventHandlerFn) -> UnsubscribeFn:
         """
         Emitted when accelerometer is laying flat in the given direction.
         """
-        # TODO
+        return self.on_event(JD_ACCELEROMETER_EV_FACE_DOWN, handler)
 
-    def on_freefall(self, handler: HandlerFn) -> None:
+    def on_freefall(self, handler: EventHandlerFn) -> UnsubscribeFn:
         """
         Emitted when total force acting on accelerometer is much less than 1g.
         """
-        # TODO
+        return self.on_event(JD_ACCELEROMETER_EV_FREEFALL, handler)
 
-    def on_shake(self, handler: HandlerFn) -> None:
+    def on_shake(self, handler: EventHandlerFn) -> UnsubscribeFn:
         """
         Emitted when forces change violently a few times.
         """
-        # TODO
+        return self.on_event(JD_ACCELEROMETER_EV_SHAKE, handler)
 
-    def on_force_2g(self, handler: HandlerFn) -> None:
+    def on_force_2g(self, handler: EventHandlerFn) -> UnsubscribeFn:
         """
         Emitted when force in any direction exceeds given threshold.
         """
-        # TODO
+        return self.on_event(JD_ACCELEROMETER_EV_FORCE_2G, handler)
 
-    def on_force_3g(self, handler: HandlerFn) -> None:
+    def on_force_3g(self, handler: EventHandlerFn) -> UnsubscribeFn:
         """
         Emitted when force in any direction exceeds given threshold.
         """
-        # TODO
+        return self.on_event(JD_ACCELEROMETER_EV_FORCE_3G, handler)
 
-    def on_force_6g(self, handler: HandlerFn) -> None:
+    def on_force_6g(self, handler: EventHandlerFn) -> UnsubscribeFn:
         """
         Emitted when force in any direction exceeds given threshold.
         """
-        # TODO
+        return self.on_event(JD_ACCELEROMETER_EV_FORCE_6G, handler)
 
-    def on_force_8g(self, handler: HandlerFn) -> None:
+    def on_force_8g(self, handler: EventHandlerFn) -> UnsubscribeFn:
         """
         Emitted when force in any direction exceeds given threshold.
         """
-        # TODO
+        return self.on_event(JD_ACCELEROMETER_EV_FORCE_8G, handler)
 
     

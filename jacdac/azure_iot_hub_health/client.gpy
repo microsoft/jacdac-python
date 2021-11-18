@@ -1,7 +1,7 @@
 from jacdac.bus import Bus, Client
 from .constants import *
 from typing import Union
-from jacdac.events import HandlerFn
+from jacdac.events import EventHandlerFn, UnsubscribeFn
 
 class AzureIotHubHealthClient(Client):
     """
@@ -36,17 +36,17 @@ class AzureIotHubHealthClient(Client):
         reg = self.register(JD_AZURE_IOT_HUB_HEALTH_REG_CONNECTION_STATUS)
         return reg.value(0)
 
-    def on_connection_status_change(self, handler: HandlerFn) -> None:
+    def on_connection_status_change(self, handler: EventHandlerFn) -> UnsubscribeFn:
         """
         Raised when the connection status changes
         """
-        # TODO
+        return self.on_event(JD_AZURE_IOT_HUB_HEALTH_EV_CONNECTION_STATUS_CHANGE, handler)
 
-    def on_message_sent(self, handler: HandlerFn) -> None:
+    def on_message_sent(self, handler: EventHandlerFn) -> UnsubscribeFn:
         """
         Raised when a message has been sent to the hub.
         """
-        # TODO
+        return self.on_event(JD_AZURE_IOT_HUB_HEALTH_EV_MESSAGE_SENT, handler)
 
 
     def connect(self, ) -> None:

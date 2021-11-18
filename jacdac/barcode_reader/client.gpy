@@ -1,7 +1,7 @@
 from jacdac.bus import Bus, Client
 from .constants import *
 from typing import Union
-from jacdac.events import HandlerFn
+from jacdac.events import EventHandlerFn, UnsubscribeFn
 
 class BarcodeReaderClient(Client):
     """
@@ -26,11 +26,11 @@ class BarcodeReaderClient(Client):
         reg.set_value(0, value)
 
 
-    def on_detect(self, handler: HandlerFn) -> None:
+    def on_detect(self, handler: EventHandlerFn) -> UnsubscribeFn:
         """
         Raised when a bar code is detected and decoded. If the reader detects multiple codes, it will issue multiple events.
         In case of numeric barcodes, the `data` field should contain the ASCII (which is the same as UTF8 in that case) representation of the number.
         """
-        # TODO
+        return self.on_event(JD_BARCODE_READER_EV_DETECT, handler)
 
     

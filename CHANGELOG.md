@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v0.0.9 (2021-11-18)
+### Fix
+* Updated accelerometer ([`bb4751f`](https://github.com/microsoft/jacdac-python/commit/bb4751f1f77b159f61f8535db377cadfefa998d2))
+
 ## v0.0.8 (2021-11-16)
 ### Fix
 * Force build ([`bd05439`](https://github.com/microsoft/jacdac-python/commit/bd05439d6e4aa071d4dd71161bbd5a501937bfcf))

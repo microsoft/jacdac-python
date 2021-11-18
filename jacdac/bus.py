@@ -361,6 +361,7 @@ class RawRegisterClient(EventEmitter):
         data = jdpack(self.pack_format, *values)
         pkt = JDPacket(cmd=JD_SET(self.code), data=data)
         self.client.send_cmd(pkt)
+        self.refresh()
 
     def float_value(self, index: int = 0, scale: int = 1) -> Union[float, None]:
         value = self.value(index)

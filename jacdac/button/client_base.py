@@ -1,9 +1,9 @@
 from jacdac.bus import Bus, Client
 from .constants import *
-from typing import Union, cast
+from typing import Optional, Union, cast
 from jacdac.events import EventHandlerFn, UnsubscribeFn
 
-class ButtonClient(Client):
+class ButtonClientBase(Client):
     """
     A push-button, which returns to inactive position when not operated anymore.
     """
@@ -13,7 +13,7 @@ class ButtonClient(Client):
     
 
     @property
-    def pressure(self) -> Union[float, None]:
+    def pressure(self) -> Optional[float]:
         """
         Indicates the pressure state of the button, where ``0`` is open., /
         """
@@ -29,17 +29,6 @@ class ButtonClient(Client):
         reg = self.register(JD_BUTTON_REG_ANALOG)
         value = reg.value(0)
         return cast(Union[bool, None], value)
-
-    @property
-    def pressed(self) -> Union[bool, None]:
-        """
-        Determines if the button is pressed currently.
-        
-        If the event ``down`` is observed, ``pressed`` is true; if ``up`` or ``hold`` are observed, ``pressed`` is false.
-        To initialize, wait for any event or timeout to ``pressed`` is true after 750ms (1.5x hold time).
-        """
-        # TODO: implement client register
-        raise  RuntimeError("client register not implemented")
 
     def on_down(self, handler: EventHandlerFn) -> UnsubscribeFn:
         """

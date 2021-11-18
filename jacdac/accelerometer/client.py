@@ -1,6 +1,6 @@
 from jacdac.bus import Bus, Client
 from .constants import *
-from typing import Union, cast
+from typing import Optional, Union, cast
 from jacdac.events import EventHandlerFn, UnsubscribeFn
 
 class AccelerometerClient(Client):
@@ -13,31 +13,13 @@ class AccelerometerClient(Client):
     
 
     @property
-    def x(self) -> Union[float, None]:
+    def forces(self) -> Optional[tuple[float,float,float]]:
         """
         Indicates the current forces acting on accelerometer., g
         """
         reg = self.register(JD_ACCELEROMETER_REG_FORCES)
-        value = reg.value(0)
-        return cast(Union[float, None], value)
-
-    @property
-    def y(self) -> Union[float, None]:
-        """
-        Indicates the current forces acting on accelerometer., g
-        """
-        reg = self.register(JD_ACCELEROMETER_REG_FORCES)
-        value = reg.value(1)
-        return cast(Union[float, None], value)
-
-    @property
-    def z(self) -> Union[float, None]:
-        """
-        Indicates the current forces acting on accelerometer., g
-        """
-        reg = self.register(JD_ACCELEROMETER_REG_FORCES)
-        value = reg.value(2)
-        return cast(Union[float, None], value)
+        values = reg.unpacked()
+        return values
 
     @property
     def forces_error(self) -> Union[float, None]:

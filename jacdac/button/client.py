@@ -1,55 +1,30 @@
-from jacdac.bus import Bus, Client
-from .constants import *
-from typing import Union, cast
-from jacdac.events import EventHandlerFn, UnsubscribeFn
-from .client_mixin import ButtonClientMixin
+from jacdac.bus import Bus, EV_EVENT
+from jacdac.button.constants import JD_BUTTON_EV_DOWN, JD_BUTTON_EV_HOLD, JD_BUTTON_EV_UP
+from jacdac.packet import JDPacket
+from .client_base import ButtonClientBase
 
-class ButtonClient(Client, ButtonClientMixin):
-    """
-    A push-button, which returns to inactive position when not operated anymore.
-    """
 
+class ButtonClient(ButtonClientBase):
     def __init__(self, bus: Bus, role: str) -> None:
-        super().__init__(bus, JD_SERVICE_CLASS_BUTTON, JD_BUTTON_PACK_FORMATS, role)
-    
+        super().__init__(bus, role)
+        self.on(EV_EVENT, self._on_event)
+        self._pressed = False
 
     @property
-    def pressure(self) -> Union[float, None]:
+    def pressed(self) -> bool:
         """
-        Indicates the pressure state of the button, where ``0`` is open., /
-        """
-        reg = self.register(JD_BUTTON_REG_PRESSURE)
-        value = reg.value(0)
-        return cast(Union[float, None], value)
+        Determines if the button is pressed currently.
 
-    @property
-    def analog(self) -> Union[bool, None]:
+        If the event ``down`` is observed, ``pressed`` is true; if ``up`` or ``hold`` are observed, ``pressed`` is false.
+        To initialize, wait for any event or timeout to ``pressed`` is true after 750ms (1.5x hold time).
         """
-        (Optional) Indicates if the button provides analog ``pressure`` readings.
-        """
-        reg = self.register(JD_BUTTON_REG_ANALOG)
-        value = reg.value(0)
-        return cast(Union[bool, None], value)
+        return self._pressed
 
-    def on_down(self, handler: EventHandlerFn) -> UnsubscribeFn:
-        """
-        Emitted when button goes from inactive to active.
-        """
-        return self.on_event(JD_BUTTON_EV_DOWN, handler)
-
-    def on_up(self, handler: EventHandlerFn) -> UnsubscribeFn:
-        """
-        Emitted when button goes from active to inactive. The 'time' parameter 
-        records the amount of time between the down and up events.
-        """
-        return self.on_event(JD_BUTTON_EV_UP, handler)
-
-    def on_hold(self, handler: EventHandlerFn) -> UnsubscribeFn:
-        """
-        Emitted when the press time is greater than 500ms, and then at least every 500ms 
-        as long as the button remains pressed. The 'time' parameter records the the amount of time
-        that the button has been held (since the down event).
-        """
-        return self.on_event(JD_BUTTON_EV_HOLD, handler)
-
-    
+    def _on_event(self, pkt: JDPacket):
+        code = pkt.event_code
+        if (code == JD_BUTTON_EV_UP):
+            self._pressed = False
+        elif (code == JD_BUTTON_EV_DOWN):
+            self._pressed = True
+        elif code == JD_BUTTON_EV_HOLD:
+            self._pressed = True

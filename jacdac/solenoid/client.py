@@ -25,7 +25,7 @@ class SolenoidClient(Client):
     @pulled.setter
     def pulled(self, value: bool) -> None:
         reg = self.register(JD_SOLENOID_REG_PULLED)
-        reg.set_values(value) # type: ignore
+        reg.set_values(value)
 
 
     @property

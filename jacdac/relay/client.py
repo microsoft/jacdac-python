@@ -25,7 +25,7 @@ class RelayClient(Client):
     @closed.setter
     def closed(self, value: bool) -> None:
         reg = self.register(JD_RELAY_REG_CLOSED)
-        reg.set_values(value) # type: ignore
+        reg.set_values(value)
 
 
     @property

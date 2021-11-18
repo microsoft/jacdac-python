@@ -34,7 +34,7 @@ class SoundLevelClient(Client):
     @enabled.setter
     def enabled(self, value: bool) -> None:
         reg = self.register(JD_SOUND_LEVEL_REG_ENABLED)
-        reg.set_values(value) # type: ignore
+        reg.set_values(value)
 
 
     @property
@@ -52,7 +52,7 @@ class SoundLevelClient(Client):
     @min_decibels.setter
     def min_decibels(self, value: int) -> None:
         reg = self.register(JD_SOUND_LEVEL_REG_MIN_DECIBELS)
-        reg.set_values(value) # type: ignore
+        reg.set_values(value)
 
 
     @property
@@ -70,7 +70,7 @@ class SoundLevelClient(Client):
     @max_decibels.setter
     def max_decibels(self, value: int) -> None:
         reg = self.register(JD_SOUND_LEVEL_REG_MAX_DECIBELS)
-        reg.set_values(value) # type: ignore
+        reg.set_values(value)
 
 
     @property
@@ -85,7 +85,7 @@ class SoundLevelClient(Client):
     @loud_threshold.setter
     def loud_threshold(self, value: float) -> None:
         reg = self.register(JD_SOUND_LEVEL_REG_LOUD_THRESHOLD)
-        reg.set_values(value) # type: ignore
+        reg.set_values(value)
 
 
     @property
@@ -100,7 +100,7 @@ class SoundLevelClient(Client):
     @quiet_threshold.setter
     def quiet_threshold(self, value: float) -> None:
         reg = self.register(JD_SOUND_LEVEL_REG_QUIET_THRESHOLD)
-        reg.set_values(value) # type: ignore
+        reg.set_values(value)
 
 
     def on_loud(self, handler: EventHandlerFn) -> UnsubscribeFn:

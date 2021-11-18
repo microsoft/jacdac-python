@@ -34,7 +34,7 @@ class SoundSpectrumClient(Client):
     @enabled.setter
     def enabled(self, value: bool) -> None:
         reg = self.register(JD_SOUND_SPECTRUM_REG_ENABLED)
-        reg.set_values(value) # type: ignore
+        reg.set_values(value)
 
 
     @property
@@ -49,7 +49,7 @@ class SoundSpectrumClient(Client):
     @fft_pow2_size.setter
     def fft_pow2_size(self, value: int) -> None:
         reg = self.register(JD_SOUND_SPECTRUM_REG_FFT_POW2_SIZE)
-        reg.set_values(value) # type: ignore
+        reg.set_values(value)
 
 
     @property
@@ -64,7 +64,7 @@ class SoundSpectrumClient(Client):
     @min_decibels.setter
     def min_decibels(self, value: int) -> None:
         reg = self.register(JD_SOUND_SPECTRUM_REG_MIN_DECIBELS)
-        reg.set_values(value) # type: ignore
+        reg.set_values(value)
 
 
     @property
@@ -79,7 +79,7 @@ class SoundSpectrumClient(Client):
     @max_decibels.setter
     def max_decibels(self, value: int) -> None:
         reg = self.register(JD_SOUND_SPECTRUM_REG_MAX_DECIBELS)
-        reg.set_values(value) # type: ignore
+        reg.set_values(value)
 
 
     @property
@@ -95,7 +95,7 @@ class SoundSpectrumClient(Client):
     @smoothing_time_constant.setter
     def smoothing_time_constant(self, value: float) -> None:
         reg = self.register(JD_SOUND_SPECTRUM_REG_SMOOTHING_TIME_CONSTANT)
-        reg.set_values(value) # type: ignore
+        reg.set_values(value)
 
 
     

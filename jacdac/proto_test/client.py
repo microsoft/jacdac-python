@@ -26,7 +26,7 @@ class ProtoTestClient(Client):
     @rw_bool.setter
     def rw_bool(self, value: bool) -> None:
         reg = self.register(JD_PROTO_TEST_REG_RW_BOOL)
-        reg.set_values(value) # type: ignore
+        reg.set_values(value)
 
 
     @property
@@ -50,7 +50,7 @@ class ProtoTestClient(Client):
     @rw_u32.setter
     def rw_u32(self, value: int) -> None:
         reg = self.register(JD_PROTO_TEST_REG_RW_U32)
-        reg.set_values(value) # type: ignore
+        reg.set_values(value)
 
 
     @property
@@ -74,7 +74,7 @@ class ProtoTestClient(Client):
     @rw_i32.setter
     def rw_i32(self, value: int) -> None:
         reg = self.register(JD_PROTO_TEST_REG_RW_I32)
-        reg.set_values(value) # type: ignore
+        reg.set_values(value)
 
 
     @property
@@ -98,7 +98,7 @@ class ProtoTestClient(Client):
     @rw_string.setter
     def rw_string(self, value: str) -> None:
         reg = self.register(JD_PROTO_TEST_REG_RW_STRING)
-        reg.set_values(value) # type: ignore
+        reg.set_values(value)
 
 
     @property
@@ -122,7 +122,7 @@ class ProtoTestClient(Client):
     @rw_bytes.setter
     def rw_bytes(self, value: bytes) -> None:
         reg = self.register(JD_PROTO_TEST_REG_RW_BYTES)
-        reg.set_values(value) # type: ignore
+        reg.set_values(value)
 
 
     @property
@@ -146,7 +146,7 @@ class ProtoTestClient(Client):
     @rw_i8_u8_u16_i32.setter
     def rw_i8_u8_u16_i32(self, value: tuple[int, int, int, int]) -> None:
         reg = self.register(JD_PROTO_TEST_REG_RW_I8_U8_U16_I32)
-        reg.set_values(value) # type: ignore
+        reg.set_values(*value)
 
 
     @property
@@ -170,7 +170,7 @@ class ProtoTestClient(Client):
     @rw_u8_string.setter
     def rw_u8_string(self, value: tuple[int, str]) -> None:
         reg = self.register(JD_PROTO_TEST_REG_RW_U8_STRING)
-        reg.set_values(value) # type: ignore
+        reg.set_values(*value)
 
 
     @property

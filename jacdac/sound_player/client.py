@@ -25,7 +25,7 @@ class SoundPlayerClient(Client):
     @volume.setter
     def volume(self, value: float) -> None:
         reg = self.register(JD_SOUND_PLAYER_REG_VOLUME)
-        reg.set_values(value) # type: ignore
+        reg.set_values(value)
 
 
 

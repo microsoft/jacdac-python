@@ -34,7 +34,7 @@ class CompassClient(Client):
     @enabled.setter
     def enabled(self, value: bool) -> None:
         reg = self.register(JD_COMPASS_REG_ENABLED)
-        reg.set_values(value) # type: ignore
+        reg.set_values(value)
 
 
     @property

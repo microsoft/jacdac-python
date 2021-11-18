@@ -27,7 +27,7 @@ class PowerClient(Client):
     @allowed.setter
     def allowed(self, value: bool) -> None:
         reg = self.register(JD_POWER_REG_ALLOWED)
-        reg.set_values(value) # type: ignore
+        reg.set_values(value)
 
 
     @property
@@ -43,7 +43,7 @@ class PowerClient(Client):
     @max_power.setter
     def max_power(self, value: int) -> None:
         reg = self.register(JD_POWER_REG_MAX_POWER)
-        reg.set_values(value) # type: ignore
+        reg.set_values(value)
 
 
     @property
@@ -107,7 +107,7 @@ class PowerClient(Client):
     @keep_on_pulse_duration.setter
     def keep_on_pulse_duration(self, value: int) -> None:
         reg = self.register(JD_POWER_REG_KEEP_ON_PULSE_DURATION)
-        reg.set_values(value) # type: ignore
+        reg.set_values(value)
 
 
     @property
@@ -124,7 +124,7 @@ class PowerClient(Client):
     @keep_on_pulse_period.setter
     def keep_on_pulse_period(self, value: int) -> None:
         reg = self.register(JD_POWER_REG_KEEP_ON_PULSE_PERIOD)
-        reg.set_values(value) # type: ignore
+        reg.set_values(value)
 
 
     def on_power_status_changed(self, handler: EventHandlerFn) -> UnsubscribeFn:

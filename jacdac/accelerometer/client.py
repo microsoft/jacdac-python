@@ -44,7 +44,7 @@ class AccelerometerClient(Client):
     @max_force.setter
     def max_force(self, value: float) -> None:
         reg = self.register(JD_ACCELEROMETER_REG_MAX_FORCE)
-        reg.set_values(value) # type: ignore
+        reg.set_values(value)
 
 
     def on_tilt_up(self, handler: EventHandlerFn) -> UnsubscribeFn:

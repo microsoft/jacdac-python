@@ -25,7 +25,7 @@ class BrailleDisplayClient(Client):
     @enabled.setter
     def enabled(self, value: bool) -> None:
         reg = self.register(JD_BRAILLE_DISPLAY_REG_ENABLED)
-        reg.set_values(value) # type: ignore
+        reg.set_values(value)
 
 
     @property
@@ -41,7 +41,7 @@ class BrailleDisplayClient(Client):
     def patterns(self, value: str) -> None:
         self.enabled = True
         reg = self.register(JD_BRAILLE_DISPLAY_REG_PATTERNS)
-        reg.set_values(value) # type: ignore
+        reg.set_values(value)
 
 
     @property

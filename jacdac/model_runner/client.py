@@ -32,7 +32,7 @@ class ModelRunnerClient(Client):
     @auto_invoke_every.setter
     def auto_invoke_every(self, value: int) -> None:
         reg = self.register(JD_MODEL_RUNNER_REG_AUTO_INVOKE_EVERY)
-        reg.set_values(value) # type: ignore
+        reg.set_values(value)
 
 
     @property

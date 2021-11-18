@@ -25,7 +25,7 @@ class BuzzerClient(Client):
     @volume.setter
     def volume(self, value: float) -> None:
         reg = self.register(JD_BUZZER_REG_VOLUME)
-        reg.set_values(value) # type: ignore
+        reg.set_values(value)
 
 
 

@@ -26,7 +26,7 @@ class LedPixelClient(Client):
     @brightness.setter
     def brightness(self, value: float) -> None:
         reg = self.register(JD_LED_PIXEL_REG_BRIGHTNESS)
-        reg.set_values(value) # type: ignore
+        reg.set_values(value)
 
 
     @property
@@ -54,7 +54,7 @@ class LedPixelClient(Client):
     @light_type.setter
     def light_type(self, value: LedPixelLightType) -> None:
         reg = self.register(JD_LED_PIXEL_REG_LIGHT_TYPE)
-        reg.set_values(value) # type: ignore
+        reg.set_values(value)
 
 
     @property
@@ -71,7 +71,7 @@ class LedPixelClient(Client):
     @num_pixels.setter
     def num_pixels(self, value: int) -> None:
         reg = self.register(JD_LED_PIXEL_REG_NUM_PIXELS)
-        reg.set_values(value) # type: ignore
+        reg.set_values(value)
 
 
     @property
@@ -87,7 +87,7 @@ class LedPixelClient(Client):
     @num_columns.setter
     def num_columns(self, value: int) -> None:
         reg = self.register(JD_LED_PIXEL_REG_NUM_COLUMNS)
-        reg.set_values(value) # type: ignore
+        reg.set_values(value)
 
 
     @property
@@ -102,7 +102,7 @@ class LedPixelClient(Client):
     @max_power.setter
     def max_power(self, value: int) -> None:
         reg = self.register(JD_LED_PIXEL_REG_MAX_POWER)
-        reg.set_values(value) # type: ignore
+        reg.set_values(value)
 
 
     @property
@@ -129,7 +129,7 @@ class LedPixelClient(Client):
     @num_repeats.setter
     def num_repeats(self, value: int) -> None:
         reg = self.register(JD_LED_PIXEL_REG_NUM_REPEATS)
-        reg.set_values(value) # type: ignore
+        reg.set_values(value)
 
 
     @property

@@ -34,7 +34,7 @@ class LedClient(Client):
     @max_power.setter
     def max_power(self, value: int) -> None:
         reg = self.register(JD_LED_REG_MAX_POWER)
-        reg.set_values(value) # type: ignore
+        reg.set_values(value)
 
 
     @property

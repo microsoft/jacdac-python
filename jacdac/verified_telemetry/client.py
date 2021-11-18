@@ -34,7 +34,7 @@ class VerifiedTelemetryClient(Client):
     @telemetry_status_interval.setter
     def telemetry_status_interval(self, value: int) -> None:
         reg = self.register(JD_VERIFIED_TELEMETRY_REG_TELEMETRY_STATUS_INTERVAL)
-        reg.set_values(value) # type: ignore
+        reg.set_values(value)
 
 
     @property

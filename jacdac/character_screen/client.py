@@ -25,7 +25,7 @@ class CharacterScreenClient(Client):
     @message.setter
     def message(self, value: str) -> None:
         reg = self.register(JD_CHARACTER_SCREEN_REG_MESSAGE)
-        reg.set_values(value) # type: ignore
+        reg.set_values(value)
 
 
     @property
@@ -40,7 +40,7 @@ class CharacterScreenClient(Client):
     @brightness.setter
     def brightness(self, value: float) -> None:
         reg = self.register(JD_CHARACTER_SCREEN_REG_BRIGHTNESS)
-        reg.set_values(value) # type: ignore
+        reg.set_values(value)
 
 
     @property
@@ -64,7 +64,7 @@ class CharacterScreenClient(Client):
     @text_direction.setter
     def text_direction(self, value: CharacterScreenTextDirection) -> None:
         reg = self.register(JD_CHARACTER_SCREEN_REG_TEXT_DIRECTION)
-        reg.set_values(value) # type: ignore
+        reg.set_values(value)
 
 
     @property

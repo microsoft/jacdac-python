@@ -25,7 +25,7 @@ class DimmerClient(Client):
     @intensity.setter
     def intensity(self, value: float) -> None:
         reg = self.register(JD_DIMMER_REG_INTENSITY)
-        reg.set_values(value) # type: ignore
+        reg.set_values(value)
 
 
     @property

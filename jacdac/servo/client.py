@@ -28,7 +28,7 @@ class ServoClient(Client):
     def angle(self, value: float) -> None:
         self.enabled = True
         reg = self.register(JD_SERVO_REG_ANGLE)
-        reg.set_values(value) # type: ignore
+        reg.set_values(value)
 
 
     @property
@@ -43,7 +43,7 @@ class ServoClient(Client):
     @enabled.setter
     def enabled(self, value: bool) -> None:
         reg = self.register(JD_SERVO_REG_ENABLED)
-        reg.set_values(value) # type: ignore
+        reg.set_values(value)
 
 
     @property
@@ -58,7 +58,7 @@ class ServoClient(Client):
     @offset.setter
     def offset(self, value: float) -> None:
         reg = self.register(JD_SERVO_REG_OFFSET)
-        reg.set_values(value) # type: ignore
+        reg.set_values(value)
 
 
     @property
@@ -82,7 +82,7 @@ class ServoClient(Client):
     @min_pulse.setter
     def min_pulse(self, value: int) -> None:
         reg = self.register(JD_SERVO_REG_MIN_PULSE)
-        reg.set_values(value) # type: ignore
+        reg.set_values(value)
 
 
     @property
@@ -106,7 +106,7 @@ class ServoClient(Client):
     @max_pulse.setter
     def max_pulse(self, value: int) -> None:
         reg = self.register(JD_SERVO_REG_MAX_PULSE)
-        reg.set_values(value) # type: ignore
+        reg.set_values(value)
 
 
     @property

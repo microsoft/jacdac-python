@@ -44,7 +44,7 @@ class SensorAggregatorClient(Client):
     @streaming_samples.setter
     def streaming_samples(self, value: int) -> None:
         reg = self.register(JD_SENSOR_AGGREGATOR_REG_STREAMING_SAMPLES)
-        reg.set_values(value) # type: ignore
+        reg.set_values(value)
 
 
     @property

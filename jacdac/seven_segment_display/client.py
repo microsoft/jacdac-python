@@ -38,7 +38,7 @@ class SevenSegmentDisplayClient(Client):
     @digits.setter
     def digits(self, value: bytes) -> None:
         reg = self.register(JD_SEVEN_SEGMENT_DISPLAY_REG_DIGITS)
-        reg.set_values(value) # type: ignore
+        reg.set_values(value)
 
 
     @property
@@ -53,7 +53,7 @@ class SevenSegmentDisplayClient(Client):
     @brightness.setter
     def brightness(self, value: float) -> None:
         reg = self.register(JD_SEVEN_SEGMENT_DISPLAY_REG_BRIGHTNESS)
-        reg.set_values(value) # type: ignore
+        reg.set_values(value)
 
 
     @property
@@ -69,7 +69,7 @@ class SevenSegmentDisplayClient(Client):
     @double_dots.setter
     def double_dots(self, value: bool) -> None:
         reg = self.register(JD_SEVEN_SEGMENT_DISPLAY_REG_DOUBLE_DOTS)
-        reg.set_values(value) # type: ignore
+        reg.set_values(value)
 
 
     @property

@@ -25,7 +25,7 @@ class SpeechSynthesisClient(Client):
     @enabled.setter
     def enabled(self, value: bool) -> None:
         reg = self.register(JD_SPEECH_SYNTHESIS_REG_ENABLED)
-        reg.set_values(value) # type: ignore
+        reg.set_values(value)
 
 
     @property
@@ -40,7 +40,7 @@ class SpeechSynthesisClient(Client):
     @lang.setter
     def lang(self, value: str) -> None:
         reg = self.register(JD_SPEECH_SYNTHESIS_REG_LANG)
-        reg.set_values(value) # type: ignore
+        reg.set_values(value)
 
 
     @property
@@ -55,7 +55,7 @@ class SpeechSynthesisClient(Client):
     @volume.setter
     def volume(self, value: float) -> None:
         reg = self.register(JD_SPEECH_SYNTHESIS_REG_VOLUME)
-        reg.set_values(value) # type: ignore
+        reg.set_values(value)
 
 
     @property
@@ -70,7 +70,7 @@ class SpeechSynthesisClient(Client):
     @pitch.setter
     def pitch(self, value: float) -> None:
         reg = self.register(JD_SPEECH_SYNTHESIS_REG_PITCH)
-        reg.set_values(value) # type: ignore
+        reg.set_values(value)
 
 
     @property
@@ -85,7 +85,7 @@ class SpeechSynthesisClient(Client):
     @rate.setter
     def rate(self, value: float) -> None:
         reg = self.register(JD_SPEECH_SYNTHESIS_REG_RATE)
-        reg.set_values(value) # type: ignore
+        reg.set_values(value)
 
 
 

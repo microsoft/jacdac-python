@@ -41,7 +41,7 @@ class RoleManagerClient(Client):
     @auto_bind.setter
     def auto_bind(self, value: bool) -> None:
         reg = self.register(JD_ROLE_MANAGER_REG_AUTO_BIND)
-        reg.set_values(value) # type: ignore
+        reg.set_values(value)
 
 
     @property

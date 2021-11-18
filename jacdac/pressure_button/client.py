@@ -25,7 +25,7 @@ class PressureButtonClient(Client):
     @threshold.setter
     def threshold(self, value: float) -> None:
         reg = self.register(JD_PRESSURE_BUTTON_REG_THRESHOLD)
-        reg.set_values(value) # type: ignore
+        reg.set_values(value)
 
 
     

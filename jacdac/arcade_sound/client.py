@@ -28,7 +28,7 @@ class ArcadeSoundClient(Client):
     @sample_rate.setter
     def sample_rate(self, value: float) -> None:
         reg = self.register(JD_ARCADE_SOUND_REG_SAMPLE_RATE)
-        reg.set_values(value) # type: ignore
+        reg.set_values(value)
 
 
     @property

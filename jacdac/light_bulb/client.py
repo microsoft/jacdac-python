@@ -26,7 +26,7 @@ class LightBulbClient(Client):
     @brightness.setter
     def brightness(self, value: float) -> None:
         reg = self.register(JD_LIGHT_BULB_REG_BRIGHTNESS)
-        reg.set_values(value) # type: ignore
+        reg.set_values(value)
 
 
     @property

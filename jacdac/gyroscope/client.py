@@ -44,7 +44,7 @@ class GyroscopeClient(Client):
     @max_rate.setter
     def max_rate(self, value: float) -> None:
         reg = self.register(JD_GYROSCOPE_REG_MAX_RATE)
-        reg.set_values(value) # type: ignore
+        reg.set_values(value)
 
 
     

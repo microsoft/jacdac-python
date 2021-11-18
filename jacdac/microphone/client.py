@@ -26,7 +26,7 @@ class MicrophoneClient(Client):
     @sampling_period.setter
     def sampling_period(self, value: int) -> None:
         reg = self.register(JD_MICROPHONE_REG_SAMPLING_PERIOD)
-        reg.set_values(value) # type: ignore
+        reg.set_values(value)
 
 
     

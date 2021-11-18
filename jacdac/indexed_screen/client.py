@@ -28,7 +28,7 @@ class IndexedScreenClient(Client):
     @brightness.setter
     def brightness(self, value: float) -> None:
         reg = self.register(JD_INDEXED_SCREEN_REG_BRIGHTNESS)
-        reg.set_values(value) # type: ignore
+        reg.set_values(value)
 
 
     @property
@@ -76,7 +76,7 @@ class IndexedScreenClient(Client):
     @width_major.setter
     def width_major(self, value: bool) -> None:
         reg = self.register(JD_INDEXED_SCREEN_REG_WIDTH_MAJOR)
-        reg.set_values(value) # type: ignore
+        reg.set_values(value)
 
 
     @property
@@ -93,7 +93,7 @@ class IndexedScreenClient(Client):
     @up_sampling.setter
     def up_sampling(self, value: int) -> None:
         reg = self.register(JD_INDEXED_SCREEN_REG_UP_SAMPLING)
-        reg.set_values(value) # type: ignore
+        reg.set_values(value)
 
 
     @property
@@ -110,7 +110,7 @@ class IndexedScreenClient(Client):
     @rotation.setter
     def rotation(self, value: int) -> None:
         reg = self.register(JD_INDEXED_SCREEN_REG_ROTATION)
-        reg.set_values(value) # type: ignore
+        reg.set_values(value)
 
 
 

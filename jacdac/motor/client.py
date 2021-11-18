@@ -28,7 +28,7 @@ class MotorClient(Client):
     def duty(self, value: float) -> None:
         self.enabled = True
         reg = self.register(JD_MOTOR_REG_DUTY)
-        reg.set_values(value) # type: ignore
+        reg.set_values(value)
 
 
     @property
@@ -43,7 +43,7 @@ class MotorClient(Client):
     @enabled.setter
     def enabled(self, value: bool) -> None:
         reg = self.register(JD_MOTOR_REG_ENABLED)
-        reg.set_values(value) # type: ignore
+        reg.set_values(value)
 
 
     @property

@@ -26,7 +26,7 @@ class DotMatrixClient(Client):
     @dots.setter
     def dots(self, value: bytes) -> None:
         reg = self.register(JD_DOT_MATRIX_REG_DOTS)
-        reg.set_values(value) # type: ignore
+        reg.set_values(value)
 
 
     @property
@@ -41,7 +41,7 @@ class DotMatrixClient(Client):
     @brightness.setter
     def brightness(self, value: float) -> None:
         reg = self.register(JD_DOT_MATRIX_REG_BRIGHTNESS)
-        reg.set_values(value) # type: ignore
+        reg.set_values(value)
 
 
     @property

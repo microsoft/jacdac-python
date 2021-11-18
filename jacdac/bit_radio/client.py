@@ -25,7 +25,7 @@ class BitRadioClient(Client):
     @enabled.setter
     def enabled(self, value: bool) -> None:
         reg = self.register(JD_BIT_RADIO_REG_ENABLED)
-        reg.set_values(value) # type: ignore
+        reg.set_values(value)
 
 
     @property
@@ -40,7 +40,7 @@ class BitRadioClient(Client):
     @group.setter
     def group(self, value: int) -> None:
         reg = self.register(JD_BIT_RADIO_REG_GROUP)
-        reg.set_values(value) # type: ignore
+        reg.set_values(value)
 
 
     @property
@@ -55,7 +55,7 @@ class BitRadioClient(Client):
     @transmission_power.setter
     def transmission_power(self, value: int) -> None:
         reg = self.register(JD_BIT_RADIO_REG_TRANSMISSION_POWER)
-        reg.set_values(value) # type: ignore
+        reg.set_values(value)
 
 
     @property
@@ -70,7 +70,7 @@ class BitRadioClient(Client):
     @frequency_band.setter
     def frequency_band(self, value: int) -> None:
         reg = self.register(JD_BIT_RADIO_REG_FREQUENCY_BAND)
-        reg.set_values(value) # type: ignore
+        reg.set_values(value)
 
 
 

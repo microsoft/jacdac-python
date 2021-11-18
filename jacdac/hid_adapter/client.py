@@ -25,7 +25,7 @@ class HidAdapterClient(Client):
     @num_configurations.setter
     def num_configurations(self, value: int) -> None:
         reg = self.register(JD_HID_ADAPTER_REG_NUM_CONFIGURATIONS)
-        reg.set_values(value) # type: ignore
+        reg.set_values(value)
 
 
     @property
@@ -40,7 +40,7 @@ class HidAdapterClient(Client):
     @current_configuration.setter
     def current_configuration(self, value: int) -> None:
         reg = self.register(JD_HID_ADAPTER_REG_CURRENT_CONFIGURATION)
-        reg.set_values(value) # type: ignore
+        reg.set_values(value)
 
 
     def on_changed(self, handler: EventHandlerFn) -> UnsubscribeFn:

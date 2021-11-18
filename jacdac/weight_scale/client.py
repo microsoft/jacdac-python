@@ -44,7 +44,7 @@ class WeightScaleClient(Client):
     @zero_offset.setter
     def zero_offset(self, value: float) -> None:
         reg = self.register(JD_WEIGHT_SCALE_REG_ZERO_OFFSET)
-        reg.set_values(value) # type: ignore
+        reg.set_values(value)
 
 
     @property
@@ -59,7 +59,7 @@ class WeightScaleClient(Client):
     @gain.setter
     def gain(self, value: float) -> None:
         reg = self.register(JD_WEIGHT_SCALE_REG_GAIN)
-        reg.set_values(value) # type: ignore
+        reg.set_values(value)
 
 
     @property

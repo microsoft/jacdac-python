@@ -25,7 +25,7 @@ class BarcodeReaderClient(Client):
     @enabled.setter
     def enabled(self, value: bool) -> None:
         reg = self.register(JD_BARCODE_READER_REG_ENABLED)
-        reg.set_values(value) # type: ignore
+        reg.set_values(value)
 
 
     def on_detect(self, handler: EventHandlerFn) -> UnsubscribeFn:

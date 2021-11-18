@@ -25,7 +25,7 @@ class TrafficLightClient(Client):
     @red.setter
     def red(self, value: bool) -> None:
         reg = self.register(JD_TRAFFIC_LIGHT_REG_RED)
-        reg.set_values(value) # type: ignore
+        reg.set_values(value)
 
 
     @property
@@ -40,7 +40,7 @@ class TrafficLightClient(Client):
     @orange.setter
     def orange(self, value: bool) -> None:
         reg = self.register(JD_TRAFFIC_LIGHT_REG_ORANGE)
-        reg.set_values(value) # type: ignore
+        reg.set_values(value)
 
 
     @property
@@ -55,7 +55,7 @@ class TrafficLightClient(Client):
     @green.setter
     def green(self, value: bool) -> None:
         reg = self.register(JD_TRAFFIC_LIGHT_REG_GREEN)
-        reg.set_values(value) # type: ignore
+        reg.set_values(value)
 
 
     

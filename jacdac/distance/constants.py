@@ -5,11 +5,14 @@ from enum import Enum
 from jacdac.constants import *
 from jacdac.system.constants import *
 JD_SERVICE_CLASS_DISTANCE = const(0x141a6b8a)
+
+
 class DistanceVariant(Enum):
     ULTRASONIC = const(0x1)
     INFRARED = const(0x2)
     LI_DAR = const(0x3)
     LASER = const(0x4)
+
 
 JD_DISTANCE_REG_DISTANCE = const(JD_REG_READING)
 JD_DISTANCE_REG_MIN_RANGE = const(JD_REG_MIN_READING)

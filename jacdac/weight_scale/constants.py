@@ -5,10 +5,13 @@ from enum import Enum
 from jacdac.constants import *
 from jacdac.system.constants import *
 JD_SERVICE_CLASS_WEIGHT_SCALE = const(0x1f4d5040)
+
+
 class WeightScaleVariant(Enum):
     BODY = const(0x1)
     FOOD = const(0x2)
     JEWELRY = const(0x3)
+
 
 JD_WEIGHT_SCALE_REG_WEIGHT = const(JD_REG_READING)
 JD_WEIGHT_SCALE_REG_WEIGHT_ERROR = const(JD_REG_READING_ERROR)

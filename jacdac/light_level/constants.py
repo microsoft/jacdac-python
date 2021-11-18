@@ -5,10 +5,13 @@ from enum import Enum
 from jacdac.constants import *
 from jacdac.system.constants import *
 JD_SERVICE_CLASS_LIGHT_LEVEL = const(0x17dc9a1c)
+
+
 class LightLevelVariant(Enum):
     PHOTO_RESISTOR = const(0x1)
     LEDMATRIX = const(0x2)
     AMBIENT = const(0x3)
+
 
 JD_LIGHT_LEVEL_REG_LIGHT_LEVEL = const(JD_REG_READING)
 JD_LIGHT_LEVEL_REG_VARIANT = const(JD_REG_VARIANT)

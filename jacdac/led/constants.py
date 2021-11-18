@@ -5,11 +5,14 @@ from enum import Enum
 from jacdac.constants import *
 from jacdac.system.constants import *
 JD_SERVICE_CLASS_LED = const(0x1e3048f8)
+
+
 class LedVariant(Enum):
     THROUGH_HOLE = const(0x1)
     SMD = const(0x2)
     POWER = const(0x3)
     BEAD = const(0x4)
+
 
 JD_LED_CMD_ANIMATE = const(0x80)
 JD_LED_REG_COLOR = const(0x180)

@@ -5,9 +5,12 @@ from enum import Enum
 from jacdac.constants import *
 from jacdac.system.constants import *
 JD_SERVICE_CLASS_FLEX = const(0x1f47c6c6)
+
+
 class FlexVariant(Enum):
     LINEAR22INCH = const(0x1)
     LINEAR45INCH = const(0x2)
+
 
 JD_FLEX_REG_BENDING = const(JD_REG_READING)
 JD_FLEX_REG_VARIANT = const(JD_REG_VARIANT)

@@ -1,5 +1,6 @@
 def const(v: int): return v
-    # A shim for the micropython const keyword
+# A shim for the micropython const keyword
+
 
 JD_SERIAL_HEADER_SIZE = const(16)
 JD_SERIAL_MAX_PAYLOAD_SIZE = const(236)
@@ -29,9 +30,11 @@ CMD_EVENT_CODE_MASK = const(0xff)
 CMD_EVENT_COUNTER_MASK = const(0x7f)
 CMD_EVENT_COUNTER_POS = const(8)
 
+
 def JD_GET(code: int):
     assert 0 <= code and code <= 0xfff
     return CMD_GET_REG | code
+
 
 def JD_SET(code: int):
     assert 0 <= code and code <= 0xfff

@@ -5,8 +5,11 @@ from enum import Enum
 from jacdac.constants import *
 from jacdac.system.constants import *
 JD_SERVICE_CLASS_MOTION = const(0x1179a749)
+
+
 class MotionVariant(Enum):
     PIR = const(0x1)
+
 
 JD_MOTION_REG_MOVING = const(JD_REG_READING)
 JD_MOTION_REG_MAX_DISTANCE = const(0x180)

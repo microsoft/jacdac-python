@@ -9,8 +9,8 @@ class ThermocoupleClient(Client):
     """
 
     def __init__(self, bus: Bus, role: str) -> None:
-        super().__init__(bus, JD_SERVICE_CLASS_THERMOCOUPLE, JD_THERMOCOUPLE_PACK_FORMATS, role)
-    
+        super().__init__(bus, JD_SERVICE_CLASS_THERMOCOUPLE,
+                         JD_THERMOCOUPLE_PACK_FORMATS, role)
 
     @property
     def temperature(self) -> Union[float, None]:
@@ -51,5 +51,3 @@ class ThermocoupleClient(Client):
         """
         reg = self.register(JD_THERMOCOUPLE_REG_VARIANT)
         return reg.value(0)
-
-    

@@ -5,10 +5,13 @@ from enum import Enum
 from jacdac.constants import *
 from jacdac.system.constants import *
 JD_SERVICE_CLASS_THERMOMETER = const(0x1421bac7)
+
+
 class ThermometerVariant(Enum):
     OUTDOOR = const(0x1)
     INDOOR = const(0x2)
     BODY = const(0x3)
+
 
 JD_THERMOMETER_REG_TEMPERATURE = const(JD_REG_READING)
 JD_THERMOMETER_REG_MIN_TEMPERATURE = const(JD_REG_MIN_READING)

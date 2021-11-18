@@ -106,6 +106,7 @@ def short_id(longid: Union[bytes, str]):
         chr(0x30 + (h // (26 * 26 * 10)) % 10)
     )
 
+
 def crc16(buf: bytes, start: int = 0, end: int = None):
     if end is None:
         end = len(buf)

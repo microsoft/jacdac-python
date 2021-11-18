@@ -5,6 +5,8 @@ from enum import Enum
 from jacdac.constants import *
 from jacdac.system.constants import *
 JD_SERVICE_CLASS_BARCODE_READER = const(0x1c739e6c)
+
+
 class BarcodeReaderFormat(Enum):
     AZTEC = const(0x1)
     CODE128 = const(0x2)
@@ -19,6 +21,7 @@ class BarcodeReaderFormat(Enum):
     QR_CODE = const(0xc)
     UPC_A = const(0xd)
     UPC_E = const(0xe)
+
 
 JD_BARCODE_READER_REG_ENABLED = const(JD_REG_INTENSITY)
 JD_BARCODE_READER_REG_FORMATS = const(0x180)

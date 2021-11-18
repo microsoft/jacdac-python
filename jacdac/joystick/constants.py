@@ -5,6 +5,8 @@ from enum import Enum
 from jacdac.constants import *
 from jacdac.system.constants import *
 JD_SERVICE_CLASS_JOYSTICK = const(0x108f7456)
+
+
 class JoystickButtons(Enum):
     LEFT = const(0x1)
     UP = const(0x2)
@@ -19,11 +21,13 @@ class JoystickButtons(Enum):
     X = const(0x400)
     Y = const(0x800)
 
+
 class JoystickVariant(Enum):
     THUMB = const(0x1)
     ARCADE_BALL = const(0x2)
     ARCADE_STICK = const(0x3)
     GAMEPAD = const(0x4)
+
 
 JD_JOYSTICK_REG_DIRECTION = const(JD_REG_READING)
 JD_JOYSTICK_REG_VARIANT = const(JD_REG_VARIANT)

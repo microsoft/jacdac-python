@@ -9,8 +9,8 @@ class PotentiometerClient(Client):
     """
 
     def __init__(self, bus: Bus, role: str) -> None:
-        super().__init__(bus, JD_SERVICE_CLASS_POTENTIOMETER, JD_POTENTIOMETER_PACK_FORMATS, role)
-    
+        super().__init__(bus, JD_SERVICE_CLASS_POTENTIOMETER,
+                         JD_POTENTIOMETER_PACK_FORMATS, role)
 
     @property
     def position(self) -> Union[float, None]:
@@ -27,5 +27,3 @@ class PotentiometerClient(Client):
         """
         reg = self.register(JD_POTENTIOMETER_REG_VARIANT)
         return reg.value(0)
-
-    

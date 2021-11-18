@@ -5,10 +5,13 @@ from enum import Enum
 from jacdac.constants import *
 from jacdac.system.constants import *
 JD_SERVICE_CLASS_WATER_LEVEL = const(0x147b62ed)
+
+
 class WaterLevelVariant(Enum):
     RESISTIVE = const(0x1)
     CONTACT_PHOTO_ELECTRIC = const(0x2)
     NON_CONTACT_PHOTO_ELECTRIC = const(0x3)
+
 
 JD_WATER_LEVEL_REG_LEVEL = const(JD_REG_READING)
 JD_WATER_LEVEL_REG_VARIANT = const(JD_REG_VARIANT)

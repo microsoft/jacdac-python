@@ -5,6 +5,8 @@ from enum import Enum
 from jacdac.constants import *
 from jacdac.system.constants import *
 JD_SERVICE_CLASS_SWITCH = const(0x1ad29402)
+
+
 class SwitchVariant(Enum):
     SLIDE = const(0x1)
     TILT = const(0x2)
@@ -14,6 +16,7 @@ class SwitchVariant(Enum):
     PROXIMITY = const(0x6)
     MAGNETIC = const(0x7)
     FOOT_PEDAL = const(0x8)
+
 
 JD_SWITCH_REG_ACTIVE = const(JD_REG_READING)
 JD_SWITCH_REG_VARIANT = const(JD_REG_VARIANT)

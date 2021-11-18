@@ -5,6 +5,8 @@ from enum import Enum
 from jacdac.constants import *
 from jacdac.system.constants import *
 JD_SERVICE_CLASS_THERMOCOUPLE = const(0x143ac061)
+
+
 class ThermocoupleVariant(Enum):
     TYPE_K = const(0x1)
     TYPE_J = const(0x2)
@@ -14,6 +16,7 @@ class ThermocoupleVariant(Enum):
     TYPE_S = const(0x6)
     TYPE_R = const(0x7)
     TYPE_B = const(0x8)
+
 
 JD_THERMOCOUPLE_REG_TEMPERATURE = const(JD_REG_READING)
 JD_THERMOCOUPLE_REG_MIN_TEMPERATURE = const(JD_REG_MIN_READING)

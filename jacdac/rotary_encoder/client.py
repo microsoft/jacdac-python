@@ -9,8 +9,8 @@ class RotaryEncoderClient(Client):
     """
 
     def __init__(self, bus: Bus, role: str) -> None:
-        super().__init__(bus, JD_SERVICE_CLASS_ROTARY_ENCODER, JD_ROTARY_ENCODER_PACK_FORMATS, role)
-    
+        super().__init__(bus, JD_SERVICE_CLASS_ROTARY_ENCODER,
+                         JD_ROTARY_ENCODER_PACK_FORMATS, role)
 
     @property
     def position(self) -> Union[float, None]:
@@ -28,5 +28,3 @@ class RotaryEncoderClient(Client):
         """
         reg = self.register(JD_ROTARY_ENCODER_REG_CLICKS_PER_TURN)
         return reg.value(0)
-
-    

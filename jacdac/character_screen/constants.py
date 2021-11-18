@@ -5,14 +5,18 @@ from enum import Enum
 from jacdac.constants import *
 from jacdac.system.constants import *
 JD_SERVICE_CLASS_CHARACTER_SCREEN = const(0x1f37c56a)
+
+
 class CharacterScreenVariant(Enum):
     LCD = const(0x1)
     OLED = const(0x2)
     BRAILLE = const(0x3)
 
+
 class CharacterScreenTextDirection(Enum):
     LEFT_TO_RIGHT = const(0x1)
     RIGHT_TO_LEFT = const(0x2)
+
 
 JD_CHARACTER_SCREEN_REG_MESSAGE = const(JD_REG_VALUE)
 JD_CHARACTER_SCREEN_REG_BRIGHTNESS = const(JD_REG_INTENSITY)

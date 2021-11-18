@@ -5,6 +5,8 @@ from enum import Enum
 from jacdac.constants import *
 from jacdac.system.constants import *
 JD_SERVICE_CLASS_ARCADE_GAMEPAD = const(0x1deaa06e)
+
+
 class ArcadeGamepadButton(Enum):
     LEFT = const(0x1)
     UP = const(0x2)
@@ -16,6 +18,7 @@ class ArcadeGamepadButton(Enum):
     SELECT = const(0x8)
     RESET = const(0x9)
     EXIT = const(0xa)
+
 
 JD_ARCADE_GAMEPAD_REG_BUTTONS = const(JD_REG_READING)
 JD_ARCADE_GAMEPAD_REG_AVAILABLE_BUTTONS = const(0x180)

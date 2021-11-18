@@ -5,10 +5,13 @@ from enum import Enum
 from jacdac.constants import *
 from jacdac.system.constants import *
 JD_SERVICE_CLASS_LED_PIXEL = const(0x126f00e0)
+
+
 class LedPixelLightType(Enum):
     WS2812B_GRB = const(0x0)
     APA102 = const(0x10)
     SK9822 = const(0x11)
+
 
 class LedPixelVariant(Enum):
     STRIP = const(0x1)
@@ -16,6 +19,7 @@ class LedPixelVariant(Enum):
     STICK = const(0x3)
     JEWEL = const(0x4)
     MATRIX = const(0x5)
+
 
 JD_LED_PIXEL_REG_BRIGHTNESS = const(JD_REG_INTENSITY)
 JD_LED_PIXEL_REG_ACTUAL_BRIGHTNESS = const(0x180)

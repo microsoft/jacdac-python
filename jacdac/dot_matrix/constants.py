@@ -5,9 +5,12 @@ from enum import Enum
 from jacdac.constants import *
 from jacdac.system.constants import *
 JD_SERVICE_CLASS_DOT_MATRIX = const(0x110d154b)
+
+
 class DotMatrixVariant(Enum):
     LED = const(0x1)
     BRAILLE = const(0x2)
+
 
 JD_DOT_MATRIX_REG_DOTS = const(JD_REG_VALUE)
 JD_DOT_MATRIX_REG_BRIGHTNESS = const(JD_REG_INTENSITY)

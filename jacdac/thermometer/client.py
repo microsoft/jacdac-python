@@ -10,7 +10,6 @@ class ThermometerClient(Client):
 
     def __init__(self, bus: Bus, role: str) -> None:
         super().__init__(bus, JD_SERVICE_CLASS_THERMOMETER, JD_THERMOMETER_PACK_FORMATS, role)
-    
 
     @property
     def temperature(self) -> Union[float, None]:
@@ -51,5 +50,3 @@ class ThermometerClient(Client):
         """
         reg = self.register(JD_THERMOMETER_REG_VARIANT)
         return reg.value(0)
-
-    

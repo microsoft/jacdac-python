@@ -5,11 +5,14 @@ from enum import Enum
 from jacdac.constants import *
 from jacdac.system.constants import *
 JD_SERVICE_CLASS_AZURE_IOT_HUB_HEALTH = const(0x1462eefc)
+
+
 class AzureIotHubHealthConnectionStatus(Enum):
     CONNECTED = const(0x1)
     DISCONNECTED = const(0x2)
     CONNECTING = const(0x3)
     DISCONNECTING = const(0x4)
+
 
 JD_AZURE_IOT_HUB_HEALTH_REG_HUB_NAME = const(0x180)
 JD_AZURE_IOT_HUB_HEALTH_REG_HUB_DEVICE_ID = const(0x181)

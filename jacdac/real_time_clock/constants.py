@@ -5,10 +5,13 @@ from enum import Enum
 from jacdac.constants import *
 from jacdac.system.constants import *
 JD_SERVICE_CLASS_REAL_TIME_CLOCK = const(0x1a8b1a28)
+
+
 class RealTimeClockVariant(Enum):
     COMPUTER = const(0x1)
     CRYSTAL = const(0x2)
     CUCKOO = const(0x3)
+
 
 JD_REAL_TIME_CLOCK_REG_LOCAL_TIME = const(JD_REG_READING)
 JD_REAL_TIME_CLOCK_REG_ERROR = const(0x180)

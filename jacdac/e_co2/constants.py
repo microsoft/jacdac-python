@@ -5,9 +5,12 @@ from enum import Enum
 from jacdac.constants import *
 from jacdac.system.constants import *
 JD_SERVICE_CLASS_E_CO2 = const(0x169c9dc6)
+
+
 class ECO2Variant(Enum):
     VOC = const(0x1)
     NDIR = const(0x2)
+
 
 JD_E_CO2_REG_E_CO2 = const(JD_REG_READING)
 JD_E_CO2_REG_E_CO2_ERROR = const(JD_REG_READING_ERROR)

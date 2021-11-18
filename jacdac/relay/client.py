@@ -3,6 +3,7 @@ from .constants import *
 from typing import Union
 from jacdac.events import HandlerFn
 
+
 class RelayClient(Client):
     """
     A switching relay.
@@ -10,7 +11,6 @@ class RelayClient(Client):
 
     def __init__(self, bus: Bus, role: str) -> None:
         super().__init__(bus, JD_SERVICE_CLASS_RELAY, JD_RELAY_PACK_FORMATS, role)
-    
 
     @property
     def closed(self) -> Union[bool, None]:
@@ -24,7 +24,6 @@ class RelayClient(Client):
     def closed(self, value: bool) -> None:
         reg = self.register(JD_RELAY_REG_CLOSED)
         reg.set_value(0, value)
-
 
     @property
     def variant(self) -> Union[RelayVariant, None]:
@@ -55,5 +54,3 @@ class RelayClient(Client):
         Normally closed (NC) relays open the circuit when activated.
         """
         # TODO
-
-    

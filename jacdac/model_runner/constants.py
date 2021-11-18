@@ -5,10 +5,13 @@ from enum import Enum
 from jacdac.constants import *
 from jacdac.system.constants import *
 JD_SERVICE_CLASS_MODEL_RUNNER = const(0x140f9a78)
+
+
 class ModelRunnerModelFormat(Enum):
     TFLITE = const(0x334c4654)
     ML4F = const(0x30470f62)
     EDGE_IMPULSE_COMPILED = const(0x30564945)
+
 
 JD_MODEL_RUNNER_CMD_SET_MODEL = const(0x80)
 JD_MODEL_RUNNER_CMD_PREDICT = const(0x81)

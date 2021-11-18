@@ -5,11 +5,14 @@ from enum import Enum
 from jacdac.constants import *
 from jacdac.system.constants import *
 JD_SERVICE_CLASS_MATRIX_KEYPAD = const(0x13062dc8)
+
+
 class MatrixKeypadVariant(Enum):
     MEMBRANE = const(0x1)
     KEYBOARD = const(0x2)
     ELASTOMER = const(0x3)
     ELASTOMER_LEDPIXEL = const(0x4)
+
 
 JD_MATRIX_KEYPAD_REG_PRESSED = const(JD_REG_READING)
 JD_MATRIX_KEYPAD_REG_ROWS = const(0x180)

@@ -5,6 +5,8 @@ from enum import Enum
 from jacdac.constants import *
 from jacdac.system.constants import *
 JD_SERVICE_CLASS_WIFI = const(0x18aae1fa)
+
+
 class WifiAPFlags(Enum):
     HAS_PASSWORD = const(0x1)
     WPS = const(0x2)
@@ -17,6 +19,7 @@ class WifiAPFlags(Enum):
     IEEE_802_11AC = const(0x1000)
     IEEE_802_11AX = const(0x2000)
     IEEE_802_LONG_RANGE = const(0x8000)
+
 
 JD_WIFI_CMD_LAST_SCAN_RESULTS = const(0x80)
 JD_WIFI_CMD_ADD_NETWORK = const(0x81)

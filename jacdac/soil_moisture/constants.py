@@ -5,9 +5,12 @@ from enum import Enum
 from jacdac.constants import *
 from jacdac.system.constants import *
 JD_SERVICE_CLASS_SOIL_MOISTURE = const(0x1d4aa3b3)
+
+
 class SoilMoistureVariant(Enum):
     RESISTIVE = const(0x1)
     CAPACITIVE = const(0x2)
+
 
 JD_SOIL_MOISTURE_REG_MOISTURE = const(JD_REG_READING)
 JD_SOIL_MOISTURE_REG_MOISTURE_ERROR = const(JD_REG_READING_ERROR)

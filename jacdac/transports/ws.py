@@ -16,11 +16,11 @@ class WebSocketTransport(Transport):
 
     def open(self) -> None:
         self.ws = WebSocketApp(self.url,
-                          on_open=self.on_open,
-                          on_message=self.on_message,
-                          on_error=self.on_error,
-                          on_close=self.on_close)
-        t = threading.Thread(target=self.ws.run_forever) # type: ignore
+                               on_open=self.on_open,
+                               on_message=self.on_message,
+                               on_error=self.on_error,
+                               on_close=self.on_close)
+        t = threading.Thread(target=self.ws.run_forever)  # type: ignore
         t.start()
 
     def send(self, pkt: bytes) -> None:

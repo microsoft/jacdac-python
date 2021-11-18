@@ -5,15 +5,19 @@ from enum import Enum
 from jacdac.constants import *
 from jacdac.system.constants import *
 JD_SERVICE_CLASS_VERIFIED_TELEMETRY = const(0x2194841f)
+
+
 class VerifiedTelemetryStatus(Enum):
     UNKNOWN = const(0x0)
     WORKING = const(0x1)
     FAULTY = const(0x2)
 
+
 class VerifiedTelemetryFingerprintType(Enum):
     FALL_CURVE = const(0x1)
     CURRENT_SENSE = const(0x2)
     CUSTOM = const(0x3)
+
 
 JD_VERIFIED_TELEMETRY_REG_TELEMETRY_STATUS = const(0x180)
 JD_VERIFIED_TELEMETRY_REG_TELEMETRY_STATUS_INTERVAL = const(0x80)

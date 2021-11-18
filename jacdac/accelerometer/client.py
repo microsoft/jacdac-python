@@ -3,14 +3,15 @@ from .constants import *
 from typing import Union
 from jacdac.events import HandlerFn
 
+
 class AccelerometerClient(Client):
     """
     A 3-axis accelerometer.
     """
 
     def __init__(self, bus: Bus, role: str) -> None:
-        super().__init__(bus, JD_SERVICE_CLASS_ACCELEROMETER, JD_ACCELEROMETER_PACK_FORMATS, role)
-    
+        super().__init__(bus, JD_SERVICE_CLASS_ACCELEROMETER,
+                         JD_ACCELEROMETER_PACK_FORMATS, role)
 
     @property
     def x(self) -> Union[float, None]:
@@ -57,7 +58,6 @@ class AccelerometerClient(Client):
     def max_force(self, value: float) -> None:
         reg = self.register(JD_ACCELEROMETER_REG_MAX_FORCE)
         reg.set_value(0, value)
-
 
     def on_tilt_up(self, handler: HandlerFn) -> None:
         """
@@ -130,5 +130,3 @@ class AccelerometerClient(Client):
         Emitted when force in any direction exceeds given threshold.
         """
         # TODO
-
-    

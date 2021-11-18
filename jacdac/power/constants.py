@@ -5,11 +5,14 @@ from enum import Enum
 from jacdac.constants import *
 from jacdac.system.constants import *
 JD_SERVICE_CLASS_POWER = const(0x1fa4c95a)
+
+
 class PowerPowerStatus(Enum):
     DISALLOWED = const(0x0)
     POWERING = const(0x1)
     OVERLOAD = const(0x2)
     OVERPROVISION = const(0x3)
+
 
 JD_POWER_REG_ALLOWED = const(JD_REG_INTENSITY)
 JD_POWER_REG_MAX_POWER = const(JD_REG_MAX_POWER)

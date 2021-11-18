@@ -5,6 +5,8 @@ from enum import Enum
 from jacdac.constants import *
 from jacdac.system.constants import *
 JD_SERVICE_CLASS_SENSOR_AGGREGATOR = const(0x1d90e1c5)
+
+
 class SensorAggregatorSampleType(Enum):
     U8 = const(0x8)
     I8 = const(0x88)
@@ -12,6 +14,7 @@ class SensorAggregatorSampleType(Enum):
     I16 = const(0x90)
     U32 = const(0x20)
     I32 = const(0xa0)
+
 
 JD_SENSOR_AGGREGATOR_REG_INPUTS = const(0x80)
 JD_SENSOR_AGGREGATOR_REG_NUM_SAMPLES = const(0x180)

@@ -10,7 +10,6 @@ class BarometerClient(Client):
 
     def __init__(self, bus: Bus, role: str) -> None:
         super().__init__(bus, JD_SERVICE_CLASS_BAROMETER, JD_BAROMETER_PACK_FORMATS, role)
-    
 
     @property
     def pressure(self) -> Union[float, None]:
@@ -27,5 +26,3 @@ class BarometerClient(Client):
         """
         reg = self.register(JD_BAROMETER_REG_PRESSURE_ERROR)
         return reg.value(0)
-
-    

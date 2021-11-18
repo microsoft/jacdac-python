@@ -5,12 +5,15 @@ from enum import Enum
 from jacdac.constants import *
 from jacdac.system.constants import *
 JD_SERVICE_CLASS_HEART_RATE = const(0x166c6dc4)
+
+
 class HeartRateVariant(Enum):
     FINGER = const(0x1)
     CHEST = const(0x2)
     WRIST = const(0x3)
     PUMP = const(0x4)
     WEB_CAM = const(0x5)
+
 
 JD_HEART_RATE_REG_HEART_RATE = const(JD_REG_READING)
 JD_HEART_RATE_REG_HEART_RATE_ERROR = const(JD_REG_READING_ERROR)

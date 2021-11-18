@@ -29,8 +29,10 @@ HF2_CMD_JDS_CONFIG = 0x0020
 HF2_CMD_JDS_SEND = 0x0021
 HF2_EV_JDS_PACKET = 0x800020
 
+
 class HF2Error(Exception):
     pass
+
 
 class HF2Transport(Transport):
     def _write(self, buf: bytes):
@@ -47,7 +49,7 @@ class HF2Transport(Transport):
                 frame[0] = HF2_FLAG_CMDPKT_LAST
             frame[0] |= l
             frame[1:1+l] = buf[pos:pos+l]
-            self.serial.write(frame) # type: ignore
+            self.serial.write(frame)  # type: ignore
             pos += l
 
     def _on_serial(self, buf: bytes, is_error: bool):
@@ -68,7 +70,7 @@ class HF2Transport(Transport):
     def _read_loop(self):
         frames: list[bytes] = []
         while True:
-            buf: bytes = self.serial.read(64) # type: ignore
+            buf: bytes = self.serial.read(64)  # type: ignore
             tp = buf[0] & HF2_FLAG_MASK
             l = buf[0] & 63
             frame = buf[1:1+l]
@@ -107,11 +109,13 @@ class HF2Transport(Transport):
                     self._error("timeout for 0x%d" % cmd)
                 (seq2, status, info) = struct.unpack("<HBB", resp[0:4])
                 if seq != seq2:
-                    self.log("packet out of sync (exp: %d, got: %d)" % (seq, seq2))
+                    self.log("packet out of sync (exp: %d, got: %d)" %
+                             (seq, seq2))
                 elif status == 0:
                     return resp[4:]
                 else:
-                    self._error("bad status: %d (info=%d) for 0x%x" % (status, info, cmd))
+                    self._error("bad status: %d (info=%d) for 0x%x" %
+                                (status, info, cmd))
             self._error("desync for 0x%x" % cmd)
 
     def _connect(self):
@@ -131,7 +135,6 @@ class HF2Transport(Transport):
         self._reader_thread = threading.Thread(target=self._read_loop)
         self._reader_thread.start()
         self._connect()
-
 
 
 if __name__ == "__main__":

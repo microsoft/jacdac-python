@@ -5,10 +5,13 @@ from enum import Enum
 from jacdac.constants import *
 from jacdac.system.constants import *
 JD_SERVICE_CLASS_DIMMER = const(0x1fb02645)
+
+
 class DimmerVariant(Enum):
     LIGHT = const(0x1)
     FAN = const(0x2)
     PUMP = const(0x3)
+
 
 JD_DIMMER_REG_INTENSITY = const(JD_REG_INTENSITY)
 JD_DIMMER_REG_VARIANT = const(JD_REG_VARIANT)

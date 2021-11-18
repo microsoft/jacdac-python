@@ -3,7 +3,6 @@ API
 
 .. autosummary::
    :toctree: generated
-   :nosignatures:
+   :recursive:
 
-   jacdac.Bus
-   jacdac.Device
+   jacdac

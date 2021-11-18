@@ -4,7 +4,7 @@ import os
 import sys
 sys.path.insert(0, os.path.abspath('../jacdac'))
 
-project = 'Jacdac-Python'
+project = 'Jacdac Python'
 copyright = '2021, Microsoft Corporation'
 author = 'Microsoft'
 
@@ -25,6 +25,7 @@ extensions = [
 intersphinx_mapping = {
     'python': ('https://docs.python.org/3/', None),
     'sphinx': ('https://www.sphinx-doc.org/en/master/', None),
+    'jacdac': ('https://aka.ms/jacdac/', None)
 }
 intersphinx_disabled_domains = ['std']
 

@@ -1,0 +1,77 @@
+from jacdac.bus import Bus, Client
+from .constants import *
+from typing import Union
+from jacdac.events import HandlerFn
+
+class RoleManagerClient(Client):
+    """
+    Assign roles to services on the Jacdac bus.
+     * 
+     * Internally, the role manager stores a mapping from `(device_id, service_idx)` to role name.
+     * Users refer to services by using role names (eg., they instantiate an accelerometer client with a given role name).
+     * Each client has a role, and roles are unique to clients
+     * (ie., one should not have both a gyro and accelerometer service with role `left_leg`).
+     * 
+     * Role names can be hierarchical, using slash character as a separator.
+     * Examples: `left_leg/acc`, `left_leg/gyro`, `right_leg/acc`.
+     * If two roles share the prefix before first slash, it should be used as a hint that the services
+     * should be co-located on a single device
+     * (eg., here the `left_leg` "location" is expected to have both an accelerometer and a gyro service on a single device).
+    """
+
+    def __init__(self, bus: Bus, role: str) -> None:
+        super().__init__(bus, JD_SERVICE_CLASS_ROLE_MANAGER, JD_ROLE_MANAGER_PACK_FORMATS, role)
+    
+
+    @property
+    def auto_bind(self) -> Union[bool, None]:
+        """
+        Normally, if some roles are unfilled, and there are idle services that can fulfill them,
+        the brain device will assign roles (bind) automatically.
+        Such automatic assignment happens every second or so, and is trying to be smart about 
+        co-locating roles that share "host" (part before first slash),
+        as well as reasonably stable assignments.
+        Once user start assigning roles manually using this service, auto-binding should be disabled to avoid confusion.
+        """
+        reg = self.register(JD_ROLE_MANAGER_REG_AUTO_BIND)
+        return reg.value(0)
+
+    @auto_bind.setter
+    def auto_bind(self, value: bool) -> None:
+        reg = self.register(JD_ROLE_MANAGER_REG_AUTO_BIND)
+        reg.set_value(0, value)
+
+
+    @property
+    def all_roles_allocated(self) -> Union[bool, None]:
+        """
+        Indicates if all required roles have been allocated to devices.
+        """
+        reg = self.register(JD_ROLE_MANAGER_REG_ALL_ROLES_ALLOCATED)
+        return reg.value(0)
+
+    def on_change(self, handler: HandlerFn) -> None:
+        """
+        Notifies that role bindings have changed.
+        """
+        # TODO
+
+
+    def get_role(self, device_id: bytes, service_idx: float) -> None:
+        """
+        Get the role corresponding to given device identifer. Returns empty string if unset.
+        """
+        # TODO: self.sendCommand(jacdac.JDPacket.jdpacked(JD_role_Manager_CMD_get_role, "b[8] u8", [device_id, service_idx]))
+
+    def set_role(self, device_id: bytes, service_idx: float, role: str) -> None:
+        """
+        Set role. Can set to empty to remove role binding.
+        """
+        # TODO: self.sendCommand(jacdac.JDPacket.jdpacked(JD_role_Manager_CMD_set_role, "b[8] u8 s", [device_id, service_idx, role]))
+
+    def clear_all_roles(self, ) -> None:
+        """
+        Remove all role bindings.
+        """
+        # TODO: self.sendCommand(jacdac.JDPacket.onlyHeader(JD_role_Manager_CMD_clear_all_roles))
+    

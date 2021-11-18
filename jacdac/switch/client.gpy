@@ -1,0 +1,52 @@
+from jacdac.bus import Bus, Client
+from .constants import *
+from typing import Union
+from jacdac.events import HandlerFn
+
+class SwitchClient(Client):
+    """
+    A switch, which keeps its position.
+    """
+
+    def __init__(self, bus: Bus, role: str) -> None:
+        super().__init__(bus, JD_SERVICE_CLASS_SWITCH, JD_SWITCH_PACK_FORMATS, role)
+    
+
+    @property
+    def active(self) -> Union[bool, None]:
+        """
+        Indicates whether the switch is currently active (on).
+        """
+        reg = self.register(JD_SWITCH_REG_ACTIVE)
+        return reg.value(0)
+
+    @property
+    def variant(self) -> Union[SwitchVariant, None]:
+        """
+        (Optional) Describes the type of switch used.
+        """
+        reg = self.register(JD_SWITCH_REG_VARIANT)
+        return reg.value(0)
+
+    @property
+    def auto_off_delay(self) -> Union[float, None]:
+        """
+        (Optional) Specifies the delay without activity to automatically turn off after turning on.
+        For example, some light switches in staircases have such a capability., s
+        """
+        reg = self.register(JD_SWITCH_REG_AUTO_OFF_DELAY)
+        return reg.value(0)
+
+    def on_on(self, handler: HandlerFn) -> None:
+        """
+        Emitted when switch goes from ``off`` to ``on``.
+        """
+        # TODO
+
+    def on_off(self, handler: HandlerFn) -> None:
+        """
+        Emitted when switch goes from ``on`` to ``off``.
+        """
+        # TODO
+
+    

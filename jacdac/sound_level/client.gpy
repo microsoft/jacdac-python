@@ -1,0 +1,111 @@
+from jacdac.bus import Bus, Client
+from .constants import *
+from typing import Union
+from jacdac.events import HandlerFn
+
+class SoundLevelClient(Client):
+    """
+    A sound level detector sensor, gives a relative indication of the sound level.
+    """
+
+    def __init__(self, bus: Bus, role: str) -> None:
+        super().__init__(bus, JD_SERVICE_CLASS_SOUND_LEVEL, JD_SOUND_LEVEL_PACK_FORMATS, role)
+    
+
+    @property
+    def sound_level(self) -> Union[float, None]:
+        """
+        The sound level detected by the microphone, /
+        """
+        reg = self.register(JD_SOUND_LEVEL_REG_SOUND_LEVEL)
+        return reg.value(0)
+
+    @property
+    def enabled(self) -> Union[bool, None]:
+        """
+        Turn on or off the microphone.
+        """
+        reg = self.register(JD_SOUND_LEVEL_REG_ENABLED)
+        return reg.value(0)
+
+    @enabled.setter
+    def enabled(self, value: bool) -> None:
+        reg = self.register(JD_SOUND_LEVEL_REG_ENABLED)
+        reg.set_value(0, value)
+
+
+    @property
+    def min_decibels(self) -> Union[float, None]:
+        """
+        (Optional) The minimum power value considered by the sensor.
+        If both ``min_decibels`` and ``max_decibels`` are supported,
+        the volume in deciment can be linearly interpolated between
+        ``[min_decibels, max_decibels]``., dB
+        """
+        reg = self.register(JD_SOUND_LEVEL_REG_MIN_DECIBELS)
+        return reg.value(0)
+
+    @min_decibels.setter
+    def min_decibels(self, value: float) -> None:
+        reg = self.register(JD_SOUND_LEVEL_REG_MIN_DECIBELS)
+        reg.set_value(0, value)
+
+
+    @property
+    def max_decibels(self) -> Union[float, None]:
+        """
+        (Optional) The maximum power value considered by the sensor.
+        If both ``min_decibels`` and ``max_decibels`` are supported,
+        the volume in deciment can be linearly interpolated between
+        ``[min_decibels, max_decibels]``., dB
+        """
+        reg = self.register(JD_SOUND_LEVEL_REG_MAX_DECIBELS)
+        return reg.value(0)
+
+    @max_decibels.setter
+    def max_decibels(self, value: float) -> None:
+        reg = self.register(JD_SOUND_LEVEL_REG_MAX_DECIBELS)
+        reg.set_value(0, value)
+
+
+    @property
+    def loud_threshold(self) -> Union[float, None]:
+        """
+        The sound level to trigger a loud event., /
+        """
+        reg = self.register(JD_SOUND_LEVEL_REG_LOUD_THRESHOLD)
+        return reg.value(0)
+
+    @loud_threshold.setter
+    def loud_threshold(self, value: float) -> None:
+        reg = self.register(JD_SOUND_LEVEL_REG_LOUD_THRESHOLD)
+        reg.set_value(0, value)
+
+
+    @property
+    def quiet_threshold(self) -> Union[float, None]:
+        """
+        The sound level to trigger a quiet event., /
+        """
+        reg = self.register(JD_SOUND_LEVEL_REG_QUIET_THRESHOLD)
+        return reg.value(0)
+
+    @quiet_threshold.setter
+    def quiet_threshold(self, value: float) -> None:
+        reg = self.register(JD_SOUND_LEVEL_REG_QUIET_THRESHOLD)
+        reg.set_value(0, value)
+
+
+    def on_loud(self, handler: HandlerFn) -> None:
+        """
+        Raised when a loud sound is detected
+        """
+        # TODO
+
+    def on_quiet(self, handler: HandlerFn) -> None:
+        """
+        Raised when a period of quietness is detected
+        """
+        # TODO
+
+    

@@ -1,0 +1,54 @@
+from jacdac.bus import Bus, Client
+from .constants import *
+from typing import Union
+
+
+class SensorAggregatorClient(Client):
+    """
+    Aggregate data from multiple sensors into a single stream
+     * (often used as input to machine learning models on the same device, see model runner service).
+    """
+
+    def __init__(self, bus: Bus, role: str) -> None:
+        super().__init__(bus, JD_SERVICE_CLASS_SENSOR_AGGREGATOR, JD_SENSOR_AGGREGATOR_PACK_FORMATS, role)
+    
+
+    @property
+    def num_samples(self) -> Union[float, None]:
+        """
+        Number of input samples collected so far.
+        """
+        reg = self.register(JD_SENSOR_AGGREGATOR_REG_NUM_SAMPLES)
+        return reg.value(0)
+
+    @property
+    def sample_size(self) -> Union[float, None]:
+        """
+        Size of a single sample., B
+        """
+        reg = self.register(JD_SENSOR_AGGREGATOR_REG_SAMPLE_SIZE)
+        return reg.value(0)
+
+    @property
+    def streaming_samples(self) -> Union[float, None]:
+        """
+        When set to `N`, will stream `N` samples as `current_sample` reading., #
+        """
+        reg = self.register(JD_SENSOR_AGGREGATOR_REG_STREAMING_SAMPLES)
+        return reg.value(0)
+
+    @streaming_samples.setter
+    def streaming_samples(self, value: float) -> None:
+        reg = self.register(JD_SENSOR_AGGREGATOR_REG_STREAMING_SAMPLES)
+        reg.set_value(0, value)
+
+
+    @property
+    def current_sample(self) -> Union[bytes, None]:
+        """
+        Last collected sample.
+        """
+        reg = self.register(JD_SENSOR_AGGREGATOR_REG_CURRENT_SAMPLE)
+        return reg.value(0)
+
+    

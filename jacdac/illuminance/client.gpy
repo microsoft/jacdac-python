@@ -1,0 +1,33 @@
+from jacdac.bus import Bus, Client
+from .constants import *
+from typing import Union
+
+
+class IlluminanceClient(Client):
+    """
+    Detects the amount of light falling onto a given surface area.
+     * 
+     * Note that this is different from *luminance*, the amount of light that passes through, emits from, or reflects off an object.
+    """
+
+    def __init__(self, bus: Bus, role: str) -> None:
+        super().__init__(bus, JD_SERVICE_CLASS_ILLUMINANCE, JD_ILLUMINANCE_PACK_FORMATS, role)
+    
+
+    @property
+    def light(self) -> Union[float, None]:
+        """
+        The amount of illuminance, as lumens per square metre., lux
+        """
+        reg = self.register(JD_ILLUMINANCE_REG_LIGHT)
+        return reg.value(0)
+
+    @property
+    def light_error(self) -> Union[float, None]:
+        """
+        (Optional) Error on the reported sensor value., lux
+        """
+        reg = self.register(JD_ILLUMINANCE_REG_LIGHT_ERROR)
+        return reg.value(0)
+
+    

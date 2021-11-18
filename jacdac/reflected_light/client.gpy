@@ -1,0 +1,43 @@
+from jacdac.bus import Bus, Client
+from .constants import *
+from typing import Union
+from jacdac.events import HandlerFn
+
+class ReflectedLightClient(Client):
+    """
+    A sensor that detects light and dark surfaces, commonly used for line following robots.
+    """
+
+    def __init__(self, bus: Bus, role: str) -> None:
+        super().__init__(bus, JD_SERVICE_CLASS_REFLECTED_LIGHT, JD_REFLECTED_LIGHT_PACK_FORMATS, role)
+    
+
+    @property
+    def brightness(self) -> Union[float, None]:
+        """
+        Reports the reflected brightness. It may be a digital value or, for some sensor, analog value., /
+        """
+        reg = self.register(JD_REFLECTED_LIGHT_REG_BRIGHTNESS)
+        return reg.value(0)
+
+    @property
+    def variant(self) -> Union[ReflectedLightVariant, None]:
+        """
+        (Optional) Type of physical sensor used
+        """
+        reg = self.register(JD_REFLECTED_LIGHT_REG_VARIANT)
+        return reg.value(0)
+
+    def on_dark(self, handler: HandlerFn) -> None:
+        """
+        The sensor detected a transition from light to dark
+        """
+        # TODO
+
+    def on_light(self, handler: HandlerFn) -> None:
+        """
+        The sensor detected a transition from dark to light
+        """
+        # TODO
+
+    

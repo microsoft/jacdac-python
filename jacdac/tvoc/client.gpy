@@ -1,0 +1,55 @@
+from jacdac.bus import Bus, Client
+from .constants import *
+from typing import Union
+
+
+class TvocClient(Client):
+    """
+    Measures equivalent Total Volatile Organic Compound levels.
+    """
+
+    def __init__(self, bus: Bus, role: str) -> None:
+        super().__init__(bus, JD_SERVICE_CLASS_TVOC, JD_TVOC_PACK_FORMATS, role)
+    
+
+    @property
+    def TVOC(self) -> Union[float, None]:
+        """
+        Total volatile organic compound readings in parts per billion., ppb
+        """
+        reg = self.register(JD_TVOC_REG_TVOC)
+        return reg.value(0)
+
+    @property
+    def TVOC_error(self) -> Union[float, None]:
+        """
+        (Optional) Error on the reading data, ppb
+        """
+        reg = self.register(JD_TVOC_REG_TVOC_ERROR)
+        return reg.value(0)
+
+    @property
+    def min_TVOC(self) -> Union[float, None]:
+        """
+        (Optional) Minimum measurable value, ppb
+        """
+        reg = self.register(JD_TVOC_REG_MIN_TVOC)
+        return reg.value(0)
+
+    @property
+    def max_TVOC(self) -> Union[float, None]:
+        """
+        (Optional) Minimum measurable value, ppb
+        """
+        reg = self.register(JD_TVOC_REG_MAX_TVOC)
+        return reg.value(0)
+
+    @property
+    def conditioning_period(self) -> Union[float, None]:
+        """
+        (Optional) Time required to achieve good sensor stability before measuring after long idle period., s
+        """
+        reg = self.register(JD_TVOC_REG_CONDITIONING_PERIOD)
+        return reg.value(0)
+
+    

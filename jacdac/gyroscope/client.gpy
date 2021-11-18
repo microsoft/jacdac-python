@@ -1,0 +1,62 @@
+from jacdac.bus import Bus, Client
+from .constants import *
+from typing import Union
+
+
+class GyroscopeClient(Client):
+    """
+    A 3-axis gyroscope.
+    """
+
+    def __init__(self, bus: Bus, role: str) -> None:
+        super().__init__(bus, JD_SERVICE_CLASS_GYROSCOPE, JD_GYROSCOPE_PACK_FORMATS, role)
+    
+
+    @property
+    def x(self) -> Union[float, None]:
+        """
+        Indicates the current rates acting on gyroscope., °/s
+        """
+        reg = self.register(JD_GYROSCOPE_REG_ROTATION_RATES)
+        return reg.value(0)
+
+    @property
+    def y(self) -> Union[float, None]:
+        """
+        Indicates the current rates acting on gyroscope., °/s
+        """
+        reg = self.register(JD_GYROSCOPE_REG_ROTATION_RATES)
+        return reg.value(1)
+
+    @property
+    def z(self) -> Union[float, None]:
+        """
+        Indicates the current rates acting on gyroscope., °/s
+        """
+        reg = self.register(JD_GYROSCOPE_REG_ROTATION_RATES)
+        return reg.value(2)
+
+    @property
+    def rotation_rates_error(self) -> Union[float, None]:
+        """
+        (Optional) Error on the reading value., °/s
+        """
+        reg = self.register(JD_GYROSCOPE_REG_ROTATION_RATES_ERROR)
+        return reg.value(0)
+
+    @property
+    def max_rate(self) -> Union[float, None]:
+        """
+        (Optional) Configures the range of rotation rates.
+        The value will be "rounded up" to one of `max_rates_supported`., °/s
+        """
+        reg = self.register(JD_GYROSCOPE_REG_MAX_RATE)
+        return reg.value(0)
+
+    @max_rate.setter
+    def max_rate(self, value: float) -> None:
+        reg = self.register(JD_GYROSCOPE_REG_MAX_RATE)
+        reg.set_value(0, value)
+
+
+    

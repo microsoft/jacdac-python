@@ -1,0 +1,15 @@
+from jacdac.bus import Bus, Client
+from .constants import *
+
+
+
+class TcpClient(Client):
+    """
+    Data transfer over TCP/IP and TLS stream sockets.
+    """
+
+    def __init__(self, bus: Bus, role: str) -> None:
+        super().__init__(bus, JD_SERVICE_CLASS_TCP, JD_TCP_PACK_FORMATS, role)
+    
+
+    

@@ -1,0 +1,85 @@
+from jacdac.bus import Bus, Client
+from .constants import *
+from typing import Union
+from jacdac.events import HandlerFn
+
+class VerifiedTelemetryClient(Client):
+    """
+    A mixin service that exposes verified telemetry information for a sensor (see https://github.com/Azure/Verified-Telemetry/tree/main/PnPModel).
+    """
+
+    def __init__(self, bus: Bus, role: str) -> None:
+        super().__init__(bus, JD_SERVICE_CLASS_VERIFIED_TELEMETRY, JD_VERIFIED_TELEMETRY_PACK_FORMATS, role)
+    
+
+    @property
+    def telemetry_status(self) -> Union[VerifiedTelemetryStatus, None]:
+        """
+        Reads the telemetry working status, where ``true`` is working and ``false`` is faulty.
+        """
+        reg = self.register(JD_VERIFIED_TELEMETRY_REG_TELEMETRY_STATUS)
+        return reg.value(0)
+
+    @property
+    def telemetry_status_interval(self) -> Union[float, None]:
+        """
+        (Optional) Specifies the interval between computing the fingerprint information., ms
+        """
+        reg = self.register(JD_VERIFIED_TELEMETRY_REG_TELEMETRY_STATUS_INTERVAL)
+        return reg.value(0)
+
+    @telemetry_status_interval.setter
+    def telemetry_status_interval(self, value: float) -> None:
+        reg = self.register(JD_VERIFIED_TELEMETRY_REG_TELEMETRY_STATUS_INTERVAL)
+        reg.set_value(0, value)
+
+
+    @property
+    def fingerprint_type(self) -> Union[VerifiedTelemetryFingerprintType, None]:
+        """
+        Type of the fingerprint.
+        """
+        reg = self.register(JD_VERIFIED_TELEMETRY_REG_FINGERPRINT_TYPE)
+        return reg.value(0)
+
+    @property
+    def fingerprint_template_Confidence(self) -> Union[float, None]:
+        """
+        Template Fingerprint information of a working sensor., %
+        """
+        reg = self.register(JD_VERIFIED_TELEMETRY_REG_FINGERPRINT_TEMPLATE)
+        return reg.value(0)
+
+    @property
+    def fingerprint_template_Template(self) -> Union[bytes, None]:
+        """
+        Template Fingerprint information of a working sensor.
+        """
+        reg = self.register(JD_VERIFIED_TELEMETRY_REG_FINGERPRINT_TEMPLATE)
+        return reg.value(1)
+
+    def on_telemetry_status_change(self, handler: HandlerFn) -> None:
+        """
+        The telemetry status of the device was updated.
+        """
+        # TODO
+
+    def on_fingerprint_template_change(self, handler: HandlerFn) -> None:
+        """
+        The fingerprint template was updated
+        """
+        # TODO
+
+
+    def reset_fingerprint_template(self, ) -> None:
+        """
+        This command will clear the template fingerprint of a sensor and collect a new template fingerprint of the attached sensor.
+        """
+        # TODO: self.sendCommand(jacdac.JDPacket.onlyHeader(JD_verified_Telemetry_CMD_reset_fingerprint_template))
+
+    def retrain_fingerprint_template(self, ) -> None:
+        """
+        This command will append a new template fingerprint to the `fingerprintTemplate`. Appending more fingerprints will increase the accuracy in detecting the telemetry status.
+        """
+        # TODO: self.sendCommand(jacdac.JDPacket.onlyHeader(JD_verified_Telemetry_CMD_retrain_fingerprint_template))
+    

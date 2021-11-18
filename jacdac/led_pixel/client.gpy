@@ -1,0 +1,140 @@
+from jacdac.bus import Bus, Client
+from .constants import *
+from typing import Union
+
+
+class LedPixelClient(Client):
+    """
+    A controller for strips of individually controlled RGB LEDs.
+    """
+
+    def __init__(self, bus: Bus, role: str) -> None:
+        super().__init__(bus, JD_SERVICE_CLASS_LED_PIXEL, JD_LED_PIXEL_PACK_FORMATS, role)
+    
+
+    @property
+    def brightness(self) -> Union[float, None]:
+        """
+        Set the luminosity of the strip.
+        At `0` the power to the strip is completely shut down., /
+        """
+        reg = self.register(JD_LED_PIXEL_REG_BRIGHTNESS)
+        return reg.value(0)
+
+    @brightness.setter
+    def brightness(self, value: float) -> None:
+        reg = self.register(JD_LED_PIXEL_REG_BRIGHTNESS)
+        reg.set_value(0, value)
+
+
+    @property
+    def actual_brightness(self) -> Union[float, None]:
+        """
+        This is the luminosity actually applied to the strip.
+        May be lower than `brightness` if power-limited by the `max_power` register.
+        It will rise slowly (few seconds) back to `brightness` is limits are no longer required., /
+        """
+        reg = self.register(JD_LED_PIXEL_REG_ACTUAL_BRIGHTNESS)
+        return reg.value(0)
+
+    @property
+    def light_type(self) -> Union[LedPixelLightType, None]:
+        """
+        Specifies the type of light strip connected to controller.
+        Controllers which are sold with lights should default to the correct type
+        and could not allow change.
+        """
+        reg = self.register(JD_LED_PIXEL_REG_LIGHT_TYPE)
+        return reg.value(0)
+
+    @light_type.setter
+    def light_type(self, value: LedPixelLightType) -> None:
+        reg = self.register(JD_LED_PIXEL_REG_LIGHT_TYPE)
+        reg.set_value(0, value)
+
+
+    @property
+    def num_pixels(self) -> Union[float, None]:
+        """
+        Specifies the number of pixels in the strip.
+        Controllers which are sold with lights should default to the correct length
+        and could not allow change. Increasing length at runtime leads to ineffective use of memory and may lead to controller reboot., #
+        """
+        reg = self.register(JD_LED_PIXEL_REG_NUM_PIXELS)
+        return reg.value(0)
+
+    @num_pixels.setter
+    def num_pixels(self, value: float) -> None:
+        reg = self.register(JD_LED_PIXEL_REG_NUM_PIXELS)
+        reg.set_value(0, value)
+
+
+    @property
+    def num_columns(self) -> Union[float, None]:
+        """
+        (Optional) If the LED pixel strip is a matrix, specifies the number of columns. Otherwise, a square shape is assumed. Controllers which are sold with lights should default to the correct length
+        and could not allow change. Increasing length at runtime leads to ineffective use of memory and may lead to controller reboot., #
+        """
+        reg = self.register(JD_LED_PIXEL_REG_NUM_COLUMNS)
+        return reg.value(0)
+
+    @num_columns.setter
+    def num_columns(self, value: float) -> None:
+        reg = self.register(JD_LED_PIXEL_REG_NUM_COLUMNS)
+        reg.set_value(0, value)
+
+
+    @property
+    def max_power(self) -> Union[float, None]:
+        """
+        Limit the power drawn by the light-strip (and controller)., mA
+        """
+        reg = self.register(JD_LED_PIXEL_REG_MAX_POWER)
+        return reg.value(0)
+
+    @max_power.setter
+    def max_power(self, value: float) -> None:
+        reg = self.register(JD_LED_PIXEL_REG_MAX_POWER)
+        reg.set_value(0, value)
+
+
+    @property
+    def max_pixels(self) -> Union[float, None]:
+        """
+        The maximum supported number of pixels.
+        All writes to `num_pixels` are clamped to `max_pixels`., #
+        """
+        reg = self.register(JD_LED_PIXEL_REG_MAX_PIXELS)
+        return reg.value(0)
+
+    @property
+    def num_repeats(self) -> Union[float, None]:
+        """
+        How many times to repeat the program passed in `run` command.
+        Should be set before the `run` command.
+        Setting to `0` means to repeat forever., #
+        """
+        reg = self.register(JD_LED_PIXEL_REG_NUM_REPEATS)
+        return reg.value(0)
+
+    @num_repeats.setter
+    def num_repeats(self, value: float) -> None:
+        reg = self.register(JD_LED_PIXEL_REG_NUM_REPEATS)
+        reg.set_value(0, value)
+
+
+    @property
+    def variant(self) -> Union[LedPixelVariant, None]:
+        """
+        (Optional) Specifies the shape of the light strip.
+        """
+        reg = self.register(JD_LED_PIXEL_REG_VARIANT)
+        return reg.value(0)
+
+
+    def run(self, program: bytes) -> None:
+        """
+        Run the given light "program". See service description for details.
+        """
+        # TODO: self.sendCommand(jacdac.JDPacket.jdpacked(JD_led_Pixel_CMD_run, "b", [program]))
+    

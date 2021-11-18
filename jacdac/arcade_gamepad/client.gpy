@@ -1,0 +1,29 @@
+from jacdac.bus import Bus, Client
+from .constants import *
+
+from jacdac.events import HandlerFn
+
+class ArcadeGamepadClient(Client):
+    """
+    This service is deprecated in favor or `joystick`; it is currently used by the micro:bit Arcade smart shield though.
+     * A gamepad with direction and action buttons for one player.
+     * If a device has multiple controllers, it should have multiple gamepad services, using consecutive service identifiers.
+    """
+
+    def __init__(self, bus: Bus, role: str) -> None:
+        super().__init__(bus, JD_SERVICE_CLASS_ARCADE_GAMEPAD, JD_ARCADE_GAMEPAD_PACK_FORMATS, role)
+    
+
+    def on_down(self, handler: HandlerFn) -> None:
+        """
+        Emitted when button goes from inactive to active.
+        """
+        # TODO
+
+    def on_up(self, handler: HandlerFn) -> None:
+        """
+        Emitted when button goes from active to inactive.
+        """
+        # TODO
+
+    

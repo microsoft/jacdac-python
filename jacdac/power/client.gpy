@@ -1,0 +1,132 @@
+from jacdac.bus import Bus, Client
+from .constants import *
+from typing import Union
+from jacdac.events import HandlerFn
+
+class PowerClient(Client):
+    """
+    A power-provider service.
+    """
+
+    def __init__(self, bus: Bus, role: str) -> None:
+        super().__init__(bus, JD_SERVICE_CLASS_POWER, JD_POWER_PACK_FORMATS, role)
+    
+
+    @property
+    def allowed(self) -> Union[bool, None]:
+        """
+        Can be used to completely disable the service.
+        When allowed, the service may still not be providing power, see 
+        `power_status` for the actual current state.
+        """
+        reg = self.register(JD_POWER_REG_ALLOWED)
+        return reg.value(0)
+
+    @allowed.setter
+    def allowed(self, value: bool) -> None:
+        reg = self.register(JD_POWER_REG_ALLOWED)
+        reg.set_value(0, value)
+
+
+    @property
+    def max_power(self) -> Union[float, None]:
+        """
+        (Optional) Limit the power provided by the service. The actual maximum limit will depend on hardware.
+        This field may be read-only in some implementations - you should read it back after setting., mA
+        """
+        reg = self.register(JD_POWER_REG_MAX_POWER)
+        return reg.value(0)
+
+    @max_power.setter
+    def max_power(self, value: float) -> None:
+        reg = self.register(JD_POWER_REG_MAX_POWER)
+        reg.set_value(0, value)
+
+
+    @property
+    def power_status(self) -> Union[PowerPowerStatus, None]:
+        """
+        Indicates whether the power provider is currently providing power (`Powering` state), and if not, why not.
+        `Overprovision` means there was another power provider, and we stopped not to overprovision the bus.
+        """
+        reg = self.register(JD_POWER_REG_POWER_STATUS)
+        return reg.value(0)
+
+    @property
+    def current_draw(self) -> Union[float, None]:
+        """
+        (Optional) Present current draw from the bus., mA
+        """
+        reg = self.register(JD_POWER_REG_CURRENT_DRAW)
+        return reg.value(0)
+
+    @property
+    def battery_voltage(self) -> Union[float, None]:
+        """
+        (Optional) Voltage on input., mV
+        """
+        reg = self.register(JD_POWER_REG_BATTERY_VOLTAGE)
+        return reg.value(0)
+
+    @property
+    def battery_charge(self) -> Union[float, None]:
+        """
+        (Optional) Fraction of charge in the battery., /
+        """
+        reg = self.register(JD_POWER_REG_BATTERY_CHARGE)
+        return reg.value(0)
+
+    @property
+    def battery_capacity(self) -> Union[float, None]:
+        """
+        (Optional) Energy that can be delivered to the bus when battery is fully charged.
+        This excludes conversion overheads if any., mWh
+        """
+        reg = self.register(JD_POWER_REG_BATTERY_CAPACITY)
+        return reg.value(0)
+
+    @property
+    def keep_on_pulse_duration(self) -> Union[float, None]:
+        """
+        (Optional) Many USB power packs need current to be drawn from time to time to prevent shutdown.
+        This regulates how often and for how long such current is drawn.
+        Typically a 1/8W 22 ohm resistor is used as load. This limits the duty cycle to 10%., ms
+        """
+        reg = self.register(JD_POWER_REG_KEEP_ON_PULSE_DURATION)
+        return reg.value(0)
+
+    @keep_on_pulse_duration.setter
+    def keep_on_pulse_duration(self, value: float) -> None:
+        reg = self.register(JD_POWER_REG_KEEP_ON_PULSE_DURATION)
+        reg.set_value(0, value)
+
+
+    @property
+    def keep_on_pulse_period(self) -> Union[float, None]:
+        """
+        (Optional) Many USB power packs need current to be drawn from time to time to prevent shutdown.
+        This regulates how often and for how long such current is drawn.
+        Typically a 1/8W 22 ohm resistor is used as load. This limits the duty cycle to 10%., ms
+        """
+        reg = self.register(JD_POWER_REG_KEEP_ON_PULSE_PERIOD)
+        return reg.value(0)
+
+    @keep_on_pulse_period.setter
+    def keep_on_pulse_period(self, value: float) -> None:
+        reg = self.register(JD_POWER_REG_KEEP_ON_PULSE_PERIOD)
+        reg.set_value(0, value)
+
+
+    def on_power_status_changed(self, handler: HandlerFn) -> None:
+        """
+        Emitted whenever `power_status` changes.
+        """
+        # TODO
+
+
+    def shutdown(self, ) -> None:
+        """
+        Sent by the power service periodically, as broadcast.
+        """
+        # TODO: self.sendCommand(jacdac.JDPacket.onlyHeader(JD_power_CMD_shutdown))
+    

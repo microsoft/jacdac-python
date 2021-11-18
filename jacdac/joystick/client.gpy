@@ -1,0 +1,72 @@
+from jacdac.bus import Bus, Client
+from .constants import *
+from typing import Union
+from jacdac.events import HandlerFn
+
+class JoystickClient(Client):
+    """
+    A two axis directional joystick
+    """
+
+    def __init__(self, bus: Bus, role: str) -> None:
+        super().__init__(bus, JD_SERVICE_CLASS_JOYSTICK, JD_JOYSTICK_PACK_FORMATS, role)
+    
+
+    @property
+    def buttons(self) -> Union[JoystickButtons, None]:
+        """
+        If the joystick is analog, the directional buttons should be "simulated", based on joystick position
+        (`Left` is `{ x = -1, y = 0 }`, `Up` is `{ x = 0, y = -1}`).
+        If the joystick is digital, then each direction will read as either `-1`, `0`, or `1` (in fixed representation).
+        The primary button on the joystick is `A`.
+        """
+        reg = self.register(JD_JOYSTICK_REG_DIRECTION)
+        return reg.value(0)
+
+    @property
+    def x(self) -> Union[float, None]:
+        """
+        If the joystick is analog, the directional buttons should be "simulated", based on joystick position
+        (`Left` is `{ x = -1, y = 0 }`, `Up` is `{ x = 0, y = -1}`).
+        If the joystick is digital, then each direction will read as either `-1`, `0`, or `1` (in fixed representation).
+        The primary button on the joystick is `A`., /
+        """
+        reg = self.register(JD_JOYSTICK_REG_DIRECTION)
+        return reg.value(1)
+
+    @property
+    def y(self) -> Union[float, None]:
+        """
+        If the joystick is analog, the directional buttons should be "simulated", based on joystick position
+        (`Left` is `{ x = -1, y = 0 }`, `Up` is `{ x = 0, y = -1}`).
+        If the joystick is digital, then each direction will read as either `-1`, `0`, or `1` (in fixed representation).
+        The primary button on the joystick is `A`., /
+        """
+        reg = self.register(JD_JOYSTICK_REG_DIRECTION)
+        return reg.value(2)
+
+    @property
+    def variant(self) -> Union[JoystickVariant, None]:
+        """
+        (Optional) The type of physical joystick.
+        """
+        reg = self.register(JD_JOYSTICK_REG_VARIANT)
+        return reg.value(0)
+
+    @property
+    def buttons_available(self) -> Union[JoystickButtons, None]:
+        """
+        Indicates a bitmask of the buttons that are mounted on the joystick.
+        If the `Left`/`Up`/`Right`/`Down` buttons are marked as available here, the joystick is digital.
+        Even when marked as not available, they will still be simulated based on the analog joystick.
+        """
+        reg = self.register(JD_JOYSTICK_REG_BUTTONS_AVAILABLE)
+        return reg.value(0)
+
+    def on_buttons_changed(self, handler: HandlerFn) -> None:
+        """
+        Emitted whenever the state of buttons changes.
+        """
+        # TODO
+
+    

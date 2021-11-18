@@ -1,0 +1,53 @@
+from jacdac.bus import Bus, Client
+from .constants import *
+from typing import Union
+from jacdac.events import HandlerFn
+
+class MotionClient(Client):
+    """
+    A sensor, typically PIR, that detects object motion within a certain range
+    """
+
+    def __init__(self, bus: Bus, role: str) -> None:
+        super().__init__(bus, JD_SERVICE_CLASS_MOTION, JD_MOTION_PACK_FORMATS, role)
+    
+
+    @property
+    def moving(self) -> Union[bool, None]:
+        """
+        Reports is movement is currently detected by the sensor.
+        """
+        reg = self.register(JD_MOTION_REG_MOVING)
+        return reg.value(0)
+
+    @property
+    def max_distance(self) -> Union[float, None]:
+        """
+        (Optional) Maximum distance where objects can be detected., m
+        """
+        reg = self.register(JD_MOTION_REG_MAX_DISTANCE)
+        return reg.value(0)
+
+    @property
+    def angle(self) -> Union[float, None]:
+        """
+        (Optional) Opening of the field of view, °
+        """
+        reg = self.register(JD_MOTION_REG_ANGLE)
+        return reg.value(0)
+
+    @property
+    def variant(self) -> Union[MotionVariant, None]:
+        """
+        (Optional) Type of physical sensor
+        """
+        reg = self.register(JD_MOTION_REG_VARIANT)
+        return reg.value(0)
+
+    def on_movement(self, handler: HandlerFn) -> None:
+        """
+        A movement was detected.
+        """
+        # TODO
+
+    

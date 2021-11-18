@@ -1,0 +1,37 @@
+from jacdac.bus import Bus, Client
+from .constants import *
+from typing import Union
+
+
+class DimmerClient(Client):
+    """
+    A light or fan controller that dims the current on a line.
+    """
+
+    def __init__(self, bus: Bus, role: str) -> None:
+        super().__init__(bus, JD_SERVICE_CLASS_DIMMER, JD_DIMMER_PACK_FORMATS, role)
+    
+
+    @property
+    def intensity(self) -> Union[float, None]:
+        """
+        The intensity of the current. Set to ``0`` to turn off completely the current., /
+        """
+        reg = self.register(JD_DIMMER_REG_INTENSITY)
+        return reg.value(0)
+
+    @intensity.setter
+    def intensity(self, value: float) -> None:
+        reg = self.register(JD_DIMMER_REG_INTENSITY)
+        reg.set_value(0, value)
+
+
+    @property
+    def variant(self) -> Union[DimmerVariant, None]:
+        """
+        (Optional) The type of physical device
+        """
+        reg = self.register(JD_DIMMER_REG_VARIANT)
+        return reg.value(0)
+
+    

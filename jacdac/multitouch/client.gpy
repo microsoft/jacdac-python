@@ -1,0 +1,51 @@
+from jacdac.bus import Bus, Client
+from .constants import *
+
+from jacdac.events import HandlerFn
+
+class MultitouchClient(Client):
+    """
+    A capacitive touch sensor with multiple inputs.
+    """
+
+    def __init__(self, bus: Bus, role: str) -> None:
+        super().__init__(bus, JD_SERVICE_CLASS_MULTITOUCH, JD_MULTITOUCH_PACK_FORMATS, role)
+    
+
+    def on_touch(self, handler: HandlerFn) -> None:
+        """
+        Emitted when an input is touched.
+        """
+        # TODO
+
+    def on_release(self, handler: HandlerFn) -> None:
+        """
+        Emitted when an input is no longer touched.
+        """
+        # TODO
+
+    def on_tap(self, handler: HandlerFn) -> None:
+        """
+        Emitted when an input is briefly touched. TODO Not implemented.
+        """
+        # TODO
+
+    def on_long_press(self, handler: HandlerFn) -> None:
+        """
+        Emitted when an input is touched for longer than 500ms. TODO Not implemented.
+        """
+        # TODO
+
+    def on_swipe_pos(self, handler: HandlerFn) -> None:
+        """
+        Emitted when input channels are successively touched in order of increasing channel numbers.
+        """
+        # TODO
+
+    def on_swipe_neg(self, handler: HandlerFn) -> None:
+        """
+        Emitted when input channels are successively touched in order of decreasing channel numbers.
+        """
+        # TODO
+
+    

@@ -1,0 +1,27 @@
+from jacdac.bus import Bus, Client
+from .constants import *
+
+from jacdac.events import HandlerFn
+
+class SettingsClient(Client):
+    """
+    Non-volatile key-value storage interface for storing settings.
+    """
+
+    def __init__(self, bus: Bus, role: str) -> None:
+        super().__init__(bus, JD_SERVICE_CLASS_SETTINGS, JD_SETTINGS_PACK_FORMATS, role)
+    
+
+    def on_change(self, handler: HandlerFn) -> None:
+        """
+        Notifies that some setting have been modified.
+        """
+        # TODO
+
+
+    def get(self, key: str) -> None:
+        """
+        Get the value of given setting. If no such entry exists, the value returned is empty.
+        """
+        # TODO: self.sendCommand(jacdac.JDPacket.jdpacked(JD_settings_CMD_get, "s", [key]))
+    

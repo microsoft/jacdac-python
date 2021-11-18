@@ -1,0 +1,63 @@
+from jacdac.bus import Bus, Client
+from .constants import *
+from typing import Union
+from jacdac.events import HandlerFn
+
+class ButtonClient(Client):
+    """
+    A push-button, which returns to inactive position when not operated anymore.
+    """
+
+    def __init__(self, bus: Bus, role: str) -> None:
+        super().__init__(bus, JD_SERVICE_CLASS_BUTTON, JD_BUTTON_PACK_FORMATS, role)
+    
+
+    @property
+    def pressure(self) -> Union[float, None]:
+        """
+        Indicates the pressure state of the button, where ``0`` is open., /
+        """
+        reg = self.register(JD_BUTTON_REG_PRESSURE)
+        return reg.value(0)
+
+    @property
+    def analog(self) -> Union[bool, None]:
+        """
+        (Optional) Indicates if the button provides analog ``pressure`` readings.
+        """
+        reg = self.register(JD_BUTTON_REG_ANALOG)
+        return reg.value(0)
+
+    @property
+    def pressed(self) -> Union[bool, None]:
+        """
+        Determines if the button is pressed currently.
+        
+        If the event ``down`` is observed, ``pressed`` is true; if ``up`` or ``hold`` are observed, ``pressed`` is false.
+        To initialize, wait for any event or timeout to ``pressed`` is true after 750ms (1.5x hold time).
+        """
+        # TODO: implement client register
+        raise  RuntimeError("client register not implemented")
+
+    def on_down(self, handler: HandlerFn) -> None:
+        """
+        Emitted when button goes from inactive to active.
+        """
+        # TODO
+
+    def on_up(self, handler: HandlerFn) -> None:
+        """
+        Emitted when button goes from active to inactive. The 'time' parameter 
+        records the amount of time between the down and up events.
+        """
+        # TODO
+
+    def on_hold(self, handler: HandlerFn) -> None:
+        """
+        Emitted when the press time is greater than 500ms, and then at least every 500ms 
+        as long as the button remains pressed. The 'time' parameter records the the amount of time
+        that the button has been held (since the down event).
+        """
+        # TODO
+
+    

@@ -1,0 +1,30 @@
+from jacdac.bus import Bus, Client
+from .constants import *
+from typing import Union
+
+
+class MicrophoneClient(Client):
+    """
+    A single-channel microphone.
+    """
+
+    def __init__(self, bus: Bus, role: str) -> None:
+        super().__init__(bus, JD_SERVICE_CLASS_MICROPHONE, JD_MICROPHONE_PACK_FORMATS, role)
+    
+
+    @property
+    def sampling_period(self) -> Union[float, None]:
+        """
+        Get or set microphone sampling period.
+        Sampling rate is `1_000_000 / sampling_period Hz`., us
+        """
+        reg = self.register(JD_MICROPHONE_REG_SAMPLING_PERIOD)
+        return reg.value(0)
+
+    @sampling_period.setter
+    def sampling_period(self, value: float) -> None:
+        reg = self.register(JD_MICROPHONE_REG_SAMPLING_PERIOD)
+        reg.set_value(0, value)
+
+
+    

@@ -1,0 +1,31 @@
+from jacdac.bus import Bus, Client
+from .constants import *
+from typing import Union
+
+
+class LightLevelClient(Client):
+    """
+    A sensor that measures luminosity level.
+    """
+
+    def __init__(self, bus: Bus, role: str) -> None:
+        super().__init__(bus, JD_SERVICE_CLASS_LIGHT_LEVEL, JD_LIGHT_LEVEL_PACK_FORMATS, role)
+    
+
+    @property
+    def light_level(self) -> Union[float, None]:
+        """
+        Detect light level, /
+        """
+        reg = self.register(JD_LIGHT_LEVEL_REG_LIGHT_LEVEL)
+        return reg.value(0)
+
+    @property
+    def variant(self) -> Union[LightLevelVariant, None]:
+        """
+        (Optional) The type of physical sensor.
+        """
+        reg = self.register(JD_LIGHT_LEVEL_REG_VARIANT)
+        return reg.value(0)
+
+    

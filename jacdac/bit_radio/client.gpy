@@ -1,0 +1,95 @@
+from jacdac.bus import Bus, Client
+from .constants import *
+from typing import Union
+
+
+class BitRadioClient(Client):
+    """
+    Support for sending and receiving packets using the [Bit Radio protocol](https://github.com/microsoft/pxt-common-packages/blob/master/libs/radio/docs/reference/radio.md), typically used between micro:bit devices.
+    """
+
+    def __init__(self, bus: Bus, role: str) -> None:
+        super().__init__(bus, JD_SERVICE_CLASS_BIT_RADIO, JD_BIT_RADIO_PACK_FORMATS, role)
+    
+
+    @property
+    def enabled(self) -> Union[bool, None]:
+        """
+        Turns on/off the radio antenna.
+        """
+        reg = self.register(JD_BIT_RADIO_REG_ENABLED)
+        return reg.value(0)
+
+    @enabled.setter
+    def enabled(self, value: bool) -> None:
+        reg = self.register(JD_BIT_RADIO_REG_ENABLED)
+        reg.set_value(0, value)
+
+
+    @property
+    def group(self) -> Union[float, None]:
+        """
+        Group used to filter packets
+        """
+        reg = self.register(JD_BIT_RADIO_REG_GROUP)
+        return reg.value(0)
+
+    @group.setter
+    def group(self, value: float) -> None:
+        reg = self.register(JD_BIT_RADIO_REG_GROUP)
+        reg.set_value(0, value)
+
+
+    @property
+    def transmission_power(self) -> Union[float, None]:
+        """
+        Antenna power to increase or decrease range.
+        """
+        reg = self.register(JD_BIT_RADIO_REG_TRANSMISSION_POWER)
+        return reg.value(0)
+
+    @transmission_power.setter
+    def transmission_power(self, value: float) -> None:
+        reg = self.register(JD_BIT_RADIO_REG_TRANSMISSION_POWER)
+        reg.set_value(0, value)
+
+
+    @property
+    def frequency_band(self) -> Union[float, None]:
+        """
+        Change the transmission and reception band of the radio to the given channel.
+        """
+        reg = self.register(JD_BIT_RADIO_REG_FREQUENCY_BAND)
+        return reg.value(0)
+
+    @frequency_band.setter
+    def frequency_band(self, value: float) -> None:
+        reg = self.register(JD_BIT_RADIO_REG_FREQUENCY_BAND)
+        reg.set_value(0, value)
+
+
+
+    def send_string(self, message: str) -> None:
+        """
+        Sends a string payload as a radio message, maximum 18 characters.
+        """
+        # TODO: self.sendCommand(jacdac.JDPacket.jdpacked(JD_bit_Radio_CMD_send_string, "s", [message]))
+
+    def send_number(self, value: float) -> None:
+        """
+        Sends a double precision number payload as a radio message
+        """
+        # TODO: self.sendCommand(jacdac.JDPacket.jdpacked(JD_bit_Radio_CMD_send_number, "f64", [value]))
+
+    def send_value(self, value: float, name: str) -> None:
+        """
+        Sends a double precision number and a name payload as a radio message
+        """
+        # TODO: self.sendCommand(jacdac.JDPacket.jdpacked(JD_bit_Radio_CMD_send_value, "f64 s", [value, name]))
+
+    def send_buffer(self, data: bytes) -> None:
+        """
+        Sends a payload of bytes as a radio message
+        """
+        # TODO: self.sendCommand(jacdac.JDPacket.jdpacked(JD_bit_Radio_CMD_send_buffer, "b", [data]))
+    

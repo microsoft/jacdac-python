@@ -1,0 +1,31 @@
+from jacdac.bus import Bus, Client
+from .constants import *
+from typing import Union
+
+
+class WindDirectionClient(Client):
+    """
+    A sensor that measures wind direction.
+    """
+
+    def __init__(self, bus: Bus, role: str) -> None:
+        super().__init__(bus, JD_SERVICE_CLASS_WIND_DIRECTION, JD_WIND_DIRECTION_PACK_FORMATS, role)
+    
+
+    @property
+    def wind_direction(self) -> Union[float, None]:
+        """
+        The direction of the wind., °
+        """
+        reg = self.register(JD_WIND_DIRECTION_REG_WIND_DIRECTION)
+        return reg.value(0)
+
+    @property
+    def wind_direction_error(self) -> Union[float, None]:
+        """
+        (Optional) Error on the wind direction reading, °
+        """
+        reg = self.register(JD_WIND_DIRECTION_REG_WIND_DIRECTION_ERROR)
+        return reg.value(0)
+
+    

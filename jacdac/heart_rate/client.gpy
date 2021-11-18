@@ -1,0 +1,42 @@
+from jacdac.bus import Bus, Client
+from .constants import *
+from typing import Union
+
+
+class HeartRateClient(Client):
+    """
+    A sensor approximating the heart rate. 
+     * 
+     * 
+     * **Jacdac is NOT suitable for medical devices and should NOT be used in any kind of device to diagnose or treat any medical conditions.**
+    """
+
+    def __init__(self, bus: Bus, role: str) -> None:
+        super().__init__(bus, JD_SERVICE_CLASS_HEART_RATE, JD_HEART_RATE_PACK_FORMATS, role)
+    
+
+    @property
+    def heart_rate(self) -> Union[float, None]:
+        """
+        The estimated heart rate., bpm
+        """
+        reg = self.register(JD_HEART_RATE_REG_HEART_RATE)
+        return reg.value(0)
+
+    @property
+    def heart_rate_error(self) -> Union[float, None]:
+        """
+        (Optional) The estimated error on the reported sensor data., bpm
+        """
+        reg = self.register(JD_HEART_RATE_REG_HEART_RATE_ERROR)
+        return reg.value(0)
+
+    @property
+    def variant(self) -> Union[HeartRateVariant, None]:
+        """
+        (Optional) The type of physical sensor
+        """
+        reg = self.register(JD_HEART_RATE_REG_VARIANT)
+        return reg.value(0)
+
+    

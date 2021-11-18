@@ -1,0 +1,36 @@
+from jacdac.bus import Bus, Client
+from .constants import *
+from typing import Union
+
+
+class CapacitiveButtonClient(Client):
+    """
+    A configuration service for a capacitive push-button.
+    """
+
+    def __init__(self, bus: Bus, role: str) -> None:
+        super().__init__(bus, JD_SERVICE_CLASS_CAPACITIVE_BUTTON, JD_CAPACITIVE_BUTTON_PACK_FORMATS, role)
+    
+
+    @property
+    def threshold(self) -> Union[float, None]:
+        """
+        Indicates the threshold for ``up`` events., /
+        """
+        reg = self.register(JD_CAPACITIVE_BUTTON_REG_THRESHOLD)
+        return reg.value(0)
+
+    @threshold.setter
+    def threshold(self, value: float) -> None:
+        reg = self.register(JD_CAPACITIVE_BUTTON_REG_THRESHOLD)
+        reg.set_value(0, value)
+
+
+
+    def calibrate(self, ) -> None:
+        """
+        Request to calibrate the capactive. When calibration is requested, the device expects that no object is touching the button. 
+        The report indicates the calibration is done.
+        """
+        # TODO: self.sendCommand(jacdac.JDPacket.onlyHeader(JD_capacitive_Button_CMD_calibrate))
+    

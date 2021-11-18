@@ -1,0 +1,63 @@
+from jacdac.bus import Bus, Client
+from .constants import *
+from typing import Union
+from jacdac.events import HandlerFn
+
+class AzureIotHubHealthClient(Client):
+    """
+    Health and diagnostics information about the Azure Iot Hub connection.
+    """
+
+    def __init__(self, bus: Bus, role: str) -> None:
+        super().__init__(bus, JD_SERVICE_CLASS_AZURE_IOT_HUB_HEALTH, JD_AZURE_IOT_HUB_HEALTH_PACK_FORMATS, role)
+    
+
+    @property
+    def hub_name(self) -> Union[str, None]:
+        """
+        Something like `my-iot-hub.azure-devices.net`; empty string when not properly configured
+        """
+        reg = self.register(JD_AZURE_IOT_HUB_HEALTH_REG_HUB_NAME)
+        return reg.value(0)
+
+    @property
+    def hub_device_id(self) -> Union[str, None]:
+        """
+        Device identifier in Azure Iot Hub
+        """
+        reg = self.register(JD_AZURE_IOT_HUB_HEALTH_REG_HUB_DEVICE_ID)
+        return reg.value(0)
+
+    @property
+    def connection_status(self) -> Union[AzureIotHubHealthConnectionStatus, None]:
+        """
+        Indicates the status of connection. A message beyond the [0..3] range represents an HTTP error code.
+        """
+        reg = self.register(JD_AZURE_IOT_HUB_HEALTH_REG_CONNECTION_STATUS)
+        return reg.value(0)
+
+    def on_connection_status_change(self, handler: HandlerFn) -> None:
+        """
+        Raised when the connection status changes
+        """
+        # TODO
+
+    def on_message_sent(self, handler: HandlerFn) -> None:
+        """
+        Raised when a message has been sent to the hub.
+        """
+        # TODO
+
+
+    def connect(self, ) -> None:
+        """
+        Starts a connection to the IoT hub service
+        """
+        # TODO: self.sendCommand(jacdac.JDPacket.onlyHeader(JD_azure_Iot_Hub_Health_CMD_connect))
+
+    def disconnect(self, ) -> None:
+        """
+        Starts disconnecting from the IoT hub service
+        """
+        # TODO: self.sendCommand(jacdac.JDPacket.onlyHeader(JD_azure_Iot_Hub_Health_CMD_disconnect))
+    

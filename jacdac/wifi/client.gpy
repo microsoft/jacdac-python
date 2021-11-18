@@ -1,0 +1,145 @@
+from jacdac.bus import Bus, Client
+from .constants import *
+from typing import Union
+from jacdac.events import HandlerFn
+
+class WifiClient(Client):
+    """
+    Discovery and connection to WiFi networks. Separate TCP service can be used for data transfer.
+     * 
+     * The device controlled by this service is meant to connect automatically, once configured.
+     * To that end, it keeps a list of known WiFi networks, with priorities and passwords.
+     * It will connect to the available network with numerically highest priority,
+     * breaking ties in priority by signal strength (typically all known networks have priority of `0`).
+     * If the connection fails (due to wrong password, radio failure, or other problem)
+     * an `connection_failed` event is emitted, and the device will try to connect to the next eligible network.
+     * When networks are exhausted, the scan is performed again and the connection process restarts.
+     * 
+     * Updating networks (setting password, priorties, forgetting) does not trigger an automatic reconnect.
+    """
+
+    def __init__(self, bus: Bus, role: str) -> None:
+        super().__init__(bus, JD_SERVICE_CLASS_WIFI, JD_WIFI_PACK_FORMATS, role)
+    
+
+    @property
+    def enabled(self) -> Union[bool, None]:
+        """
+        Determines whether the WiFi radio is enabled. It starts enabled upon reset.
+        """
+        reg = self.register(JD_WIFI_REG_ENABLED)
+        return reg.value(0)
+
+    @enabled.setter
+    def enabled(self, value: bool) -> None:
+        reg = self.register(JD_WIFI_REG_ENABLED)
+        reg.set_value(0, value)
+
+
+    @property
+    def ip_address(self) -> Union[bytes, None]:
+        """
+        0, 4 or 16 byte buffer with the IPv4 or IPv6 address assigned to device if any.
+        """
+        reg = self.register(JD_WIFI_REG_IP_ADDRESS)
+        return reg.value(0)
+
+    @property
+    def eui_48(self) -> Union[bytes, None]:
+        """
+        The 6-byte MAC address of the device. If a device does MAC address randomization it will have to "restart".
+        """
+        reg = self.register(JD_WIFI_REG_EUI_48)
+        return reg.value(0)
+
+    @property
+    def ssid(self) -> Union[str, None]:
+        """
+        SSID of the access-point to which device is currently connected.
+        Empty string if not connected.
+        """
+        reg = self.register(JD_WIFI_REG_SSID)
+        return reg.value(0)
+
+    @property
+    def rssi(self) -> Union[float, None]:
+        """
+        Current signal strength. Returns -128 when not connected., dB
+        """
+        reg = self.register(JD_WIFI_REG_RSSI)
+        return reg.value(0)
+
+    def on_got_ip(self, handler: HandlerFn) -> None:
+        """
+        Emitted upon successful join and IP address assignment.
+        """
+        # TODO
+
+    def on_lost_ip(self, handler: HandlerFn) -> None:
+        """
+        Emitted when disconnected from network.
+        """
+        # TODO
+
+    def on_scan_complete(self, handler: HandlerFn) -> None:
+        """
+        A WiFi network scan has completed. Results can be read with the `last_scan_results` command.
+        The event indicates how many networks where found, and how many are considered
+        as candidates for connection.
+        """
+        # TODO
+
+    def on_networks_changed(self, handler: HandlerFn) -> None:
+        """
+        Emitted whenever the list of known networks is updated.
+        """
+        # TODO
+
+    def on_connection_failed(self, handler: HandlerFn) -> None:
+        """
+        Emitted when when a network was detected in scan, the device tried to connect to it
+        and failed.
+        This may be because of wrong password or other random failure.
+        """
+        # TODO
+
+
+    def add_network(self, ssid: str, password: str) -> None:
+        """
+        Automatically connect to named network if available. Also set password if network is not open.
+        """
+        # TODO: self.sendCommand(jacdac.JDPacket.jdpacked(JD_wifi_CMD_add_network, "z z", [ssid, password]))
+
+    def reconnect(self, ) -> None:
+        """
+        Enable the WiFi (if disabled), initiate a scan, wait for results, disconnect from current WiFi network if any,
+        and then reconnect (using regular algorithm, see `set_network_priority`).
+        """
+        # TODO: self.sendCommand(jacdac.JDPacket.onlyHeader(JD_wifi_CMD_reconnect))
+
+    def forget_network(self, ssid: str) -> None:
+        """
+        Prevent from automatically connecting to named network in future.
+        Forgetting a network resets its priority to `0`.
+        """
+        # TODO: self.sendCommand(jacdac.JDPacket.jdpacked(JD_wifi_CMD_forget_network, "s", [ssid]))
+
+    def forget_all_networks(self, ) -> None:
+        """
+        Clear the list of known networks.
+        """
+        # TODO: self.sendCommand(jacdac.JDPacket.onlyHeader(JD_wifi_CMD_forget_all_networks))
+
+    def set_network_priority(self, priority: float, ssid: str) -> None:
+        """
+        Set connection priority for a network.
+        By default, all known networks have priority of `0`.
+        """
+        # TODO: self.sendCommand(jacdac.JDPacket.jdpacked(JD_wifi_CMD_set_network_priority, "i16 s", [priority, ssid]))
+
+    def scan(self, ) -> None:
+        """
+        Initiate search for WiFi networks. Generates `scan_complete` event.
+        """
+        # TODO: self.sendCommand(jacdac.JDPacket.onlyHeader(JD_wifi_CMD_scan))
+    

@@ -1,0 +1,31 @@
+from jacdac.bus import Bus, Client
+from .constants import *
+from typing import Union
+
+
+class RainGaugeClient(Client):
+    """
+    Measures the amount of liquid precipitation over an area in a predefined period of time.
+    """
+
+    def __init__(self, bus: Bus, role: str) -> None:
+        super().__init__(bus, JD_SERVICE_CLASS_RAIN_GAUGE, JD_RAIN_GAUGE_PACK_FORMATS, role)
+    
+
+    @property
+    def precipitation(self) -> Union[float, None]:
+        """
+        Total precipitation recorded so far., mm
+        """
+        reg = self.register(JD_RAIN_GAUGE_REG_PRECIPITATION)
+        return reg.value(0)
+
+    @property
+    def precipitation_precision(self) -> Union[float, None]:
+        """
+        (Optional) Typically the amount of rain needed for tipping the bucket., mm
+        """
+        reg = self.register(JD_RAIN_GAUGE_REG_PRECIPITATION_PRECISION)
+        return reg.value(0)
+
+    

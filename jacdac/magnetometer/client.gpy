@@ -1,0 +1,57 @@
+from jacdac.bus import Bus, Client
+from .constants import *
+from typing import Union
+
+
+class MagnetometerClient(Client):
+    """
+    A 3-axis magnetometer.
+    """
+
+    def __init__(self, bus: Bus, role: str) -> None:
+        super().__init__(bus, JD_SERVICE_CLASS_MAGNETOMETER, JD_MAGNETOMETER_PACK_FORMATS, role)
+    
+
+    @property
+    def x(self) -> Union[float, None]:
+        """
+        Indicates the current magnetic field on magnetometer.
+        For reference: `1 mgauss` is `100 nT` (and `1 gauss` is `100 000 nT`)., nT
+        """
+        reg = self.register(JD_MAGNETOMETER_REG_FORCES)
+        return reg.value(0)
+
+    @property
+    def y(self) -> Union[float, None]:
+        """
+        Indicates the current magnetic field on magnetometer.
+        For reference: `1 mgauss` is `100 nT` (and `1 gauss` is `100 000 nT`)., nT
+        """
+        reg = self.register(JD_MAGNETOMETER_REG_FORCES)
+        return reg.value(1)
+
+    @property
+    def z(self) -> Union[float, None]:
+        """
+        Indicates the current magnetic field on magnetometer.
+        For reference: `1 mgauss` is `100 nT` (and `1 gauss` is `100 000 nT`)., nT
+        """
+        reg = self.register(JD_MAGNETOMETER_REG_FORCES)
+        return reg.value(2)
+
+    @property
+    def forces_error(self) -> Union[float, None]:
+        """
+        (Optional) Error on the readings., nT
+        """
+        reg = self.register(JD_MAGNETOMETER_REG_FORCES_ERROR)
+        return reg.value(0)
+
+
+    def calibrate(self, ) -> None:
+        """
+        Forces a calibration sequence where the user/device
+        might have to rotate to be calibrated.
+        """
+        # TODO: self.sendCommand(jacdac.JDPacket.onlyHeader(JD_magnetometer_CMD_calibrate))
+    

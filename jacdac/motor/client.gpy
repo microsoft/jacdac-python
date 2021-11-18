@@ -1,0 +1,61 @@
+from jacdac.bus import Bus, Client
+from .constants import *
+from typing import Union
+
+
+class MotorClient(Client):
+    """
+    A bi-directional DC motor.
+    """
+
+    def __init__(self, bus: Bus, role: str) -> None:
+        super().__init__(bus, JD_SERVICE_CLASS_MOTOR, JD_MOTOR_PACK_FORMATS, role)
+    
+
+    @property
+    def duty(self) -> Union[float, None]:
+        """
+        PWM duty cycle of the motor. Use negative/positive values to run the motor forwards and backwards.
+        Positive is recommended to be clockwise rotation and negative counterclockwise. A duty of ``0`` 
+        while ``enabled`` acts as brake., /
+        """
+        reg = self.register(JD_MOTOR_REG_DUTY)
+        return reg.value(0)
+
+    @duty.setter
+    def duty(self, value: float) -> None:
+        reg = self.register(JD_MOTOR_REG_DUTY)
+        reg.set_value(0, value)
+
+
+    @property
+    def enabled(self) -> Union[bool, None]:
+        """
+        Turn the power to the motor on/off.
+        """
+        reg = self.register(JD_MOTOR_REG_ENABLED)
+        return reg.value(0)
+
+    @enabled.setter
+    def enabled(self, value: bool) -> None:
+        reg = self.register(JD_MOTOR_REG_ENABLED)
+        reg.set_value(0, value)
+
+
+    @property
+    def load_torque(self) -> Union[float, None]:
+        """
+        (Optional) Torque required to produce the rated power of an electrical motor at load speed., kg/cm
+        """
+        reg = self.register(JD_MOTOR_REG_LOAD_TORQUE)
+        return reg.value(0)
+
+    @property
+    def load_speed(self) -> Union[float, None]:
+        """
+        (Optional) Revolutions per minute of the motor under full load., rpm
+        """
+        reg = self.register(JD_MOTOR_REG_LOAD_SPEED)
+        return reg.value(0)
+
+    

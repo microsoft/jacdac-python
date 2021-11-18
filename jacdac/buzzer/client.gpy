@@ -1,0 +1,45 @@
+from jacdac.bus import Bus, Client
+from .constants import *
+from typing import Union
+
+
+class BuzzerClient(Client):
+    """
+    A simple buzzer.
+    """
+
+    def __init__(self, bus: Bus, role: str) -> None:
+        super().__init__(bus, JD_SERVICE_CLASS_BUZZER, JD_BUZZER_PACK_FORMATS, role)
+    
+
+    @property
+    def volume(self) -> Union[float, None]:
+        """
+        The volume (duty cycle) of the buzzer., /
+        """
+        reg = self.register(JD_BUZZER_REG_VOLUME)
+        return reg.value(0)
+
+    @volume.setter
+    def volume(self, value: float) -> None:
+        reg = self.register(JD_BUZZER_REG_VOLUME)
+        reg.set_value(0, value)
+
+
+
+    def play_tone(self, period: float, duty: float, duration: float) -> None:
+        """
+        Play a PWM tone with given period and duty for given duration.
+        The duty is scaled down with `volume` register.
+        To play tone at frequency `F` Hz and volume `V` (in `0..1`) you will want
+        to send `P = 1000000 / F` and `D = P * V / 2`.
+        """
+        # TODO: self.sendCommand(jacdac.JDPacket.jdpacked(JD_buzzer_CMD_play_tone, "u16 u16 u16", [period, duty, duration]))
+
+    def play_note(self, frequency: float, volume: float, duration: float) -> None:
+        """
+        Play a note at the given frequency and volume.
+        """
+        # TODO: implement client command
+        raise RuntimeError("client command not implemented")
+    

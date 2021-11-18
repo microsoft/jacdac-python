@@ -5,7 +5,7 @@ if TYPE_CHECKING:
     from .bus import Bus
 
 HandlerFn = Callable[..., Union[None, Coroutine[Any, Any, None]]]
-
+EventHandlerFn = Callable[..., None]
 UnsubscribeFn = Callable[..., None]
 
 class EventEmitter:

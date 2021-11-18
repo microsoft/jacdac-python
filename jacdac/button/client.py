@@ -1,51 +1,34 @@
+from jacdac.bus import Bus, Client
+from jacdac.button.client_mixin import ButtonClientMixin
+from .constants import *
 from typing import Union
-from jacdac.bus import Bus, Client, EV_EVENT, EventHandlerFn
-from jacdac.packet import JDPacket
-from .constants import JD_SERVICE_CLASS_BUTTON, JD_BUTTON_PACK_FORMATS, JD_BUTTON_REG_PRESSURE, JD_BUTTON_EV_UP, JD_BUTTON_EV_DOWN, JD_BUTTON_EV_HOLD
-from jacdac.events import UnsubscribeFn
+from jacdac.events import EventHandlerFn, UnsubscribeFn
 
 
-class PressedMixin:
-    _pressed = False
-
-    def init_pressed(self, client: Client) -> None:
-        self.client = client
-        self.client.on(EV_EVENT, self._on_event)
-
-    @property
-    def pressed(self) -> Union[bool, None]:
-        """
-        Determines if the button is pressed currently.
-
-        If the event ``down`` is observed, ``pressed`` is true; if ``up`` or ``hold`` are observed, ``pressed`` is false.
-        To initialize, wait for any event or timeout to ``pressed`` is true after 750ms (1.5x hold time).
-        """
-        return self._pressed
-
-    @pressed.setter
-    def pressed(self, value: bool):
-        self._pressed = value
-
-    def _on_event(self, pkt: JDPacket):
-        code = pkt.event_code
-        if (code == JD_BUTTON_EV_UP):
-            self.pressed = False
-        elif (code == JD_BUTTON_EV_DOWN):
-            self.pressed = True
-        elif code == JD_BUTTON_EV_HOLD:
-            self.pressed = True
-
-
-class ButtonClient(Client, PressedMixin):
+class ButtonClient(Client, ButtonClientMixin):
+    """
+    A push-button, which returns to inactive position when not operated anymore.
+    """
 
     def __init__(self, bus: Bus, role: str) -> None:
         super().__init__(bus, JD_SERVICE_CLASS_BUTTON, JD_BUTTON_PACK_FORMATS, role)
-        self.init_pressed(self)
+        self.init_mixin(self)
 
     @property
     def pressure(self) -> Union[float, None]:
+        """
+        Indicates the pressure state of the button, where ``0`` is open., /
+        """
         reg = self.register(JD_BUTTON_REG_PRESSURE)
-        return reg.float_value(0, 100)
+        return reg.value(0)
+
+    @property
+    def analog(self) -> Union[bool, None]:
+        """
+        (Optional) Indicates if the button provides analog ``pressure`` readings.
+        """
+        reg = self.register(JD_BUTTON_REG_ANALOG)
+        return reg.value(0)
 
     def on_down(self, handler: EventHandlerFn) -> UnsubscribeFn:
         """

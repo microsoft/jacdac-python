@@ -38,8 +38,6 @@ _ACK_RETRIES = const(4)
 _ACK_DELAY = const(40)
 
 RegType = TypeVar('RegType', bound=Union[int, tuple[int, ...]])
-EventHandlerFn = Callable[..., None]
-
 
 def _service_matches(dev: 'Device', serv: bytearray):
     ds = dev.services

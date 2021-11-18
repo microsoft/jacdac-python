@@ -1,10 +1,8 @@
 API
 ===
 
+.. currentmodule:: jacdac
 .. autosummary::
    :toctree: generated
 
-   jacdac
-
-.. automodule:: jacdac.module
-   :members:
+   jacdac.Bus

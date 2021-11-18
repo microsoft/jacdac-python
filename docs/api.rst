@@ -5,3 +5,6 @@ API
    :toctree: generated
 
    jacdac
+
+.. automodule:: jacdac.module
+   :members:

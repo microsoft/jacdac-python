@@ -761,6 +761,44 @@ class Client(EventEmitter):
         return self.on(EV_EVENT, cb)
 
 
+class SensorClient(Client):
+    """A client for a sensor service"""
+
+    def __init__(self, bus: Bus, service_class: int, pack_formats: dict[int, str], role: str, *, preferred_interval: int = None) -> None:
+        super().__init__(bus, service_class, pack_formats, role)
+        self.preferred_interval = preferred_interval
+
+    @property
+    def streaming_samples(self) -> Optional[int]:
+        """Queries the current estimated streaming samples value"""
+        return self.register(JD_REG_STREAMING_SAMPLES).value()
+
+    def refresh_reading(self) -> None:
+        """Sets the streaming_samples value to 0xff"""
+        self.register(JD_REG_STREAMING_SAMPLES).set_values(0xff)
+
+    @property
+    def streaming_interval(self) -> Optional[int]:
+        return self.register(JD_REG_STREAMING_INTERVAL).value()
+
+    @property
+    def streaming_preferred_interval(self) -> Optional[int]:
+        return self.register(JD_REG_STREAMING_PREFERRED_INTERVAL).value()
+
+    @property
+    def reading_interval(self) -> int:
+        """Resolves the best refresh interval for streaming"""
+        interval = self.streaming_interval
+        if interval:
+            return interval
+        interval = self.streaming_preferred_interval
+        if interval:
+            return interval
+        if self.preferred_interval:
+            return self.preferred_interval
+        return JD_STREAMING_DEFAULT_INTERVAL
+
+
 class Device(EventEmitter):
     """A device on the bus"""
 

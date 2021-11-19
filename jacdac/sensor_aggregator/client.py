@@ -46,6 +46,7 @@ class SensorAggregatorClient(SensorClient):
         """
         Last collected sample., 
         """
+        self.refresh_reading()
         return self.register(JD_SENSOR_AGGREGATOR_REG_CURRENT_SAMPLE).value()
 
     

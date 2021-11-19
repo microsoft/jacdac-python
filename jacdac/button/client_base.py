@@ -19,6 +19,7 @@ class ButtonClientBase(SensorClient):
         """
         Indicates the pressure state of the button, where ``0`` is open., _: /
         """
+        self.refresh_reading()
         return self.register(JD_BUTTON_REG_PRESSURE).float_value(100)
 
     @property

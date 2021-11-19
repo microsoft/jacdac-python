@@ -19,6 +19,7 @@ class AccelerometerClient(SensorClient):
         """
         Indicates the current forces acting on accelerometer., x: g,y: g,z: g
         """
+        self.refresh_reading()
         return self.register(JD_ACCELEROMETER_REG_FORCES).value()
 
     @property

@@ -22,6 +22,7 @@ class HeartRateClient(SensorClient):
         """
         The estimated heart rate., _: bpm
         """
+        self.refresh_reading()
         return self.register(JD_HEART_RATE_REG_HEART_RATE).value()
 
     @property

@@ -19,6 +19,7 @@ class ThermocoupleClient(SensorClient):
         """
         The temperature., _: °C
         """
+        self.refresh_reading()
         return self.register(JD_THERMOCOUPLE_REG_TEMPERATURE).value()
 
     @property

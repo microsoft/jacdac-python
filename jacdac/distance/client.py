@@ -19,6 +19,7 @@ class DistanceClient(SensorClient):
         """
         Current distance from the object, _: m
         """
+        self.refresh_reading()
         return self.register(JD_DISTANCE_REG_DISTANCE).value()
 
     @property

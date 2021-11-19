@@ -19,6 +19,7 @@ class ThermometerClient(SensorClient):
         """
         The temperature., _: °C
         """
+        self.refresh_reading()
         return self.register(JD_THERMOMETER_REG_TEMPERATURE).value()
 
     @property

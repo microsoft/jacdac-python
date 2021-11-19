@@ -19,6 +19,7 @@ class WindSpeedClient(SensorClient):
         """
         The velocity of the wind., _: m/s
         """
+        self.refresh_reading()
         return self.register(JD_WIND_SPEED_REG_WIND_SPEED).value()
 
     @property

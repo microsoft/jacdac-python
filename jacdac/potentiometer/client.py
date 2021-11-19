@@ -19,6 +19,7 @@ class PotentiometerClient(SensorClient):
         """
         The relative position of the slider., _: /
         """
+        self.refresh_reading()
         return self.register(JD_POTENTIOMETER_REG_POSITION).float_value(100)
 
     @property

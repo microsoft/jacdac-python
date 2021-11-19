@@ -20,6 +20,7 @@ class RotaryEncoderClient(SensorClient):
         Upon device reset starts at `0` (regardless of the shaft position).
         Increases by `1` for a clockwise "click", by `-1` for counter-clockwise., _: #
         """
+        self.refresh_reading()
         return self.register(JD_ROTARY_ENCODER_REG_POSITION).value()
 
     @property

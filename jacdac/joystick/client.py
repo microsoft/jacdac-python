@@ -22,6 +22,7 @@ class JoystickClient(SensorClient):
         If the joystick is digital, then each direction will read as either `-1`, `0`, or `1` (in fixed representation).
         The primary button on the joystick is `A`., x: /,y: /
         """
+        self.refresh_reading()
         return self.register(JD_JOYSTICK_REG_DIRECTION).value()
 
     @property

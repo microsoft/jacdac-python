@@ -8,4 +8,4 @@ if __name__ == '__main__':
     barometer = BarometerClient(bus, "barometer")
     while True:
         print("pressure: ", barometer.pressure, "e:", barometer.pressure_error)
-        sleep(0.2)
+        sleep(1)

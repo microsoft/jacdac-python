@@ -19,6 +19,7 @@ class LightLevelClient(SensorClient):
         """
         Detect light level, _: /
         """
+        self.refresh_reading()
         return self.register(JD_LIGHT_LEVEL_REG_LIGHT_LEVEL).float_value(100)
 
     @property

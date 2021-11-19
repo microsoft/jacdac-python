@@ -19,6 +19,7 @@ class WindDirectionClient(SensorClient):
         """
         The direction of the wind., _: °
         """
+        self.refresh_reading()
         return self.register(JD_WIND_DIRECTION_REG_WIND_DIRECTION).value()
 
     @property

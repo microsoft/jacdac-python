@@ -21,6 +21,7 @@ class PulseOximeterClient(SensorClient):
         """
         The estimated oxygen level in blood., _: %
         """
+        self.refresh_reading()
         return self.register(JD_PULSE_OXIMETER_REG_OXYGEN).value()
 
     @property

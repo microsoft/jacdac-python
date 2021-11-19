@@ -19,6 +19,7 @@ class WeightScaleClient(SensorClient):
         """
         The reported weight., _: kg
         """
+        self.refresh_reading()
         return self.register(JD_WEIGHT_SCALE_REG_WEIGHT).value()
 
     @property

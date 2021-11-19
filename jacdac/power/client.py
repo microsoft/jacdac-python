@@ -54,6 +54,7 @@ class PowerClient(SensorClient):
         """
         (Optional) Present current draw from the bus., _: mA
         """
+        self.refresh_reading()
         return self.register(JD_POWER_REG_CURRENT_DRAW).value()
 
     @property

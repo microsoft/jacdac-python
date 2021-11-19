@@ -19,6 +19,7 @@ class SoundSpectrumClient(SensorClient):
         """
         The computed frequency data., 
         """
+        self.refresh_reading()
         return self.register(JD_SOUND_SPECTRUM_REG_FREQUENCY_BINS).value()
 
     @property

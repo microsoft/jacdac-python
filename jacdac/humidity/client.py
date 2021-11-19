@@ -19,6 +19,7 @@ class HumidityClient(SensorClient):
         """
         The relative humidity in percentage of full water saturation., _: %RH
         """
+        self.refresh_reading()
         return self.register(JD_HUMIDITY_REG_HUMIDITY).value()
 
     @property

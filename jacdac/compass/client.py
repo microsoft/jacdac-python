@@ -19,6 +19,7 @@ class CompassClient(SensorClient):
         """
         The heading with respect to the magnetic north., _: °
         """
+        self.refresh_reading()
         return self.register(JD_COMPASS_REG_HEADING).value()
 
     @property

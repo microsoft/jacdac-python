@@ -19,6 +19,7 @@ class GyroscopeClient(SensorClient):
         """
         Indicates the current rates acting on gyroscope., x: °/s,y: °/s,z: °/s
         """
+        self.refresh_reading()
         return self.register(JD_GYROSCOPE_REG_ROTATION_RATES).value()
 
     @property

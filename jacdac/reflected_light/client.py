@@ -19,6 +19,7 @@ class ReflectedLightClient(SensorClient):
         """
         Reports the reflected brightness. It may be a digital value or, for some sensor, analog value., _: /
         """
+        self.refresh_reading()
         return self.register(JD_REFLECTED_LIGHT_REG_BRIGHTNESS).float_value(100)
 
     @property

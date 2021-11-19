@@ -19,6 +19,7 @@ class ECO2Client(SensorClient):
         """
         Equivalent CO₂ (eCO₂) readings., _: ppm
         """
+        self.refresh_reading()
         return self.register(JD_E_CO2_REG_E_CO2).value()
 
     @property

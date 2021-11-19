@@ -19,6 +19,7 @@ class TvocClient(SensorClient):
         """
         Total volatile organic compound readings in parts per billion., _: ppb
         """
+        self.refresh_reading()
         return self.register(JD_TVOC_REG_TVOC).value()
 
     @property

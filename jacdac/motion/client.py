@@ -19,6 +19,7 @@ class MotionClient(SensorClient):
         """
         Reports is movement is currently detected by the sensor., 
         """
+        self.refresh_reading()
         return self.register(JD_MOTION_REG_MOVING).bool_value()
 
     @property

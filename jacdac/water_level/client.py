@@ -19,6 +19,7 @@ class WaterLevelClient(SensorClient):
         """
         The reported water level., _: /
         """
+        self.refresh_reading()
         return self.register(JD_WATER_LEVEL_REG_LEVEL).float_value(100)
 
     @property

@@ -19,6 +19,7 @@ class SoilMoistureClient(SensorClient):
         """
         Indicates the wetness of the soil, from ``dry`` to ``wet``., _: /
         """
+        self.refresh_reading()
         return self.register(JD_SOIL_MOISTURE_REG_MOISTURE).float_value(100)
 
     @property

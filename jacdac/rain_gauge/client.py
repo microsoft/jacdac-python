@@ -19,6 +19,7 @@ class RainGaugeClient(SensorClient):
         """
         Total precipitation recorded so far., _: mm
         """
+        self.refresh_reading()
         return self.register(JD_RAIN_GAUGE_REG_PRECIPITATION).value()
 
     @property

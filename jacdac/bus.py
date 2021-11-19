@@ -330,7 +330,7 @@ class RawRegisterClient(EventEmitter):
     """A Jacdac register client
     """
 
-    def __init__(self, client: 'Client', code: int, pack_format: Union[str, None]) -> None:
+    def __init__(self, client: 'Client', code: int, pack_format: Optional[str]) -> None:
         super().__init__(client.bus)
         self.code = code
         self._data: Optional[bytearray] = None
@@ -338,8 +338,8 @@ class RawRegisterClient(EventEmitter):
         self.client = client
         self.pack_format = pack_format
 
-    def current(self, refresh_ms: int = 500):
-        if self._refreshed_at + refresh_ms >= now():
+    def current(self, refresh_ms: int = -1):
+        if refresh_ms < 0 or self._refreshed_at + refresh_ms >= now():
             return self._data
         return None
 
@@ -435,7 +435,7 @@ class RawRegisterClient(EventEmitter):
                 "Can't read reg #{} (from {})".format(hex(self.code), self.client))
         return self._data
 
-    def query_no_wait(self, refresh_ms: int = 500):
+    def query_no_wait(self, refresh_ms: int = -1):
         curr = self.current(refresh_ms)
         if curr:
             return curr
@@ -653,11 +653,15 @@ class Client(EventEmitter):
         """Retreives the register by code"""
         r = self._lookup_register(code)
         if r is None:
-            pack_format = self.pack_formats[code]
-            # TODO: error policy?
+            pack_format = self._lookup_packformat(code)
             r = RawRegisterClient(self, code, pack_format)
             self._registers.append(r)
         return r
+    
+    def _lookup_packformat(self, code: int) -> Optional[str]:
+        if code in self.pack_formats:
+            return self.pack_formats[code]
+        return None
 
     def handle_packet(self, pkt: JDPacket):
         pass
@@ -773,10 +777,6 @@ class SensorClient(Client):
         """Queries the current estimated streaming samples value"""
         return self.register(JD_REG_STREAMING_SAMPLES).value()
 
-    def refresh_reading(self) -> None:
-        """Sets the streaming_samples value to 0xff"""
-        self.register(JD_REG_STREAMING_SAMPLES).set_values(0xff)
-
     @property
     def streaming_interval(self) -> Optional[int]:
         return self.register(JD_REG_STREAMING_INTERVAL).value()
@@ -785,8 +785,48 @@ class SensorClient(Client):
     def streaming_preferred_interval(self) -> Optional[int]:
         return self.register(JD_REG_STREAMING_PREFERRED_INTERVAL).value()
 
-    @property
-    def reading_interval(self) -> int:
+    def refresh_reading(self) -> None:
+        if self._should_refresh_streaming_samples():
+            self.register(JD_REG_STREAMING_SAMPLES).set_values(0xff)
+
+    def _lookup_packformat(self, code: int) -> Optional[str]:
+        if code == JD_REG_STREAMING_SAMPLES: 
+            return "u8"
+        elif code == JD_REG_STREAMING_INTERVAL:
+            return "u32"
+        elif code == JD_REG_STREAMING_PREFERRED_INTERVAL:
+            return "u32"            
+        return Client._lookup_packformat(self, code)
+
+    def _should_refresh_streaming_samples(self) -> bool:
+        readingReg = self.register(JD_REG_READING)
+        if readingReg._refreshed_at < 0:
+            # refresh in progress
+            return False
+
+        samplesReg = self.register(JD_REG_STREAMING_SAMPLES)
+        if samplesReg._refreshed_at < 0:
+            # refresh in progress
+            return False
+
+        samples = samplesReg.value()
+        # check if we have some value
+        MIN_SAMPLES = 16
+        if samples is None or samples < MIN_SAMPLES:
+            return True
+        
+        interval = self._reading_interval()
+
+        # haven't seen samples in a while
+        if now() > readingReg._refreshed_at + 3 * interval:
+            return True
+
+        # check if the streaming is consumed
+        if now() > samplesReg._refreshed_at + max(0, samples - MIN_SAMPLES) * interval:
+            return True
+        return False
+
+    def _reading_interval(self) -> int:
         """Resolves the best refresh interval for streaming"""
         interval = self.streaming_interval
         if interval:

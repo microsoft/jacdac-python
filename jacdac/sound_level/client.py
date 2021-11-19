@@ -19,6 +19,7 @@ class SoundLevelClient(SensorClient):
         """
         The sound level detected by the microphone, _: /
         """
+        self.refresh_reading()
         return self.register(JD_SOUND_LEVEL_REG_SOUND_LEVEL).float_value(100)
 
     @property

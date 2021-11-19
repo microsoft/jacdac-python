@@ -19,6 +19,7 @@ class SwitchClient(SensorClient):
         """
         Indicates whether the switch is currently active (on)., 
         """
+        self.refresh_reading()
         return self.register(JD_SWITCH_REG_ACTIVE).bool_value()
 
     @property

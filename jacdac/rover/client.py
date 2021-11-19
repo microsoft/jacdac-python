@@ -19,6 +19,7 @@ class RoverClient(SensorClient):
         """
         The current position and orientation of the robot., x: cm,y: cm,vx: cm/s,vy: cm/s,heading: °
         """
+        self.refresh_reading()
         return self.register(JD_ROVER_REG_KINEMATICS).value()
 
     

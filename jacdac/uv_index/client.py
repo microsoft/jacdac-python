@@ -19,6 +19,7 @@ class UvIndexClient(SensorClient):
         """
         Ultraviolet index, typically refreshed every second., _: uv
         """
+        self.refresh_reading()
         return self.register(JD_UV_INDEX_REG_UV_INDEX).value()
 
     @property

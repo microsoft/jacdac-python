@@ -20,6 +20,7 @@ class MagnetometerClient(SensorClient):
         Indicates the current magnetic field on magnetometer.
         For reference: `1 mgauss` is `100 nT` (and `1 gauss` is `100 000 nT`)., x: nT,y: nT,z: nT
         """
+        self.refresh_reading()
         return self.register(JD_MAGNETOMETER_REG_FORCES).value()
 
     @property

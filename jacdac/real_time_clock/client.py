@@ -22,6 +22,7 @@ class RealTimeClockClient(SensorClient):
         * ``day_of_week`` is day of the week, starting at ``1`` as monday
         Default streaming period is 1 second., 
         """
+        self.refresh_reading()
         return self.register(JD_REAL_TIME_CLOCK_REG_LOCAL_TIME).value()
 
     @property

@@ -21,6 +21,7 @@ class IlluminanceClient(SensorClient):
         """
         The amount of illuminance, as lumens per square metre., _: lux
         """
+        self.refresh_reading()
         return self.register(JD_ILLUMINANCE_REG_LIGHT).value()
 
     @property

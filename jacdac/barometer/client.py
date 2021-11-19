@@ -19,6 +19,7 @@ class BarometerClient(SensorClient):
         """
         The air pressure., _: hPa
         """
+        self.refresh_reading()
         return self.register(JD_BAROMETER_REG_PRESSURE).value()
 
     @property

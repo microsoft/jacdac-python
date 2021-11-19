@@ -19,6 +19,7 @@ class ColorClient(SensorClient):
         """
         Detected color in the RGB color space., red: /,green: /,blue: /
         """
+        self.refresh_reading()
         return self.register(JD_COLOR_REG_COLOR).value()
 
     

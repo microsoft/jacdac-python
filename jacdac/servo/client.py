@@ -110,6 +110,7 @@ class ServoClient(SensorClient):
         """
         (Optional) The current physical position of the arm., _: °
         """
+        self.refresh_reading()
         return self.register(JD_SERVO_REG_CURRENT_ANGLE).value()
 
     

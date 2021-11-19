@@ -4,7 +4,7 @@ import queue
 import random
 import struct
 
-from ..transport import Transport
+from jacdac.bus import Transport
 
 HF2_CMD_INFO = 0x0002
 HF2_CMD_DMESG = 0x0010

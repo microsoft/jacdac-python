@@ -32,6 +32,7 @@ release = '0.0.0'
 # ones.
 extensions = [
     'myst_parser',
+    'autoapi.extension',
     'sphinx.ext.duration',
     'sphinx.ext.doctest',
     'sphinx.ext.autodoc',
@@ -44,6 +45,9 @@ intersphinx_mapping = {
     'sphinx': ('https://www.sphinx-doc.org/en/master/', None),
 }
 intersphinx_disabled_domains = ['std']
+
+autoapi_type = 'python'
+autoapi_dirs = ['../jacdac']
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']

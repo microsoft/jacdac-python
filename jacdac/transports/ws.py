@@ -1,6 +1,6 @@
 import threading
 from websocket import WebSocketApp
-from ..transport import Transport
+from jacdac.bus import Transport
 
 
 class WebSocketTransport(Transport):

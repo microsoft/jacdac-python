@@ -3,18 +3,19 @@ import random
 import asyncio
 import queue
 import os
+import time
+import sys
 
 from typing import Optional, TypeVar, Union, cast
 
 from .constants import *
+from .control.constants import *
 from .system.constants import *
+from .unique_brain.constants import *
 from .events import *
 from .packet import *
-from .transport import Transport
 
-import jacdac.util as util
 from .util import now, log, logv
-from .control.constants import *
 from .pack import PackTuple, PackType, jdpack, jdunpack
 
 
@@ -48,6 +49,17 @@ def _service_matches(dev: 'Device', serv: bytearray):
         if ds[i] != serv[i]:
             return False
     return True
+
+
+class Transport:
+    # A base class for packet transports
+
+    on_receive: Optional[Callable[[bytes], None]] = None
+    # Callback to report a received packet to the bus
+
+    def send(self, pkt: bytes) -> None:
+        # send a packet payload over the transport layer
+        pass
 
 
 class Bus(EventEmitter):
@@ -100,11 +112,9 @@ class Bus(EventEmitter):
         asyncio.set_event_loop(loop)
 
         # TODO: what's the best way to import these things
-        from .control.server import ControlServer
         ctrls = ControlServer(self)  # attach control server
 
         # TODO: make this optional.
-        from .unique_brain.server import UniqueBrainServer
         brain = UniqueBrainServer(self)
 
         def keep_task(t: asyncio.Task[None]):
@@ -520,6 +530,80 @@ class Server(EventEmitter):
         prefix = "{}.{}>".format(self.bus.self_device,
                                  self.instance_name or self.service_index)
         log(prefix + text, *args)
+
+
+
+class ControlServer(Server):
+    def __init__(self, bus: Bus) -> None:
+        super().__init__(bus, JD_SERVICE_CLASS_CONTROL)
+        self.restart_counter = 0
+
+    def queue_announce(self):
+        logv("announce: %d " % self.restart_counter)
+        self.restart_counter += 1
+        ids = [s.service_class for s in self.bus. servers]
+        rest = self.restart_counter
+        if rest > 0xf:
+            rest = 0xf
+        ids[0] = (
+            rest |
+            JD_CONTROL_ANNOUNCE_FLAGS_IS_CLIENT |
+            JD_CONTROL_ANNOUNCE_FLAGS_SUPPORTS_ACK |
+            JD_CONTROL_ANNOUNCE_FLAGS_SUPPORTS_BROADCAST |
+            JD_CONTROL_ANNOUNCE_FLAGS_SUPPORTS_FRAMES
+        )
+        buf = jdpack("u32[]", *ids)
+        self.send_report(JDPacket(cmd=0, data=buf))
+
+        # auto bind
+        # if jacdac.role_manager_server.auto_bind:
+        #     self.auto_bind_cnt++
+        #     # also, only do it every two announces (TBD)
+        #     if self.auto_bind_cnt >= 2:
+        #         self.auto_bind_cnt = 0
+        #         jacdac.role_manager_server.bind_roles()
+
+    # def handle_flood_ping(self, pkt: JDPacket):
+    #     num_responses, counter, size = pkt.unpack("IIB")
+    #     payload = bytearray(4 + size)
+    #     for i in range(size): payload[4+i]=i
+    #     def queue_ping():
+    #         if num_responses <= 0:
+    #             control.internal_on_event(
+    #                 jacdac.__physId(),
+    #                 EVT_TX_EMPTY,
+    #                 do_nothing
+    #             )
+    #         else:
+    #             payload.set_number(NumberFormat.UInt32LE, 0, counter)
+    #             self.send_report(
+    #                 JDPacket.from(ControlCmd.FloodPing, payload)
+    #             )
+    #             num_responses--
+    #             counter++
+    #     control.internal_on_event(jacdac.__physId(), EVT_TX_EMPTY, queue_ping)
+    #     queue_ping()
+
+    def handle_packet(self, pkt: JDPacket):
+        if pkt.is_reg_get:
+            if pkt.reg_code == JD_CONTROL_REG_UPTIME:
+                self.send_report(JDPacket.packed(
+                    JD_GET(JD_CONTROL_REG_UPTIME), "u64",  time.monotonic_ns() // 1000))
+        else:
+            cmd = pkt.service_command
+            if cmd == JD_CONTROL_CMD_SERVICES:
+                self.queue_announce()
+            elif cmd == JD_CONTROL_CMD_IDENTIFY:
+                self.log("identify")
+                self.bus.emit(EV_IDENTIFY)
+            elif cmd == JD_CONTROL_CMD_RESET:
+                sys.exit()  # TODO?
+
+class UniqueBrainServer(Server):
+    # A unique brain server
+
+    def __init__(self, bus: Bus) -> None:
+        super().__init__(bus, JD_SERVICE_CLASS_UNIQUE_BRAIN)
 
 
 class Client(EventEmitter):

@@ -1,5 +1,5 @@
 import threading
-from typing import Any, Callable, TYPE_CHECKING, Coroutine, Union
+from typing import Any, Callable, TYPE_CHECKING, Coroutine, List, Tuple, Union
 
 if TYPE_CHECKING:
     from .bus import Bus
@@ -40,7 +40,7 @@ class EventEmitter:
 
     def _init_emitter(self):
         if not hasattr(self, "_listeners"):
-            self._listeners: list[tuple[str, HandlerFn, bool]] = []
+            self._listeners: List[Tuple[str, HandlerFn, bool]] = []
 
     def on(self, id: str, fn: HandlerFn) -> UnsubscribeFn:
         """Subscribes an event to a handler. Returns a callback to unsubscribe.

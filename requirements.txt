@@ -2,3 +2,4 @@ pyserial
 websocket-client
 setuptools
 build
+typing

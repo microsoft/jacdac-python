@@ -3,6 +3,7 @@ import threading
 import queue
 import random
 import struct
+from typing import List
 
 from jacdac.bus import Transport
 
@@ -68,7 +69,7 @@ class HF2Transport(Transport):
             self.log("unknown event: 0x%x" % evid)
 
     def _read_loop(self):
-        frames: list[bytes] = []
+        frames: List[bytes] = []
         while True:
             buf: bytes = self.serial.read(64)  # type: ignore
             tp = buf[0] & HF2_FLAG_MASK

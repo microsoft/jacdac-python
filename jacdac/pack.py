@@ -1,5 +1,5 @@
 import struct
-from typing import Any, Optional, Union, cast
+from typing import Any, List, Optional, Tuple, Union, cast
 
 _fmts = {
     "u64": "<Q",
@@ -92,12 +92,12 @@ class _TokenParser:
 
 
 BasePackType = Union[int, float, str, bytes]
-PackType = Union[BasePackType, list[BasePackType], tuple[BasePackType]]
-PackTuple = tuple[PackType, ...]
+PackType = Union[BasePackType, List[BasePackType], Tuple[BasePackType]]
+PackTuple = Tuple[PackType, ...]
 
 def _jdunpack_core(buf: bytes, fmt: str, repeat: int) -> PackTuple:
-    repeat_res: list[PackTuple] = []
-    res: list[PackType] = []
+    repeat_res: List[PackTuple] = []
+    res: List[PackType] = []
     off: int = 0
     fp0 = 0
     parser = _TokenParser(fmt)
@@ -166,7 +166,7 @@ def jdunpack(buf: bytes, fmt: str) -> PackTuple:
     return _jdunpack_core(buf, fmt, 0)
 
 
-def _jdpack_core(trg: Optional[bytearray], fmt: str, data: list[PackType], off: int) -> int:
+def _jdpack_core(trg: Optional[bytearray], fmt: str, data: List[PackType], off: int) -> int:
     idx = 0
     parser = _TokenParser(fmt)
     while parser.parse():
@@ -180,7 +180,7 @@ def _jdpack_core(trg: Optional[bytearray], fmt: str, data: list[PackType], off: 
         if c0 == "r":
             fmt0 = fmt[parser.fp:]
             for velt in data[idx:]:
-                off = _jdpack_core(trg, fmt0, cast(list[PackType], velt), off)
+                off = _jdpack_core(trg, fmt0, cast(List[PackType], velt), off)
             idx = len(data)
             break
 
@@ -238,7 +238,7 @@ def jdpack(fmt: str, *args: PackType) -> bytes:
         assert len(args) == 1
         return struct.pack(_fmts[fmt], args[0])
 
-    data = cast(list[PackType], args)
+    data = cast(List[PackType], args)
     k = _jdpack_core(None, fmt, data, 0)
     res = bytearray(k)
     _jdpack_core(res, fmt, data, 0)
@@ -257,7 +257,7 @@ def _jdpack_test():
     def stringify(o: Any):
         return json.dumps(o, default=default)
 
-    def test_one(fmt: str, data0: list[Any], expected_payload: str = None):
+    def test_one(fmt: str, data0: List[Any], expected_payload: str = None):
         def checksame(a: Any, b: Any):
             def fail(msg: str):
                 raise ValueError("jdpack test error: %s (at %s; a=%s; b=%s)" %

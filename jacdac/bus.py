@@ -6,7 +6,7 @@ import os
 import time
 import sys
 
-from typing import Optional, TypeVar, Union, cast
+from typing import Optional, TypeVar, Union, cast, List, Dict
 
 from .constants import *
 from .control.constants import *
@@ -67,17 +67,18 @@ class Bus(EventEmitter):
 
     def __init__(self, transport: Transport, *, device_id: str = None) -> None:
         super().__init__(self)
-        self.devices: list['Device'] = []
-        self.unattached_clients: list['Client'] = []
-        self.all_clients: list['Client'] = []
-        self.servers: list['Server'] = []
+        self.devices: List['Device'] = []
+        self.unattached_clients: List['Client'] = []
+        self.all_clients: List['Client'] = []
+        self.servers: List['Server'] = []
+        self._event_counter = 0
         if device_id is None:
             device_id = random.randbytes(8).hex()
         self.self_device = Device(self, device_id, bytearray(4))
         self.process_thread = threading.Thread(target=self._process_task)
         self.transport = transport
         self._sendq: queue.Queue[bytes] = queue.Queue()
-        self.pending_tasks: list[asyncio.Task[None]] = []
+        self.pending_tasks: List[asyncio.Task[None]] = []
 
         self.loop = asyncio.new_event_loop()
 
@@ -178,7 +179,7 @@ class Bus(EventEmitter):
         cutoff = now_ - 2000
         self.self_device.last_seen = now_  # make sure not to gc self
 
-        newdevs: list['Device'] = []
+        newdevs: List['Device'] = []
         for dev in self.devices:
             if dev.last_seen < cutoff:
                 dev._destroy()
@@ -218,7 +219,7 @@ class Bus(EventEmitter):
         dev.last_seen = now()
         log("reattaching services to {}; {}/{} to attach", dev,
             len(self.unattached_clients), len(self.all_clients))
-        new_clients: list['Client'] = []
+        new_clients: List['Client'] = []
         occupied = bytearray(dev.num_service_classes)
         for c in dev.clients:
             if c.broadcast:
@@ -620,7 +621,7 @@ class UniqueBrainServer(Server):
 class Client(EventEmitter):
     """Base class to define service clients."""
 
-    def __init__(self, bus: Bus, service_class: int, pack_formats: dict[int, str], role: str) -> None:
+    def __init__(self, bus: Bus, service_class: int, pack_formats: Dict[int, str], role: str) -> None:
         super().__init__(bus)
         self.broadcast = False
         self.service_class = service_class
@@ -629,7 +630,7 @@ class Client(EventEmitter):
         self.device: Optional['Device'] = None
         self.current_device:  Optional['Device'] = None
         self.role = role
-        self._registers: list[RawRegisterClient] = []
+        self._registers: List[RawRegisterClient] = []
         bus.unattached_clients.append(self)
         bus.all_clients.append(self)
 
@@ -768,7 +769,7 @@ class Client(EventEmitter):
 class SensorClient(Client):
     """A client for a sensor service"""
 
-    def __init__(self, bus: Bus, service_class: int, pack_formats: dict[int, str], role: str, *, preferred_interval: int = None) -> None:
+    def __init__(self, bus: Bus, service_class: int, pack_formats: Dict[int, str], role: str, *, preferred_interval: int = None) -> None:
         super().__init__(bus, service_class, pack_formats, role)
         self.preferred_interval = preferred_interval
 
@@ -846,7 +847,7 @@ class Device(EventEmitter):
         super().__init__(bus)
         self.device_id = device_id
         self.services = services
-        self.clients: list[Client] = []
+        self.clients: List[Client] = []
         self.last_seen = now()
         self._event_counter: Optional[int] = None
         self._ctrl_client: Optional[Client] = None

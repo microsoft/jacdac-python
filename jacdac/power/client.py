@@ -21,7 +21,7 @@ class PowerClient(Client):
         When allowed, the service may still not be providing power, see 
         `power_status` for the actual current state., 
         """
-        return self.register(JD_POWER_REG_ALLOWED).value()
+        return self.register(JD_POWER_REG_ALLOWED).bool_value()
 
     @allowed.setter
     def allowed(self, value: bool) -> None:
@@ -68,7 +68,7 @@ class PowerClient(Client):
         """
         (Optional) Fraction of charge in the battery., _: /
         """
-        return self.register(JD_POWER_REG_BATTERY_CHARGE).value()
+        return self.register(JD_POWER_REG_BATTERY_CHARGE).float_value(100)
 
     @property
     def battery_capacity(self) -> Optional[int]:

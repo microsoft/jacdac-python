@@ -19,7 +19,7 @@ class SpeechSynthesisClient(Client):
         """
         Determines if the speech engine is in a non-paused state., 
         """
-        return self.register(JD_SPEECH_SYNTHESIS_REG_ENABLED).value()
+        return self.register(JD_SPEECH_SYNTHESIS_REG_ENABLED).bool_value()
 
     @enabled.setter
     def enabled(self, value: bool) -> None:
@@ -43,11 +43,11 @@ class SpeechSynthesisClient(Client):
         """
         (Optional) Volume for utterances., _: /
         """
-        return self.register(JD_SPEECH_SYNTHESIS_REG_VOLUME).value()
+        return self.register(JD_SPEECH_SYNTHESIS_REG_VOLUME).float_value(100)
 
     @volume.setter
     def volume(self, value: float) -> None:
-        self.register(JD_SPEECH_SYNTHESIS_REG_VOLUME).set_values(value)
+        self.register(JD_SPEECH_SYNTHESIS_REG_VOLUME).set_values(value / 100)
 
 
     @property

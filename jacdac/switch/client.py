@@ -19,7 +19,7 @@ class SwitchClient(Client):
         """
         Indicates whether the switch is currently active (on)., 
         """
-        return self.register(JD_SWITCH_REG_ACTIVE).value()
+        return self.register(JD_SWITCH_REG_ACTIVE).bool_value()
 
     @property
     def variant(self) -> Optional[SwitchVariant]:

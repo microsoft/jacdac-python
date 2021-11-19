@@ -19,7 +19,7 @@ class MidiOutputClient(Client):
         """
         Opens or closes the port to the MIDI device, 
         """
-        return self.register(JD_MIDI_OUTPUT_REG_ENABLED).value()
+        return self.register(JD_MIDI_OUTPUT_REG_ENABLED).bool_value()
 
     @enabled.setter
     def enabled(self, value: bool) -> None:

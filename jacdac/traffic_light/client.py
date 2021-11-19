@@ -19,7 +19,7 @@ class TrafficLightClient(Client):
         """
         The on/off state of the red light., 
         """
-        return self.register(JD_TRAFFIC_LIGHT_REG_RED).value()
+        return self.register(JD_TRAFFIC_LIGHT_REG_RED).bool_value()
 
     @red.setter
     def red(self, value: bool) -> None:
@@ -31,7 +31,7 @@ class TrafficLightClient(Client):
         """
         The on/off state of the red light., 
         """
-        return self.register(JD_TRAFFIC_LIGHT_REG_ORANGE).value()
+        return self.register(JD_TRAFFIC_LIGHT_REG_ORANGE).bool_value()
 
     @orange.setter
     def orange(self, value: bool) -> None:
@@ -43,7 +43,7 @@ class TrafficLightClient(Client):
         """
         The on/off state of the red light., 
         """
-        return self.register(JD_TRAFFIC_LIGHT_REG_GREEN).value()
+        return self.register(JD_TRAFFIC_LIGHT_REG_GREEN).bool_value()
 
     @green.setter
     def green(self, value: bool) -> None:

@@ -19,11 +19,11 @@ class BuzzerClient(Client):
         """
         The volume (duty cycle) of the buzzer., _: /
         """
-        return self.register(JD_BUZZER_REG_VOLUME).value()
+        return self.register(JD_BUZZER_REG_VOLUME).float_value(100)
 
     @volume.setter
     def volume(self, value: float) -> None:
-        self.register(JD_BUZZER_REG_VOLUME).set_values(value)
+        self.register(JD_BUZZER_REG_VOLUME).set_values(value / 100)
 
 
 

@@ -44,11 +44,11 @@ class SevenSegmentDisplayClient(Client):
         """
         Controls the brightness of the LEDs. ``0`` means off., _: /
         """
-        return self.register(JD_SEVEN_SEGMENT_DISPLAY_REG_BRIGHTNESS).value()
+        return self.register(JD_SEVEN_SEGMENT_DISPLAY_REG_BRIGHTNESS).float_value(100)
 
     @brightness.setter
     def brightness(self, value: float) -> None:
-        self.register(JD_SEVEN_SEGMENT_DISPLAY_REG_BRIGHTNESS).set_values(value)
+        self.register(JD_SEVEN_SEGMENT_DISPLAY_REG_BRIGHTNESS).set_values(value / 100)
 
 
     @property
@@ -57,7 +57,7 @@ class SevenSegmentDisplayClient(Client):
         (Optional) Turn on or off the column LEDs (separating minutes from hours, etc.) in of the segment.
         If the column LEDs is not supported, the value remains false., 
         """
-        return self.register(JD_SEVEN_SEGMENT_DISPLAY_REG_DOUBLE_DOTS).value()
+        return self.register(JD_SEVEN_SEGMENT_DISPLAY_REG_DOUBLE_DOTS).bool_value()
 
     @double_dots.setter
     def double_dots(self, value: bool) -> None:
@@ -76,7 +76,7 @@ class SevenSegmentDisplayClient(Client):
         """
         True if decimal points are available (on all digits)., 
         """
-        return self.register(JD_SEVEN_SEGMENT_DISPLAY_REG_DECIMAL_POINT).value()
+        return self.register(JD_SEVEN_SEGMENT_DISPLAY_REG_DECIMAL_POINT).bool_value()
 
 
     def set_number(self, value: float) -> None:

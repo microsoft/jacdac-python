@@ -19,11 +19,11 @@ class DimmerClient(Client):
         """
         The intensity of the current. Set to ``0`` to turn off completely the current., _: /
         """
-        return self.register(JD_DIMMER_REG_INTENSITY).value()
+        return self.register(JD_DIMMER_REG_INTENSITY).float_value(100)
 
     @intensity.setter
     def intensity(self, value: float) -> None:
-        self.register(JD_DIMMER_REG_INTENSITY).set_values(value)
+        self.register(JD_DIMMER_REG_INTENSITY).set_values(value / 100)
 
 
     @property

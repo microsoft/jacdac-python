@@ -31,11 +31,11 @@ class CharacterScreenClient(Client):
         """
         (Optional) Brightness of the screen. `0` means off., _: /
         """
-        return self.register(JD_CHARACTER_SCREEN_REG_BRIGHTNESS).value()
+        return self.register(JD_CHARACTER_SCREEN_REG_BRIGHTNESS).float_value(100)
 
     @brightness.setter
     def brightness(self, value: float) -> None:
-        self.register(JD_CHARACTER_SCREEN_REG_BRIGHTNESS).set_values(value)
+        self.register(JD_CHARACTER_SCREEN_REG_BRIGHTNESS).set_values(value / 100)
 
 
     @property

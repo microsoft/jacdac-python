@@ -19,7 +19,7 @@ class MotionClient(Client):
         """
         Reports is movement is currently detected by the sensor., 
         """
-        return self.register(JD_MOTION_REG_MOVING).value()
+        return self.register(JD_MOTION_REG_MOVING).bool_value()
 
     @property
     def max_distance(self) -> Optional[float]:

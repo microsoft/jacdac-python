@@ -19,7 +19,7 @@ class ReflectedLightClient(Client):
         """
         Reports the reflected brightness. It may be a digital value or, for some sensor, analog value., _: /
         """
-        return self.register(JD_REFLECTED_LIGHT_REG_BRIGHTNESS).value()
+        return self.register(JD_REFLECTED_LIGHT_REG_BRIGHTNESS).float_value(100)
 
     @property
     def variant(self) -> Optional[ReflectedLightVariant]:

@@ -19,7 +19,7 @@ class BarcodeReaderClient(Client):
         """
         Turns on or off the detection of barcodes., 
         """
-        return self.register(JD_BARCODE_READER_REG_ENABLED).value()
+        return self.register(JD_BARCODE_READER_REG_ENABLED).bool_value()
 
     @enabled.setter
     def enabled(self, value: bool) -> None:

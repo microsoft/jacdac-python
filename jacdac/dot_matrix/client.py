@@ -32,11 +32,11 @@ class DotMatrixClient(Client):
         """
         (Optional) Reads the general brightness of the display, brightness for LEDs. `0` when the screen is off., _: /
         """
-        return self.register(JD_DOT_MATRIX_REG_BRIGHTNESS).value()
+        return self.register(JD_DOT_MATRIX_REG_BRIGHTNESS).float_value(100)
 
     @brightness.setter
     def brightness(self, value: float) -> None:
-        self.register(JD_DOT_MATRIX_REG_BRIGHTNESS).set_values(value)
+        self.register(JD_DOT_MATRIX_REG_BRIGHTNESS).set_values(value / 100)
 
 
     @property

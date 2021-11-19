@@ -19,14 +19,14 @@ class SoundLevelClient(Client):
         """
         The sound level detected by the microphone, _: /
         """
-        return self.register(JD_SOUND_LEVEL_REG_SOUND_LEVEL).value()
+        return self.register(JD_SOUND_LEVEL_REG_SOUND_LEVEL).float_value(100)
 
     @property
     def enabled(self) -> Optional[bool]:
         """
         Turn on or off the microphone., 
         """
-        return self.register(JD_SOUND_LEVEL_REG_ENABLED).value()
+        return self.register(JD_SOUND_LEVEL_REG_ENABLED).bool_value()
 
     @enabled.setter
     def enabled(self, value: bool) -> None:
@@ -68,11 +68,11 @@ class SoundLevelClient(Client):
         """
         The sound level to trigger a loud event., _: /
         """
-        return self.register(JD_SOUND_LEVEL_REG_LOUD_THRESHOLD).value()
+        return self.register(JD_SOUND_LEVEL_REG_LOUD_THRESHOLD).float_value(100)
 
     @loud_threshold.setter
     def loud_threshold(self, value: float) -> None:
-        self.register(JD_SOUND_LEVEL_REG_LOUD_THRESHOLD).set_values(value)
+        self.register(JD_SOUND_LEVEL_REG_LOUD_THRESHOLD).set_values(value / 100)
 
 
     @property
@@ -80,11 +80,11 @@ class SoundLevelClient(Client):
         """
         The sound level to trigger a quiet event., _: /
         """
-        return self.register(JD_SOUND_LEVEL_REG_QUIET_THRESHOLD).value()
+        return self.register(JD_SOUND_LEVEL_REG_QUIET_THRESHOLD).float_value(100)
 
     @quiet_threshold.setter
     def quiet_threshold(self, value: float) -> None:
-        self.register(JD_SOUND_LEVEL_REG_QUIET_THRESHOLD).set_values(value)
+        self.register(JD_SOUND_LEVEL_REG_QUIET_THRESHOLD).set_values(value / 100)
 
 
     def on_loud(self, handler: EventHandlerFn) -> UnsubscribeFn:

@@ -19,7 +19,7 @@ class PotentiometerClient(Client):
         """
         The relative position of the slider., _: /
         """
-        return self.register(JD_POTENTIOMETER_REG_POSITION).value()
+        return self.register(JD_POTENTIOMETER_REG_POSITION).float_value(100)
 
     @property
     def variant(self) -> Optional[PotentiometerVariant]:

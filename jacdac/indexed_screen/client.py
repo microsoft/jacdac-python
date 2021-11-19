@@ -22,11 +22,11 @@ class IndexedScreenClient(Client):
         Set backlight brightness.
         If set to `0` the display may go to sleep., _: /
         """
-        return self.register(JD_INDEXED_SCREEN_REG_BRIGHTNESS).value()
+        return self.register(JD_INDEXED_SCREEN_REG_BRIGHTNESS).float_value(100)
 
     @brightness.setter
     def brightness(self, value: float) -> None:
-        self.register(JD_INDEXED_SCREEN_REG_BRIGHTNESS).set_values(value)
+        self.register(JD_INDEXED_SCREEN_REG_BRIGHTNESS).set_values(value / 100)
 
 
     @property
@@ -61,7 +61,7 @@ class IndexedScreenClient(Client):
         Some controllers may allow the user to change this (though the refresh order may not be optimal then).
         This is independent of the `rotation` register., 
         """
-        return self.register(JD_INDEXED_SCREEN_REG_WIDTH_MAJOR).value()
+        return self.register(JD_INDEXED_SCREEN_REG_WIDTH_MAJOR).bool_value()
 
     @width_major.setter
     def width_major(self, value: bool) -> None:

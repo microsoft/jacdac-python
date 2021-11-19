@@ -19,7 +19,7 @@ class LightLevelClient(Client):
         """
         Detect light level, _: /
         """
-        return self.register(JD_LIGHT_LEVEL_REG_LIGHT_LEVEL).value()
+        return self.register(JD_LIGHT_LEVEL_REG_LIGHT_LEVEL).float_value(100)
 
     @property
     def variant(self) -> Optional[LightLevelVariant]:

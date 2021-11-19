@@ -19,7 +19,7 @@ class FlexClient(Client):
         """
         The relative position of the slider., _: /
         """
-        return self.register(JD_FLEX_REG_BENDING).value()
+        return self.register(JD_FLEX_REG_BENDING).float_value(100)
 
     @property
     def variant(self) -> Optional[FlexVariant]:

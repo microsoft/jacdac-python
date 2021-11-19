@@ -20,11 +20,11 @@ class LightBulbClient(Client):
         Indicates the brightness of the light bulb. Zero means completely off and 0xffff means completely on.
         For non-dimmeable lights, the value should be clamp to 0xffff for any non-zero value., _: /
         """
-        return self.register(JD_LIGHT_BULB_REG_BRIGHTNESS).value()
+        return self.register(JD_LIGHT_BULB_REG_BRIGHTNESS).float_value(100)
 
     @brightness.setter
     def brightness(self, value: float) -> None:
-        self.register(JD_LIGHT_BULB_REG_BRIGHTNESS).set_values(value)
+        self.register(JD_LIGHT_BULB_REG_BRIGHTNESS).set_values(value / 100)
 
 
     @property
@@ -32,7 +32,7 @@ class LightBulbClient(Client):
         """
         (Optional) Indicates if the light supports dimming., 
         """
-        return self.register(JD_LIGHT_BULB_REG_DIMMEABLE).value()
+        return self.register(JD_LIGHT_BULB_REG_DIMMEABLE).bool_value()
 
     def on_on(self, handler: EventHandlerFn) -> UnsubscribeFn:
         """

@@ -19,7 +19,7 @@ class BitRadioClient(Client):
         """
         Turns on/off the radio antenna., 
         """
-        return self.register(JD_BIT_RADIO_REG_ENABLED).value()
+        return self.register(JD_BIT_RADIO_REG_ENABLED).bool_value()
 
     @enabled.setter
     def enabled(self, value: bool) -> None:

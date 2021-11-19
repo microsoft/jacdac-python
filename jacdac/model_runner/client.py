@@ -84,7 +84,7 @@ class ModelRunnerClient(Client):
         (Optional) If present and true this service can run models independently of other
         instances of this service on the device., 
         """
-        return self.register(JD_MODEL_RUNNER_REG_PARALLEL).value()
+        return self.register(JD_MODEL_RUNNER_REG_PARALLEL).bool_value()
 
 
     def set_model(self, model_size: int) -> None:

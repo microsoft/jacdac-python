@@ -19,7 +19,7 @@ class RelayClient(Client):
         """
         Indicates whether the relay circuit is currently energized (closed) or not., 
         """
-        return self.register(JD_RELAY_REG_CLOSED).value()
+        return self.register(JD_RELAY_REG_CLOSED).bool_value()
 
     @closed.setter
     def closed(self, value: bool) -> None:

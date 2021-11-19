@@ -19,7 +19,7 @@ class VibrationMotorClient(Client):
         """
         Determines if the vibration motor responds to vibrate commands., 
         """
-        return self.register(JD_VIBRATION_MOTOR_REG_ENABLED).value()
+        return self.register(JD_VIBRATION_MOTOR_REG_ENABLED).bool_value()
 
     @enabled.setter
     def enabled(self, value: bool) -> None:

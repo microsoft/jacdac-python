@@ -20,11 +20,11 @@ class LedPixelClient(Client):
         Set the luminosity of the strip.
         At `0` the power to the strip is completely shut down., _: /
         """
-        return self.register(JD_LED_PIXEL_REG_BRIGHTNESS).value()
+        return self.register(JD_LED_PIXEL_REG_BRIGHTNESS).float_value(100)
 
     @brightness.setter
     def brightness(self, value: float) -> None:
-        self.register(JD_LED_PIXEL_REG_BRIGHTNESS).set_values(value)
+        self.register(JD_LED_PIXEL_REG_BRIGHTNESS).set_values(value / 100)
 
 
     @property
@@ -34,7 +34,7 @@ class LedPixelClient(Client):
         May be lower than `brightness` if power-limited by the `max_power` register.
         It will rise slowly (few seconds) back to `brightness` is limits are no longer required., _: /
         """
-        return self.register(JD_LED_PIXEL_REG_ACTUAL_BRIGHTNESS).value()
+        return self.register(JD_LED_PIXEL_REG_ACTUAL_BRIGHTNESS).float_value(100)
 
     @property
     def light_type(self) -> Optional[LedPixelLightType]:

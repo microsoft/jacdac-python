@@ -19,7 +19,7 @@ class WaterLevelClient(Client):
         """
         The reported water level., _: /
         """
-        return self.register(JD_WATER_LEVEL_REG_LEVEL).value()
+        return self.register(JD_WATER_LEVEL_REG_LEVEL).float_value(100)
 
     @property
     def variant(self) -> Optional[WaterLevelVariant]:

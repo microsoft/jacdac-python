@@ -35,7 +35,7 @@ class RoleManagerClient(Client):
         as well as reasonably stable assignments.
         Once user start assigning roles manually using this service, auto-binding should be disabled to avoid confusion., 
         """
-        return self.register(JD_ROLE_MANAGER_REG_AUTO_BIND).value()
+        return self.register(JD_ROLE_MANAGER_REG_AUTO_BIND).bool_value()
 
     @auto_bind.setter
     def auto_bind(self, value: bool) -> None:
@@ -47,7 +47,7 @@ class RoleManagerClient(Client):
         """
         Indicates if all required roles have been allocated to devices., 
         """
-        return self.register(JD_ROLE_MANAGER_REG_ALL_ROLES_ALLOCATED).value()
+        return self.register(JD_ROLE_MANAGER_REG_ALL_ROLES_ALLOCATED).bool_value()
 
     def on_change(self, handler: EventHandlerFn) -> UnsubscribeFn:
         """

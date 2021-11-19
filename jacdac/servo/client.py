@@ -34,7 +34,7 @@ class ServoClient(Client):
         """
         Turn the power to the servo on/off., 
         """
-        return self.register(JD_SERVO_REG_ENABLED).value()
+        return self.register(JD_SERVO_REG_ENABLED).bool_value()
 
     @enabled.setter
     def enabled(self, value: bool) -> None:

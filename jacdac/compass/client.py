@@ -26,7 +26,7 @@ class CompassClient(Client):
         """
         Turn on or off the sensor. Turning on the sensor may start a calibration sequence., 
         """
-        return self.register(JD_COMPASS_REG_ENABLED).value()
+        return self.register(JD_COMPASS_REG_ENABLED).bool_value()
 
     @enabled.setter
     def enabled(self, value: bool) -> None:

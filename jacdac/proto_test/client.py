@@ -20,7 +20,7 @@ class ProtoTestClient(Client):
         """
         A read write bool register., 
         """
-        return self.register(JD_PROTO_TEST_REG_RW_BOOL).value()
+        return self.register(JD_PROTO_TEST_REG_RW_BOOL).bool_value()
 
     @rw_bool.setter
     def rw_bool(self, value: bool) -> None:
@@ -32,7 +32,7 @@ class ProtoTestClient(Client):
         """
         A read only bool register. Mirrors rw_bool., 
         """
-        return self.register(JD_PROTO_TEST_REG_RO_BOOL).value()
+        return self.register(JD_PROTO_TEST_REG_RO_BOOL).bool_value()
 
     @property
     def rw_u32(self) -> Optional[int]:

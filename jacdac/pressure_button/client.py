@@ -19,11 +19,11 @@ class PressureButtonClient(Client):
         """
         Indicates the threshold for ``up`` events., _: /
         """
-        return self.register(JD_PRESSURE_BUTTON_REG_THRESHOLD).value()
+        return self.register(JD_PRESSURE_BUTTON_REG_THRESHOLD).float_value(100)
 
     @threshold.setter
     def threshold(self, value: float) -> None:
-        self.register(JD_PRESSURE_BUTTON_REG_THRESHOLD).set_values(value)
+        self.register(JD_PRESSURE_BUTTON_REG_THRESHOLD).set_values(value / 100)
 
 
     

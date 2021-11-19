@@ -19,14 +19,14 @@ class SoilMoistureClient(Client):
         """
         Indicates the wetness of the soil, from ``dry`` to ``wet``., _: /
         """
-        return self.register(JD_SOIL_MOISTURE_REG_MOISTURE).value()
+        return self.register(JD_SOIL_MOISTURE_REG_MOISTURE).float_value(100)
 
     @property
     def moisture_error(self) -> Optional[float]:
         """
         (Optional) The error on the moisture reading., _: /
         """
-        return self.register(JD_SOIL_MOISTURE_REG_MOISTURE_ERROR).value()
+        return self.register(JD_SOIL_MOISTURE_REG_MOISTURE_ERROR).float_value(100)
 
     @property
     def variant(self) -> Optional[SoilMoistureVariant]:

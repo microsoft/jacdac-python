@@ -362,19 +362,21 @@ class RawRegisterClient(EventEmitter):
         self.bus.run(send)
 
     def value(self) -> Optional[Any]:
-        """Extracts the value of the first field in the register."""
+        """Extracts the value of the first field."""
         values = self.values()
         if values is None:
             return None
         else:
             return values[0]
 
-    def float_value(self, scale: int = 1) -> Union[float, None]:
-        values = self.values()
-        if values is None:
-            return None
-        else:
-            return float(values[0]) * scale  # type: ignore
+    def bool_value(self) -> Optional[bool]:
+        """Extracts the value of the first field as a boolean."""
+        value = self.value()
+        return bool(value) if not value is None else None
+
+    def float_value(self, scale: int = 1) -> Optional[float]:
+        value = self.value()
+        return float(value) * scale if not value is None else None
 
     def _query(self):
         pkt = JDPacket(cmd=JD_GET(self.code))

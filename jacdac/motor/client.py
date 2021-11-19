@@ -21,12 +21,12 @@ class MotorClient(Client):
         Positive is recommended to be clockwise rotation and negative counterclockwise. A duty of ``0`` 
         while ``enabled`` acts as brake., _: /
         """
-        return self.register(JD_MOTOR_REG_DUTY).value()
+        return self.register(JD_MOTOR_REG_DUTY).float_value(100)
 
     @duty.setter
     def duty(self, value: float) -> None:
         self.enabled = True
-        self.register(JD_MOTOR_REG_DUTY).set_values(value)
+        self.register(JD_MOTOR_REG_DUTY).set_values(value / 100)
 
 
     @property
@@ -34,7 +34,7 @@ class MotorClient(Client):
         """
         Turn the power to the motor on/off., 
         """
-        return self.register(JD_MOTOR_REG_ENABLED).value()
+        return self.register(JD_MOTOR_REG_ENABLED).bool_value()
 
     @enabled.setter
     def enabled(self, value: bool) -> None:

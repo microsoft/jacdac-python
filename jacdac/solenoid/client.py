@@ -19,7 +19,7 @@ class SolenoidClient(Client):
         """
         Indicates whether the solenoid is energized and pulled (on) or pushed (off)., 
         """
-        return self.register(JD_SOLENOID_REG_PULLED).value()
+        return self.register(JD_SOLENOID_REG_PULLED).bool_value()
 
     @pulled.setter
     def pulled(self, value: bool) -> None:

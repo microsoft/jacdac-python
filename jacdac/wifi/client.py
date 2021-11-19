@@ -29,7 +29,7 @@ class WifiClient(Client):
         """
         Determines whether the WiFi radio is enabled. It starts enabled upon reset., 
         """
-        return self.register(JD_WIFI_REG_ENABLED).value()
+        return self.register(JD_WIFI_REG_ENABLED).bool_value()
 
     @enabled.setter
     def enabled(self, value: bool) -> None:

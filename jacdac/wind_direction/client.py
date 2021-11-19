@@ -7,6 +7,7 @@ from typing import Optional, cast
 class WindDirectionClient(Client):
     """
     A sensor that measures wind direction.
+    Implements a client for the `Wind direction <https://microsoft.github.io/jacdac-docs/services/winddirection>`_ service.
     """
 
     def __init__(self, bus: Bus, role: str) -> None:

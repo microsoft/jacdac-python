@@ -18,6 +18,7 @@ class RoleManagerClient(Client):
      * If two roles share the prefix before first slash, it should be used as a hint that the services
      * should be co-located on a single device
      * (eg., here the `left_leg` "location" is expected to have both an accelerometer and a gyro service on a single device).
+    Implements a client for the `Role Manager <https://microsoft.github.io/jacdac-docs/services/rolemanager>`_ service.
     """
 
     def __init__(self, bus: Bus, role: str) -> None:

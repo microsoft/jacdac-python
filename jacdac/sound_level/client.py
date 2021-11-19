@@ -7,6 +7,7 @@ from jacdac.events import EventHandlerFn, UnsubscribeFn
 class SoundLevelClient(Client):
     """
     A sound level detector sensor, gives a relative indication of the sound level.
+    Implements a client for the `Sound level <https://microsoft.github.io/jacdac-docs/services/soundlevel>`_ service.
     """
 
     def __init__(self, bus: Bus, role: str) -> None:

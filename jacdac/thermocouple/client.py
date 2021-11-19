@@ -7,6 +7,7 @@ from typing import Optional, cast
 class ThermocoupleClient(Client):
     """
     A thermocouple using a heat probe to gather temperatures.
+    Implements a client for the `Thermocouple <https://microsoft.github.io/jacdac-docs/services/thermocouple>`_ service.
     """
 
     def __init__(self, bus: Bus, role: str) -> None:

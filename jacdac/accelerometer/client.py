@@ -7,6 +7,7 @@ from jacdac.events import EventHandlerFn, UnsubscribeFn
 class AccelerometerClient(Client):
     """
     A 3-axis accelerometer.
+    Implements a client for the `Accelerometer <https://microsoft.github.io/jacdac-docs/services/accelerometer>`_ service.
     """
 
     def __init__(self, bus: Bus, role: str) -> None:

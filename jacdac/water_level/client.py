@@ -7,6 +7,7 @@ from typing import Optional, cast
 class WaterLevelClient(Client):
     """
     A sensor that measures liquid/water level.
+    Implements a client for the `Water level <https://microsoft.github.io/jacdac-docs/services/waterlevel>`_ service.
     """
 
     def __init__(self, bus: Bus, role: str) -> None:

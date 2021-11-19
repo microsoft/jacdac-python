@@ -7,6 +7,7 @@ from .constants import *
 class TcpClient(Client):
     """
     Data transfer over TCP/IP and TLS stream sockets.
+    Implements a client for the `TCP <https://microsoft.github.io/jacdac-docs/services/tcp>`_ service.
     """
 
     def __init__(self, bus: Bus, role: str) -> None:

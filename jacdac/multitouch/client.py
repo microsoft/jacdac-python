@@ -7,6 +7,7 @@ from jacdac.events import EventHandlerFn, UnsubscribeFn
 class MultitouchClient(Client):
     """
     A capacitive touch sensor with multiple inputs.
+    Implements a client for the `Multitouch <https://microsoft.github.io/jacdac-docs/services/multitouch>`_ service.
     """
 
     def __init__(self, bus: Bus, role: str) -> None:

@@ -7,6 +7,7 @@ from typing import Optional, cast
 class SoundPlayerClient(Client):
     """
     A device that can play various sounds stored locally. This service is typically paired with a ``storage`` service for storing sounds.
+    Implements a client for the `Sound player <https://microsoft.github.io/jacdac-docs/services/soundplayer>`_ service.
     """
 
     def __init__(self, bus: Bus, role: str) -> None:

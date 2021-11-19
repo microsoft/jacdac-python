@@ -9,6 +9,7 @@ class ServoClient(Client):
     Servo is a small motor with arm that can be pointing at a specific direction.
      * 
      * The `min/max_angle/pulse` may be read-only if the servo is permanently affixed to its Jacdac controller.
+    Implements a client for the `Servo <https://microsoft.github.io/jacdac-docs/services/servo>`_ service.
     """
 
     def __init__(self, bus: Bus, role: str) -> None:

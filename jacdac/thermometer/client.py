@@ -7,6 +7,7 @@ from typing import Optional, cast
 class ThermometerClient(Client):
     """
     A thermometer measuring outside or inside environment.
+    Implements a client for the `Thermometer <https://microsoft.github.io/jacdac-docs/services/thermometer>`_ service.
     """
 
     def __init__(self, bus: Bus, role: str) -> None:

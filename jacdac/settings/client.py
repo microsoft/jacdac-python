@@ -7,6 +7,7 @@ from jacdac.events import EventHandlerFn, UnsubscribeFn
 class SettingsClient(Client):
     """
     Non-volatile key-value storage interface for storing settings.
+    Implements a client for the `Settings <https://microsoft.github.io/jacdac-docs/services/settings>`_ service.
     """
 
     def __init__(self, bus: Bus, role: str) -> None:

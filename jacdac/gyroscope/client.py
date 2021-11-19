@@ -7,6 +7,7 @@ from typing import Optional, cast
 class GyroscopeClient(Client):
     """
     A 3-axis gyroscope.
+    Implements a client for the `Gyroscope <https://microsoft.github.io/jacdac-docs/services/gyroscope>`_ service.
     """
 
     def __init__(self, bus: Bus, role: str) -> None:

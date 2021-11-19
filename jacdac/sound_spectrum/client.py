@@ -7,6 +7,7 @@ from typing import Optional, cast
 class SoundSpectrumClient(Client):
     """
     A microphone that analyzes the sound specturm
+    Implements a client for the `Sound Spectrum <https://microsoft.github.io/jacdac-docs/services/soundspectrum>`_ service.
     """
 
     def __init__(self, bus: Bus, role: str) -> None:

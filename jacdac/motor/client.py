@@ -7,6 +7,7 @@ from typing import Optional, cast
 class MotorClient(Client):
     """
     A bi-directional DC motor.
+    Implements a client for the `Motor <https://microsoft.github.io/jacdac-docs/services/motor>`_ service.
     """
 
     def __init__(self, bus: Bus, role: str) -> None:

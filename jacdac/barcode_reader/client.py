@@ -7,6 +7,7 @@ from jacdac.events import EventHandlerFn, UnsubscribeFn
 class BarcodeReaderClient(Client):
     """
     A device that reads various barcodes, like QR codes. For the web, see [BarcodeDetector](https://developer.mozilla.org/en-US/docs/Web/API/BarcodeDetector).
+    Implements a client for the `Barcode reader <https://microsoft.github.io/jacdac-docs/services/barcodereader>`_ service.
     """
 
     def __init__(self, bus: Bus, role: str) -> None:

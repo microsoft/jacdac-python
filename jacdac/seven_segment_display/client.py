@@ -7,6 +7,7 @@ from typing import Optional, cast
 class SevenSegmentDisplayClient(Client):
     """
     A 7-segment numeric display, with one or more digits.
+    Implements a client for the `7-segment display <https://microsoft.github.io/jacdac-docs/services/sevensegmentdisplay>`_ service.
     """
 
     def __init__(self, bus: Bus, role: str) -> None:

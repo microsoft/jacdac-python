@@ -7,6 +7,7 @@ from typing import Optional, cast
 class BitRadioClient(Client):
     """
     Support for sending and receiving packets using the [Bit Radio protocol](https://github.com/microsoft/pxt-common-packages/blob/master/libs/radio/docs/reference/radio.md), typically used between micro:bit devices.
+    Implements a client for the `bit:radio <https://microsoft.github.io/jacdac-docs/services/bitradio>`_ service.
     """
 
     def __init__(self, bus: Bus, role: str) -> None:

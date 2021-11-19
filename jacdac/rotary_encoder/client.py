@@ -7,6 +7,7 @@ from typing import Optional, cast
 class RotaryEncoderClient(Client):
     """
     An incremental rotary encoder - converts angular motion of a shaft to digital signal.
+    Implements a client for the `Rotary encoder <https://microsoft.github.io/jacdac-docs/services/rotaryencoder>`_ service.
     """
 
     def __init__(self, bus: Bus, role: str) -> None:

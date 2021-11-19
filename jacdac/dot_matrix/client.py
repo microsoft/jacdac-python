@@ -7,6 +7,7 @@ from typing import Optional, cast
 class DotMatrixClient(Client):
     """
     A rectangular dot matrix display, made of monochrome LEDs or Braille pins.
+    Implements a client for the `Dot Matrix <https://microsoft.github.io/jacdac-docs/services/dotmatrix>`_ service.
     """
 
     def __init__(self, bus: Bus, role: str) -> None:

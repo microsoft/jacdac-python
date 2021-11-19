@@ -7,6 +7,7 @@ from typing import Optional, cast
 class RealTimeClockClient(Client):
     """
     Real time clock to support collecting data with precise time stamps.
+    Implements a client for the `Real time clock <https://microsoft.github.io/jacdac-docs/services/realtimeclock>`_ service.
     """
 
     def __init__(self, bus: Bus, role: str) -> None:

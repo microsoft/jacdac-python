@@ -7,6 +7,7 @@ from jacdac.events import EventHandlerFn, UnsubscribeFn
 class ReflectedLightClient(Client):
     """
     A sensor that detects light and dark surfaces, commonly used for line following robots.
+    Implements a client for the `Reflected light <https://microsoft.github.io/jacdac-docs/services/reflectedlight>`_ service.
     """
 
     def __init__(self, bus: Bus, role: str) -> None:

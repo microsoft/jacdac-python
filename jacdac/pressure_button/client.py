@@ -7,6 +7,7 @@ from typing import Optional, cast
 class PressureButtonClient(Client):
     """
     A pressure sensitive push-button.
+    Implements a client for the `Pressure Button <https://microsoft.github.io/jacdac-docs/services/pressurebutton>`_ service.
     """
 
     def __init__(self, bus: Bus, role: str) -> None:

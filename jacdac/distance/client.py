@@ -7,6 +7,7 @@ from typing import Optional, cast
 class DistanceClient(Client):
     """
     A sensor that determines the distance of an object without any physical contact involved.
+    Implements a client for the `Distance <https://microsoft.github.io/jacdac-docs/services/distance>`_ service.
     """
 
     def __init__(self, bus: Bus, role: str) -> None:

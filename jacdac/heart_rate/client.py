@@ -10,6 +10,7 @@ class HeartRateClient(Client):
      * 
      * 
      * **Jacdac is NOT suitable for medical devices and should NOT be used in any kind of device to diagnose or treat any medical conditions.**
+    Implements a client for the `Heart Rate <https://microsoft.github.io/jacdac-docs/services/heartrate>`_ service.
     """
 
     def __init__(self, bus: Bus, role: str) -> None:

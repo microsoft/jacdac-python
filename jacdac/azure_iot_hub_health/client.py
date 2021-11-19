@@ -7,6 +7,7 @@ from jacdac.events import EventHandlerFn, UnsubscribeFn
 class AzureIotHubHealthClient(Client):
     """
     Health and diagnostics information about the Azure Iot Hub connection.
+    Implements a client for the `Azure IoT Hub Health <https://microsoft.github.io/jacdac-docs/services/azureiothubhealth>`_ service.
     """
 
     def __init__(self, bus: Bus, role: str) -> None:

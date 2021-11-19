@@ -9,6 +9,7 @@ class ArcadeSoundClient(Client):
     A sound playing device.
      * 
      * This is typically run over an SPI connection, not regular single-wire JACDAC.
+    Implements a client for the `Arcade Sound <https://microsoft.github.io/jacdac-docs/services/arcadesound>`_ service.
     """
 
     def __init__(self, bus: Bus, role: str) -> None:

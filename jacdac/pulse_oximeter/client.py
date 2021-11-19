@@ -9,6 +9,7 @@ class PulseOximeterClient(Client):
     A sensor approximating the oxygen level. 
      * 
      * **Jacdac is not suitable for medical devices and should NOT be used in any kind of device to diagnose or treat any medical conditions.**
+    Implements a client for the `Pulse Oximeter <https://microsoft.github.io/jacdac-docs/services/pulseoximeter>`_ service.
     """
 
     def __init__(self, bus: Bus, role: str) -> None:

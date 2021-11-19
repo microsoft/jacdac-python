@@ -10,6 +10,7 @@ class CodalMessageBusClient(Client):
      * 
      * You can find known values for `source` in [CODAL repository](https://github.com/lancaster-university/codal-core/blob/master/inc/core/CodalComponent.h)
      * In MakeCode, you can listen for custom `source`, `value` values using [control.onEvent](https://makecode.microbit.org/reference/control/on-event].
+    Implements a client for the `CODAL Message Bus <https://microsoft.github.io/jacdac-docs/services/codalmessagebus>`_ service.
     """
 
     def __init__(self, bus: Bus, role: str) -> None:

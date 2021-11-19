@@ -7,6 +7,7 @@ from typing import Optional, cast
 class VibrationMotorClient(Client):
     """
     A vibration motor.
+    Implements a client for the `Vibration motor <https://microsoft.github.io/jacdac-docs/services/vibration>`_ service.
     """
 
     def __init__(self, bus: Bus, role: str) -> None:

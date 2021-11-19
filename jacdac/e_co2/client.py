@@ -7,6 +7,7 @@ from typing import Optional, cast
 class ECO2Client(Client):
     """
     Measures equivalent CO₂ levels.
+    Implements a client for the `Equivalent CO₂ <https://microsoft.github.io/jacdac-docs/services/eco2>`_ service.
     """
 
     def __init__(self, bus: Bus, role: str) -> None:

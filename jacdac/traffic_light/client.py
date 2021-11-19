@@ -7,6 +7,7 @@ from typing import Optional, cast
 class TrafficLightClient(Client):
     """
     Controls a mini traffic with a red, orange and green LED.
+    Implements a client for the `Traffic Light <https://microsoft.github.io/jacdac-docs/services/trafficlight>`_ service.
     """
 
     def __init__(self, bus: Bus, role: str) -> None:

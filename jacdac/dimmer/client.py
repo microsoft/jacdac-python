@@ -7,6 +7,7 @@ from typing import Optional, cast
 class DimmerClient(Client):
     """
     A light or fan controller that dims the current on a line.
+    Implements a client for the `Dimmer <https://microsoft.github.io/jacdac-docs/services/dimmer>`_ service.
     """
 
     def __init__(self, bus: Bus, role: str) -> None:

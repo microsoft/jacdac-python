@@ -7,6 +7,7 @@ from jacdac.events import EventHandlerFn, UnsubscribeFn
 class MatrixKeypadClient(Client):
     """
     A matrix of buttons connected as a keypad
+    Implements a client for the `Matrix Keypad <https://microsoft.github.io/jacdac-docs/services/matrixkeypad>`_ service.
     """
 
     def __init__(self, bus: Bus, role: str) -> None:

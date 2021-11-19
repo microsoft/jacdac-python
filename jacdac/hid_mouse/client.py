@@ -7,6 +7,7 @@ from .constants import *
 class HidMouseClient(Client):
     """
     Controls a HID mouse.
+    Implements a client for the `HID Mouse <https://microsoft.github.io/jacdac-docs/services/hidmouse>`_ service.
     """
 
     def __init__(self, bus: Bus, role: str) -> None:

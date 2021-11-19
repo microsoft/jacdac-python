@@ -7,6 +7,7 @@ from typing import Optional, cast
 class RoverClient(Client):
     """
     A roving robot.
+    Implements a client for the `Rover <https://microsoft.github.io/jacdac-docs/services/rover>`_ service.
     """
 
     def __init__(self, bus: Bus, role: str) -> None:

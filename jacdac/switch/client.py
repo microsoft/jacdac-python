@@ -7,6 +7,7 @@ from jacdac.events import EventHandlerFn, UnsubscribeFn
 class SwitchClient(Client):
     """
     A switch, which keeps its position.
+    Implements a client for the `Switch <https://microsoft.github.io/jacdac-docs/services/switch>`_ service.
     """
 
     def __init__(self, bus: Bus, role: str) -> None:

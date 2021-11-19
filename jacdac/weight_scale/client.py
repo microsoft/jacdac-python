@@ -7,6 +7,7 @@ from typing import Optional, cast
 class WeightScaleClient(Client):
     """
     A weight measuring sensor.
+    Implements a client for the `Weight Scale <https://microsoft.github.io/jacdac-docs/services/weightscale>`_ service.
     """
 
     def __init__(self, bus: Bus, role: str) -> None:

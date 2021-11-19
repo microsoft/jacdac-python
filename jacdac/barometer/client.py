@@ -7,6 +7,7 @@ from typing import Optional, cast
 class BarometerClient(Client):
     """
     A sensor measuring air pressure of outside environment.
+    Implements a client for the `Barometer <https://microsoft.github.io/jacdac-docs/services/barometer>`_ service.
     """
 
     def __init__(self, bus: Bus, role: str) -> None:

@@ -7,6 +7,7 @@ from typing import Optional, cast
 class UvIndexClient(Client):
     """
     The UV Index is a measure of the intensity of ultraviolet (UV) rays from the Sun.
+    Implements a client for the `UV index <https://microsoft.github.io/jacdac-docs/services/uvindex>`_ service.
     """
 
     def __init__(self, bus: Bus, role: str) -> None:

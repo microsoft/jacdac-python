@@ -7,6 +7,7 @@ from jacdac.events import EventHandlerFn, UnsubscribeFn
 class JoystickClient(Client):
     """
     A two axis directional joystick
+    Implements a client for the `Joystick <https://microsoft.github.io/jacdac-docs/services/joystick>`_ service.
     """
 
     def __init__(self, bus: Bus, role: str) -> None:

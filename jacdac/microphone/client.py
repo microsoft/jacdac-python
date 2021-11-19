@@ -7,6 +7,7 @@ from typing import Optional, cast
 class MicrophoneClient(Client):
     """
     A single-channel microphone.
+    Implements a client for the `Microphone <https://microsoft.github.io/jacdac-docs/services/microphone>`_ service.
     """
 
     def __init__(self, bus: Bus, role: str) -> None:

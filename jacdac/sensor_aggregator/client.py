@@ -8,6 +8,7 @@ class SensorAggregatorClient(Client):
     """
     Aggregate data from multiple sensors into a single stream
      * (often used as input to machine learning models on the same device, see model runner service).
+    Implements a client for the `Sensor Aggregator <https://microsoft.github.io/jacdac-docs/services/sensoraggregator>`_ service.
     """
 
     def __init__(self, bus: Bus, role: str) -> None:

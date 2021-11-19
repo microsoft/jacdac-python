@@ -17,6 +17,7 @@ class WifiClient(Client):
      * When networks are exhausted, the scan is performed again and the connection process restarts.
      * 
      * Updating networks (setting password, priorties, forgetting) does not trigger an automatic reconnect.
+    Implements a client for the `WIFI <https://microsoft.github.io/jacdac-docs/services/wifi>`_ service.
     """
 
     def __init__(self, bus: Bus, role: str) -> None:

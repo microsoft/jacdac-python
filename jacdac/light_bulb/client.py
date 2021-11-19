@@ -7,6 +7,7 @@ from jacdac.events import EventHandlerFn, UnsubscribeFn
 class LightBulbClient(Client):
     """
     A light bulb controller.
+    Implements a client for the `Light bulb <https://microsoft.github.io/jacdac-docs/services/lightbulb>`_ service.
     """
 
     def __init__(self, bus: Bus, role: str) -> None:

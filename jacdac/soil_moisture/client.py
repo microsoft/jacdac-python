@@ -7,6 +7,7 @@ from typing import Optional, cast
 class SoilMoistureClient(Client):
     """
     A soil moisture sensor.
+    Implements a client for the `Soil moisture <https://microsoft.github.io/jacdac-docs/services/soilmoisture>`_ service.
     """
 
     def __init__(self, bus: Bus, role: str) -> None:

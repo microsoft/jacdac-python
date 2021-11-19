@@ -7,6 +7,7 @@ from typing import Optional, cast
 class TvocClient(Client):
     """
     Measures equivalent Total Volatile Organic Compound levels.
+    Implements a client for the `Total Volatile organic compound <https://microsoft.github.io/jacdac-docs/services/tvoc>`_ service.
     """
 
     def __init__(self, bus: Bus, role: str) -> None:

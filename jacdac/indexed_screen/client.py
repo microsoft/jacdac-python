@@ -9,6 +9,7 @@ class IndexedScreenClient(Client):
     A screen with indexed colors.
      * 
      * This is often run over an SPI connection, not regular single-wire JACDAC.
+    Implements a client for the `Indexed screen <https://microsoft.github.io/jacdac-docs/services/indexedscreen>`_ service.
     """
 
     def __init__(self, bus: Bus, role: str) -> None:

@@ -7,6 +7,7 @@ from typing import Optional, cast
 class MidiOutputClient(Client):
     """
     A MIDI output device.
+    Implements a client for the `MIDI output <https://microsoft.github.io/jacdac-docs/services/midioutput>`_ service.
     """
 
     def __init__(self, bus: Bus, role: str) -> None:

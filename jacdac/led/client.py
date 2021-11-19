@@ -7,6 +7,7 @@ from typing import Optional, cast
 class LedClient(Client):
     """
     A controller for 1 or more monochrome or RGB LEDs connected in parallel.
+    Implements a client for the `LED <https://microsoft.github.io/jacdac-docs/services/led>`_ service.
     """
 
     def __init__(self, bus: Bus, role: str) -> None:

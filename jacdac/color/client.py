@@ -7,6 +7,7 @@ from typing import Optional, cast
 class ColorClient(Client):
     """
     Senses RGB colors
+    Implements a client for the `Color <https://microsoft.github.io/jacdac-docs/services/color>`_ service.
     """
 
     def __init__(self, bus: Bus, role: str) -> None:

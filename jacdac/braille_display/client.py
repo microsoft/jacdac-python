@@ -7,6 +7,7 @@ from typing import Optional, cast
 class BrailleDisplayClient(Client):
     """
     A Braille pattern display module. This module display [unicode braille patterns](https://www.unicode.org/charts/PDF/U2800.pdf), country specific encoding have to be implemented by the clients.
+    Implements a client for the `Braille display <https://microsoft.github.io/jacdac-docs/services/brailledisplay>`_ service.
     """
 
     def __init__(self, bus: Bus, role: str) -> None:

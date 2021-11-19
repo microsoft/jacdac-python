@@ -7,6 +7,7 @@ from typing import Optional, cast
 class SolenoidClient(Client):
     """
     A push-pull solenoid is a type of relay that pulls a coil when activated.
+    Implements a client for the `Solenoid <https://microsoft.github.io/jacdac-docs/services/solenoid>`_ service.
     """
 
     def __init__(self, bus: Bus, role: str) -> None:

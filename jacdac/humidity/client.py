@@ -7,6 +7,7 @@ from typing import Optional, cast
 class HumidityClient(Client):
     """
     A sensor measuring humidity of outside environment.
+    Implements a client for the `Humidity <https://microsoft.github.io/jacdac-docs/services/humidity>`_ service.
     """
 
     def __init__(self, bus: Bus, role: str) -> None:

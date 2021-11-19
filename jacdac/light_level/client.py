@@ -7,6 +7,7 @@ from typing import Optional, cast
 class LightLevelClient(Client):
     """
     A sensor that measures luminosity level.
+    Implements a client for the `Light level <https://microsoft.github.io/jacdac-docs/services/lightlevel>`_ service.
     """
 
     def __init__(self, bus: Bus, role: str) -> None:

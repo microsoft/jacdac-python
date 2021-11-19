@@ -7,6 +7,7 @@ from typing import Optional, cast
 class CharacterScreenClient(Client):
     """
     A screen that displays characters.
+    Implements a client for the `Character Screen <https://microsoft.github.io/jacdac-docs/services/characterscreen>`_ service.
     """
 
     def __init__(self, bus: Bus, role: str) -> None:

@@ -7,6 +7,7 @@ from typing import Optional, cast
 class FlexClient(Client):
     """
     A bending or deflection sensor.
+    Implements a client for the `Flex <https://microsoft.github.io/jacdac-docs/services/flex>`_ service.
     """
 
     def __init__(self, bus: Bus, role: str) -> None:

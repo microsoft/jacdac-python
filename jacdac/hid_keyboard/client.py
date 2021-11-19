@@ -13,6 +13,7 @@ class HidKeyboardClient(Client):
      * Modifiers are in page 87.
      * 
      * The device keeps tracks of the key state and is able to clear it all with the clear command.
+    Implements a client for the `HID Keyboard <https://microsoft.github.io/jacdac-docs/services/hidkeyboard>`_ service.
     """
 
     def __init__(self, bus: Bus, role: str) -> None:

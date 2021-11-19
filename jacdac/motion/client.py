@@ -7,6 +7,7 @@ from jacdac.events import EventHandlerFn, UnsubscribeFn
 class MotionClient(Client):
     """
     A sensor, typically PIR, that detects object motion within a certain range
+    Implements a client for the `Motion <https://microsoft.github.io/jacdac-docs/services/motion>`_ service.
     """
 
     def __init__(self, bus: Bus, role: str) -> None:

@@ -11,6 +11,7 @@ class ModelRunnerClient(Client):
      * Only models with a single input tensor and a single output tensor are supported at the moment.
      * Input is provided by Sensor Aggregator service on the same device.
      * Multiple instances of this service may be present, if more than one model format is supported by a device.
+    Implements a client for the `Model Runner <https://microsoft.github.io/jacdac-docs/services/modelrunner>`_ service.
     """
 
     def __init__(self, bus: Bus, role: str) -> None:

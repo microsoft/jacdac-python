@@ -10,6 +10,7 @@ class RngClient(Client):
      * 
      * This typically uses a cryptographical pseudo-random number generator (for example [Fortuna](https://en.wikipedia.org/wiki/Fortuna_(PRNG))),
      * which is periodically re-seeded with entropy coming from some hardware source.
+    Implements a client for the `Random Number Generator <https://microsoft.github.io/jacdac-docs/services/rng>`_ service.
     """
 
     def __init__(self, bus: Bus, role: str) -> None:

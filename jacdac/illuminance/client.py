@@ -9,6 +9,7 @@ class IlluminanceClient(Client):
     Detects the amount of light falling onto a given surface area.
      * 
      * Note that this is different from *luminance*, the amount of light that passes through, emits from, or reflects off an object.
+    Implements a client for the `Illuminance <https://microsoft.github.io/jacdac-docs/services/illuminance>`_ service.
     """
 
     def __init__(self, bus: Bus, role: str) -> None:

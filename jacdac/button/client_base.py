@@ -7,6 +7,7 @@ from jacdac.events import EventHandlerFn, UnsubscribeFn
 class ButtonClientBase(Client):
     """
     A push-button, which returns to inactive position when not operated anymore.
+    Implements a client for the `Button <https://microsoft.github.io/jacdac-docs/services/button>`_ service.
     """
 
     def __init__(self, bus: Bus, role: str) -> None:

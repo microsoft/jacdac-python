@@ -7,6 +7,7 @@ from typing import Optional, cast
 class RainGaugeClient(Client):
     """
     Measures the amount of liquid precipitation over an area in a predefined period of time.
+    Implements a client for the `Rain gauge <https://microsoft.github.io/jacdac-docs/services/raingauge>`_ service.
     """
 
     def __init__(self, bus: Bus, role: str) -> None:

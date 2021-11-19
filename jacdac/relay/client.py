@@ -7,6 +7,7 @@ from jacdac.events import EventHandlerFn, UnsubscribeFn
 class RelayClient(Client):
     """
     A switching relay.
+    Implements a client for the `Relay <https://microsoft.github.io/jacdac-docs/services/relay>`_ service.
     """
 
     def __init__(self, bus: Bus, role: str) -> None:

@@ -7,6 +7,7 @@ from typing import Optional, cast
 class LedPixelClient(Client):
     """
     A controller for strips of individually controlled RGB LEDs.
+    Implements a client for the `LED Pixel <https://microsoft.github.io/jacdac-docs/services/ledpixel>`_ service.
     """
 
     def __init__(self, bus: Bus, role: str) -> None:

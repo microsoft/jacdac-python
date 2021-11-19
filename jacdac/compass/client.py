@@ -7,6 +7,7 @@ from typing import Optional, cast
 class CompassClient(Client):
     """
     A sensor that measures the heading.
+    Implements a client for the `Compass <https://microsoft.github.io/jacdac-docs/services/compass>`_ service.
     """
 
     def __init__(self, bus: Bus, role: str) -> None:

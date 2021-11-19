@@ -7,6 +7,7 @@ from jacdac.events import EventHandlerFn, UnsubscribeFn
 class PowerClient(Client):
     """
     A power-provider service.
+    Implements a client for the `Power <https://microsoft.github.io/jacdac-docs/services/power>`_ service.
     """
 
     def __init__(self, bus: Bus, role: str) -> None:

@@ -1,4 +1,3 @@
-from typing import Any, Type
 from jacdac.devtools import create_dev_tools_bus
 from .client import ThermometerClient
 from time import sleep

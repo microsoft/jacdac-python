@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v0.0.11 (2021-11-19)
+### Fix
+* Cleanup test ([`f2c8a13`](https://github.com/microsoft/jacdac-python/commit/f2c8a1336fdae335aa08b5c85e29d684dc56117b))
+
 ## v0.0.10 (2021-11-19)
 ### Fix
 * Try versioned docs ([`247268a`](https://github.com/microsoft/jacdac-python/commit/247268a9f618acfbcac0493b43935eaf87c2be2d))

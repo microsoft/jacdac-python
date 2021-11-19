@@ -1,14 +1,12 @@
 # Jacdac Python
 
-A client SDK for desktop python for Jacdac.
+A Python client and server SDK for Jacdac.
 
 **Jacdac** is a plug-and-play hardware/software stack
 for **microcontrollers** and their peripherals (sensors/actuators),
 with applications to rapid prototyping, making, and physical computing.
 
 **Partner Preview: Jacdac is currently in preview. If you would like to join as a pre-release test partner, please email jacdac-tap@microsoft.com.**
-
-This repository contains a command line interface tool for the [Jacdac](https://aka.ms/jacdac) protocol.
 
 -   **[Jacdac Home](https://aka.ms/jacdac/)**
 -   **[Jacdac Python Documentation](https://microsoft.github.io/jacdac-docs/clients/python/)**
@@ -29,6 +27,14 @@ sudo apt update
 sudo apt upgrade
 sudo apt install python3 python3-pip ipython3 python3-venv
 ```
+
+### Codespaces
+
+You can develop this package from a GitHub codespace container. 
+No configuration changes is needed, follow the regular installation steps.
+
+The devtools web site will be forwarded by GitHub and you will be able to connect to physical hardware
+from the browser while testing the Python running on the codespace container. 
 
 ### Build package
 

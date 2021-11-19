@@ -37,7 +37,8 @@ extensions = [
     'sphinx.ext.doctest',
     'sphinx.ext.autodoc',
     'sphinx.ext.autosummary',
-    'sphinx.ext.intersphinx',    
+    'sphinx.ext.intersphinx',
+    'sphinx_search.extension'
 ]
 
 intersphinx_mapping = {
@@ -48,7 +49,7 @@ intersphinx_disabled_domains = ['std']
 
 autoapi_type = 'python'
 autoapi_dirs = ['../jacdac']
-autoapi_ignore = ['*migrations*', '*constants.py']
+autoapi_ignore = ['*migrations*', '*constants.py', '*transports/*.py']
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']

@@ -1,3 +1,4 @@
 myst-parser
 sphinx-rtd-theme
 sphinx-autoapi
+readthedocs-sphinx-search

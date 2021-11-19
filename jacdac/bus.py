@@ -35,8 +35,8 @@ EV_IDENTIFY = "identify"
 EV_CONNECTED = "connected"
 EV_DISCONNECTED = "disconnected"
 
-_ACK_RETRIES = const(4)
-_ACK_DELAY = const(40)
+#_ACK_RETRIES = const(4)
+#_ACK_DELAY = const(40)
 
 RegType = TypeVar('RegType', bound=Union[PackType, PackTuple])
 

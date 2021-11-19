@@ -117,7 +117,7 @@ class Bus(EventEmitter):
         # TODO: make this optional.
         brain = UniqueBrainServer(self)
 
-        def keep_task(t: asyncio.Task[None]):
+        def keep_task(t: 'asyncio.Task[None]'):
             if t.done():
                 t.result()  # throw exception if needed
                 return False
@@ -658,7 +658,7 @@ class Client(EventEmitter):
             r = RawRegisterClient(self, code, pack_format)
             self._registers.append(r)
         return r
-    
+
     def _lookup_packformat(self, code: int) -> Optional[str]:
         if code in self.pack_formats:
             return self.pack_formats[code]
@@ -791,12 +791,12 @@ class SensorClient(Client):
             self.register(JD_REG_STREAMING_SAMPLES).set_values(0xff)
 
     def _lookup_packformat(self, code: int) -> Optional[str]:
-        if code == JD_REG_STREAMING_SAMPLES: 
+        if code == JD_REG_STREAMING_SAMPLES:
             return "u8"
         elif code == JD_REG_STREAMING_INTERVAL:
             return "u32"
         elif code == JD_REG_STREAMING_PREFERRED_INTERVAL:
-            return "u32"            
+            return "u32"
         return Client._lookup_packformat(self, code)
 
     def _should_refresh_streaming_samples(self) -> bool:
@@ -815,7 +815,7 @@ class SensorClient(Client):
         MIN_SAMPLES = 16
         if samples is None or samples < MIN_SAMPLES:
             return True
-        
+
         interval = self._reading_interval()
 
         # haven't seen samples in a while

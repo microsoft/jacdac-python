@@ -45,11 +45,11 @@ class HidAdapterClient(Client):
         return self.on_event(JD_HID_ADAPTER_EV_CHANGED, handler)
 
 
-    def set_binding(self, configuration_number: int, binding_index: int, padding: int, device_id: int, service_class: int, trigger_value: int, trigger_context: int, service_index: int, selector: int, modifiers: undefined) -> None:
+    def set_binding(self, configuration_number: int, binding_index: int, device_id: int, service_class: int, trigger_value: int, trigger_context: int, service_index: int, selector: int, modifiers: int) -> None:
         """
         Stores the given binding on the server. If a binding exists at this index, the new binding will replace it.
         """
-        self.send_cmd_packed(JD_HID_ADAPTER_CMD_SET_BINDING, configuration_number, binding_index, padding, device_id, service_class, trigger_value, trigger_context, service_index, selector, modifiers)
+        self.send_cmd_packed(JD_HID_ADAPTER_CMD_SET_BINDING, configuration_number, binding_index, device_id, service_class, trigger_value, trigger_context, service_index, selector, modifiers)
 
     def clear_binding(self, configuration_number: int, binding_index: int) -> None:
         """

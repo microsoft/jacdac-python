@@ -12,7 +12,7 @@ This repository contains a command line interface tool for the [Jacdac](https://
 
 -   **[Jacdac Protocol Documentation](https://aka.ms/jacdac/)**
 -   **[Python Documentation](https://microsoft.github.io/jacdac-docs/clients/python/)**
--   **[API documentation](https://jacdac-python.readthedocs.io/en/latest/)**
+-   **[API documentation](https://jacdac-python.readthedocs.io/)**
 -   Discussions at https://github.com/microsoft/jacdac/discussions
 -   Issues are tracked on https://github.com/microsoft/jacdac/issues
 

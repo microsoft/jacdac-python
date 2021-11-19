@@ -61,6 +61,12 @@ class Transport:
         # send a packet payload over the transport layer
         pass
 
+# TODO: replace randbytes
+def _rand_device_id():
+    r: List[int] = []
+    for i in range(8):
+        r.append(random.getrandbits(8))
+    return bytearray(r).hex()
 
 class Bus(EventEmitter):
     """A Jacdac bus that managed devices, service client, registers."""
@@ -73,7 +79,7 @@ class Bus(EventEmitter):
         self.servers: List['Server'] = []
         self._event_counter = 0
         if device_id is None:
-            device_id = random.randbytes(8).hex()
+            device_id = _rand_device_id()
         self.self_device = Device(self, device_id, bytearray(4))
         self.process_thread = threading.Thread(target=self._process_task)
         self.transport = transport

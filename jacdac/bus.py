@@ -361,6 +361,14 @@ class RawRegisterClient(EventEmitter):
 
         self.bus.run(send)
 
+    def value(self) -> Optional[Any]:
+        """Extracts the value of the first field in the register."""
+        values = self.values()
+        if values is None:
+            return None
+        else:
+            return values[0]
+
     def float_value(self, scale: int = 1) -> Union[float, None]:
         values = self.values()
         if values is None:

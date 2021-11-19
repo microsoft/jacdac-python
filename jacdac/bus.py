@@ -644,7 +644,13 @@ class Client(EventEmitter):
                 return reg
         return None
 
+    @property
+    def connected(self) -> bool:
+        """Indicates if the client is a connected to a server"""
+        return True if self.device else False
+
     def register(self, code: int):
+        """Retreives the register by code"""
         r = self._lookup_register(code)
         if r is None:
             pack_format = self.pack_formats[code]
@@ -666,6 +672,7 @@ class Client(EventEmitter):
         self.handle_packet(pkt)
 
     def send_cmd(self, pkt: JDPacket):
+        """Sends a command packet to the server"""
         if self.current_device is None:
             return
         pkt.service_index = self.service_index
@@ -707,6 +714,28 @@ class Client(EventEmitter):
             self.bus.clear_attach_cache()
         self.emit(EV_DISCONNECTED)
 
+    def on_connect(self, handler: EventHandlerFn) -> UnsubscribeFn:
+        """Registers an event handler when the client connects to a server
+
+        Args:
+            handler (EventHandlerFn): function to run with client connects
+
+        Returns:
+            UnsubscribeFn: function to call to unregister handler
+        """
+        return self.on(EV_CONNECTED, handler)
+
+    def on_disconnect(self, handler: EventHandlerFn) -> UnsubscribeFn:
+        """Registers an event handler when the client disconnects from a server
+
+        Args:
+            handler (EventHandlerFn): function to run with client connects
+
+        Returns:
+            UnsubscribeFn: function to call to unregister handler
+        """
+        return self.on(EV_DISCONNECTED, handler)
+
     def on_event(self, code: int, handler: EventHandlerFn) -> UnsubscribeFn:
         """Registers an event handler for the given event code
 
@@ -730,9 +759,6 @@ class Client(EventEmitter):
                     data = jdunpack(pkt.data, fmt)
                 handler(data)
         return self.on(EV_EVENT, cb)
-
-
-_JD_CONTROL_ANNOUNCE_FLAGS_RESTART_COUNTER_STEADY = const(0xf)
 
 
 class Device(EventEmitter):
@@ -762,7 +788,7 @@ class Device(EventEmitter):
 
     @property
     def reset_count(self):
-        return self.announce_flags & _JD_CONTROL_ANNOUNCE_FLAGS_RESTART_COUNTER_STEADY
+        return self.announce_flags & JD_CONTROL_ANNOUNCE_FLAGS_RESTART_COUNTER_STEADY
 
     @property
     def packet_count(self):

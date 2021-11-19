@@ -52,7 +52,7 @@ def _service_matches(dev: 'Device', serv: bytearray):
 
 
 class Transport:
-    # A base class for packet transports
+    """A base class for packet transports"""
 
     on_receive: Optional[Callable[[bytes], None]] = None
     # Callback to report a received packet to the bus
@@ -63,8 +63,7 @@ class Transport:
 
 
 class Bus(EventEmitter):
-    """A Jacdac bus that managed devices, service client, registers...
-    """
+    """A Jacdac bus that managed devices, service client, registers."""
 
     def __init__(self, transport: Transport, *, device_id: str = None) -> None:
         super().__init__(self)
@@ -532,8 +531,9 @@ class Server(EventEmitter):
         log(prefix + text, *args)
 
 
-
 class ControlServer(Server):
+    """A server for the control service, used internally by the bus."""
+
     def __init__(self, bus: Bus) -> None:
         super().__init__(bus, JD_SERVICE_CLASS_CONTROL)
         self.restart_counter = 0
@@ -599,14 +599,17 @@ class ControlServer(Server):
             elif cmd == JD_CONTROL_CMD_RESET:
                 sys.exit()  # TODO?
 
+
 class UniqueBrainServer(Server):
-    # A unique brain server
+    """A server for the unique brain service, used internally by the bus"""
 
     def __init__(self, bus: Bus) -> None:
         super().__init__(bus, JD_SERVICE_CLASS_UNIQUE_BRAIN)
 
 
 class Client(EventEmitter):
+    """Base class to define service clients."""
+
     def __init__(self, bus: Bus, service_class: int, pack_formats: dict[int, str], role: str) -> None:
         super().__init__(bus)
         self.broadcast = False
@@ -723,6 +726,8 @@ _JD_CONTROL_ANNOUNCE_FLAGS_RESTART_COUNTER_STEADY = const(0xf)
 
 
 class Device(EventEmitter):
+    """A device on the bus"""
+
     def __init__(self, bus: Bus, device_id: str, services: bytearray) -> None:
         super().__init__(bus)
         self.device_id = device_id

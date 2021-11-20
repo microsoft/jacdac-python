@@ -9,7 +9,6 @@ dynamic = ["version", "description"]
 
 [tool.pyright]
 include = ["jacdac"]
-pythonVersion = 3.7
 typeCheckingMode = "basic"
 
 useLibraryCodeForTypes = true

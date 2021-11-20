@@ -74,7 +74,12 @@ def _rand_device_id():
 class Bus(EventEmitter):
     """A Jacdac bus that managed devices, service client, registers."""
 
-    def __init__(self, transport: Transport, *, device_id: str = None, product_identifier: int = None, device_description: str = None) -> None:
+    def __init__(self, transport: Transport, *,
+                 device_id: str = None,
+                 product_identifier: int = None,
+                 device_description: str = None,
+                 disable_logger: Optional[bool] = False,
+                 disable_brain: Optional[bool] = False) -> None:
         super().__init__(self)
         self.devices: List['Device'] = []
         self.unattached_clients: List['Client'] = []
@@ -82,6 +87,8 @@ class Bus(EventEmitter):
         self.servers: List['Server'] = []
         self.product_identifier = product_identifier
         self.device_description = device_description
+        self.disable_brain = disable_brain
+        self.disable_logger = disable_logger
         self._event_counter = 0
         if device_id is None:
             device_id = _rand_device_id()
@@ -125,8 +132,8 @@ class Bus(EventEmitter):
         # TODO: what's the best way to import these things
         ctrls = ControlServer(self)  # attach control server
 
-        # TODO: make this optional.
-        brain = UniqueBrainServer(self)
+        if not self.disable_brain:
+            UniqueBrainServer(self)
 
         def keep_task(t: 'asyncio.Task[None]'):
             if t.done():

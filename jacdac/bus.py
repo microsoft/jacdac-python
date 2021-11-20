@@ -629,6 +629,8 @@ class ControlServer(Server):
             if pkt.reg_code == JD_CONTROL_REG_UPTIME:
                 self.send_report(JDPacket.packed(
                     JD_GET(JD_CONTROL_REG_UPTIME), "u64",  time.monotonic_ns() // 1000))
+            else:
+                self.send_report(pkt.not_implemented())
         else:
             cmd = pkt.service_command
             if cmd == JD_CONTROL_CMD_SERVICES:
@@ -638,6 +640,8 @@ class ControlServer(Server):
                 self.bus.emit(EV_IDENTIFY)
             elif cmd == JD_CONTROL_CMD_RESET:
                 sys.exit()  # TODO?
+            else:
+                self.send_report(pkt.not_implemented())
 
 
 class UniqueBrainServer(Server):

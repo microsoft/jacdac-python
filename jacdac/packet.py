@@ -2,6 +2,7 @@ from typing import Optional
 
 from jacdac.pack import PackType, jdpack, jdunpack
 from .constants import *
+from .system.constants import JD_CMD_COMMAND_NOT_IMPLEMENTED
 import jacdac.util as util
 
 
@@ -145,3 +146,6 @@ class JDPacket:
 
     def __str__(self):
         return "<JDPacket {}>".format(self.to_string())
+
+    def not_implemented(self):
+        return JDPacket.packed(JD_CMD_COMMAND_NOT_IMPLEMENTED, "u16 u16", self.service_command, self.crc)

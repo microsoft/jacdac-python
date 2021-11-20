@@ -74,12 +74,14 @@ def _rand_device_id():
 class Bus(EventEmitter):
     """A Jacdac bus that managed devices, service client, registers."""
 
-    def __init__(self, transport: Transport, *, device_id: str = None) -> None:
+    def __init__(self, transport: Transport, *, device_id: str = None, product_identifier: int = None, device_description: str = None) -> None:
         super().__init__(self)
         self.devices: List['Device'] = []
         self.unattached_clients: List['Client'] = []
         self.all_clients: List['Client'] = []
         self.servers: List['Server'] = []
+        self.product_identifier = product_identifier
+        self.device_description = device_description
         self._event_counter = 0
         if device_id is None:
             device_id = _rand_device_id()
@@ -663,9 +665,16 @@ class ControlServer(Server):
 
     def handle_packet(self, pkt: JDPacket):
         if pkt.is_reg_get:
-            if pkt.reg_code == JD_CONTROL_REG_UPTIME:
+            reg_code = pkt.reg_code
+            if reg_code == JD_CONTROL_REG_UPTIME:
                 self.send_report(JDPacket.packed(
                     JD_GET(JD_CONTROL_REG_UPTIME), "u64",  time.monotonic_ns() // 1000))
+            elif self.bus.product_identifier and reg_code == JD_CONTROL_REG_PRODUCT_IDENTIFIER:
+                self.send_report(JDPacket.packed(
+                    JD_GET(JD_CONTROL_REG_PRODUCT_IDENTIFIER), "u32", self.bus.product_identifier))
+            elif self.bus.device_description and reg_code == JD_CONTROL_REG_DEVICE_DESCRIPTION:
+                self.send_report(JDPacket.packed(
+                    JD_GET(JD_CONTROL_REG_DEVICE_DESCRIPTION), "s", self.bus.device_description))
             else:
                 self.send_report(pkt.not_implemented())
         else:

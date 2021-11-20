@@ -24,5 +24,7 @@ class RealTimeClockServer(SensorServer):
             fmt = JD_REAL_TIME_CLOCK_PACK_FORMATS[JD_REAL_TIME_CLOCK_REG_VARIANT]
             self.send_report(JDPacket.packed(
                 cmd, fmt, RealTimeClockVariant.COMPUTER))
+        elif cmd == JD_GET(JD_REAL_TIME_CLOCK_REG_DRIFT):
+            self.send_report(pkt.not_implemented())
         else:
             super().handle_packet(pkt)

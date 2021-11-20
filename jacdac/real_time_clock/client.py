@@ -26,11 +26,11 @@ class RealTimeClockClient(SensorClient):
         return self.register(JD_REAL_TIME_CLOCK_REG_LOCAL_TIME).value()
 
     @property
-    def error(self) -> Optional[float]:
+    def drift(self) -> Optional[float]:
         """
         (Optional) Time drift since the last call to the ``set_time`` command., _: s
         """
-        return self.register(JD_REAL_TIME_CLOCK_REG_ERROR).value()
+        return self.register(JD_REAL_TIME_CLOCK_REG_DRIFT).value()
 
     @property
     def precision(self) -> Optional[float]:

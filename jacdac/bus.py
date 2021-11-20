@@ -140,6 +140,28 @@ class EventEmitter:
             while not happened:
                 cv.wait()
 
+    def _log_report_prefix(self) -> str:
+        return ""
+
+    def _add_log_report(self, priority: int, text: str, *args: object):
+        prefix = self._log_report_prefix()
+        msg = prefix + text
+        logger = self.bus.logger
+        if logger:
+            logger.report(priority, msg, args)
+
+    def log(self, text: str, *args: object):
+        self._add_log_report(JD_LOGGER_PRIORITY_LOG, text, *args)
+
+    def warn(self, text: str, *args: object):
+        self._add_log_report(JD_LOGGER_PRIORITY_WARNING, text, *args)
+
+    def debug(self, text: str, *args: object):
+        self._add_log_report(JD_LOGGER_PRIORITY_DEBUG, text, *args)
+
+    def error(self, text: str, *args: object):
+        self._add_log_report(JD_LOGGER_PRIORITY_ERROR, text, *args)
+
 
 def _service_matches(dev: 'Device', serv: bytearray):
     ds = dev.services
@@ -213,7 +235,7 @@ class Bus(EventEmitter):
 
         self.process_thread.start()
 
-        log("starting bus, self={}", self.self_device)
+        self.log("starting bus, self={}", self.self_device)
 
     def run(self, cb: Callable[..., None], *args: Any):
         if self.process_thread is threading.current_thread():
@@ -345,8 +367,8 @@ class Bus(EventEmitter):
 
     def _reattach(self, dev: 'Device'):
         dev.last_seen = now()
-        log("reattaching services to {}; {}/{} to attach", dev,
-            len(self.unattached_clients), len(self.all_clients))
+        self.debug("reattaching services to {}; {}/{} to attach", dev,
+                   len(self.unattached_clients), len(self.all_clients))
         new_clients: List['Client'] = []
         occupied = bytearray(dev.num_service_classes)
         for c in dev.clients:
@@ -422,7 +444,7 @@ class Bus(EventEmitter):
                     if (dev and dev.reset_count > (pkt.data[0] & 0xf)):
                         # if the reset counter went down, it means the device reseted;
                         # treat it as new device
-                        log("device {} resetted", dev)
+                        self.debug("device resetted")
                         self.devices.remove(dev)
                         dev._destroy()
                         dev = None
@@ -687,10 +709,9 @@ class Server(EventEmitter):
         self.send_report(JDPacket(cmd=pkt.service_command,
                          data=bytearray(self.instance_name or "", "utf-8")))
 
-    def log(self, text: str, *args: object):
-        prefix = "{}.{}>".format(self.bus.self_device,
-                                 self.instance_name or self.service_index)
-        log(prefix + text, *args)
+    def _log_report_prefix(self) -> str:
+        return "{}.{}>".format(self.bus.self_device,
+                               self.instance_name or self.service_index)
 
 
 # TODO: stream sensors
@@ -799,7 +820,6 @@ class ControlServer(Server):
             if cmd == JD_CONTROL_CMD_SERVICES:
                 self.queue_announce()
             elif cmd == JD_CONTROL_CMD_IDENTIFY:
-                self.log("identify")
                 self.bus.emit(EV_IDENTIFY)
             elif cmd == JD_CONTROL_CMD_RESET:
                 sys.exit()  # TODO?
@@ -811,7 +831,7 @@ class LoggerServer(Server):
 
     def __init__(self, bus: Bus) -> None:
         super().__init__(bus, JD_SERVICE_CLASS_LOGGER, instance_name="log")
-        self.min_priority = JD_LOGGER_PRIORITY_SILENT
+        self.min_priority = JD_LOGGER_PRIORITY_DEBUG
         self._last_listener_time = 0
 
     def handle_packet(self, pkt: JDPacket):
@@ -826,7 +846,7 @@ class LoggerServer(Server):
                 self._last_listener_time = now()
         return super().handle_packet(pkt)
 
-    def report(self, priority: int, msg: str):
+    def report(self, priority: int, msg: str, *args: object):
         if now() - self._last_listener_time > 3000:
             self._last_listener_time = 0
             self.min_priority = JD_LOGGER_PRIORITY_SILENT
@@ -835,6 +855,7 @@ class LoggerServer(Server):
             return
 
         # TODO: chunk msg
+        log(msg, *args)
         self.send_report(JDPacket.packed(priority, "s", msg))
 
 
@@ -931,13 +952,13 @@ class Client(EventEmitter):
             self.device = dev
             self.service_index = service_idx
             self.bus.unattached_clients.remove(self)
-        log("attached {}/{} to client {}", dev, service_idx, self.role)
+        self.debug("attached {}/{} to client {}", dev, service_idx, self.role)
         dev.clients.append(self)
         self.emit(EV_CONNECTED)
         return True
 
     def _detach(self):
-        log("detached {}", self.role)
+        self.debug("detached")
         self.service_index = None
         if not self.broadcast:
             assert self.device
@@ -993,6 +1014,9 @@ class Client(EventEmitter):
                     data = jdunpack(pkt.data, fmt)
                 handler(data)
         return self.on(EV_EVENT, cb)
+
+    def _log_report_prefix(self) -> str:
+        return "{}:{}>".format(self.bus.self_device, self.role)
 
 
 class SensorClient(Client):
@@ -1139,10 +1163,13 @@ class Device(EventEmitter):
         return len(self.services) >> 2
 
     def _destroy(self):
-        log("destroy " + self.short_id)
+        self.debug("destroy")
         for c in self.clients:
             c._detach()
         self.clients = None  # type: ignore
+
+    def _log_report_prefix(self) -> str:
+        return "{}>".format(self.short_id)
 
     def process_packet(self, pkt: JDPacket):
         self.last_seen = now()

@@ -349,6 +349,11 @@ class RawRegisterClient(EventEmitter):
         self.pack_format = pack_format
         self.not_implemented = False
 
+    def clear(self):
+        self._data = None
+        self._refreshed_at = 0
+        self.not_implemented = False
+
     def current(self, refresh_ms: int = -1):
         if refresh_ms < 0 or self._refreshed_at + refresh_ms >= now():
             return self._data
@@ -363,6 +368,9 @@ class RawRegisterClient(EventEmitter):
     def set_values(self, *args: PackType):
         if self.pack_format is None:
             raise RuntimeError("set_value not supported")
+        if not self.client.connected:
+            return
+
         data = jdpack(self.pack_format, *args)
 
         def send():
@@ -390,11 +398,13 @@ class RawRegisterClient(EventEmitter):
         return float(value) * scale if not value is None else None
 
     def _query(self):
+        if not self.client.connected:
+            return
         pkt = JDPacket(cmd=JD_GET(self.code))
         self.client.send_cmd(pkt)
 
     def refresh(self):
-        if self._refreshed_at < 0 or self.not_implemented:
+        if not self.client.connected or self._refreshed_at < 0 or self.not_implemented:
             return  # already in progress
 
         def do_refresh():
@@ -734,6 +744,8 @@ class Client(EventEmitter):
         if not self.broadcast:
             assert self.device
             self.device = None
+            for reg in self._registers:
+                reg.clear()
             self.bus.unattached_clients.append(self)
             self.bus.clear_attach_cache()
         self.emit(EV_DISCONNECTED)

@@ -9,6 +9,7 @@ import sys
 from typing import Optional, TypeVar, Union, cast, List, Dict
 
 from .constants import *
+from .logger.constants import *
 from .control.constants import *
 from .system.constants import *
 from .unique_brain.constants import *
@@ -85,6 +86,7 @@ class Bus(EventEmitter):
         self.unattached_clients: List['Client'] = []
         self.all_clients: List['Client'] = []
         self.servers: List['Server'] = []
+        self.logger: Optional[LoggerServer] = None
         self.product_identifier = product_identifier
         self.device_description = device_description
         self.disable_brain = disable_brain
@@ -131,6 +133,9 @@ class Bus(EventEmitter):
 
         # TODO: what's the best way to import these things
         ctrls = ControlServer(self)  # attach control server
+
+        if not self.disable_logger:
+            self.logger = LoggerServer(self)
 
         if not self.disable_brain:
             UniqueBrainServer(self)
@@ -191,6 +196,12 @@ class Bus(EventEmitter):
                 info = "SELF: " + info
             print(info)
         print("END")
+
+    def lookup_server(self, service_class: int) -> Optional['Server']:
+        for s in self.servers:
+            if s.service_class == service_class:
+                return s
+        return None
 
     def _gc_devices(self):
         now_ = now()
@@ -695,6 +706,37 @@ class ControlServer(Server):
                 sys.exit()  # TODO?
             else:
                 self.send_report(pkt.not_implemented())
+
+
+class LoggerServer(Server):
+
+    def __init__(self, bus: Bus) -> None:
+        super().__init__(bus, JD_SERVICE_CLASS_LOGGER, instance_name="log")
+        self.min_priority = JD_LOGGER_PRIORITY_SILENT
+        self._last_listener_time = 0
+
+    def handle_packet(self, pkt: JDPacket):
+        self.min_priority = self.handle_reg_u8(
+            pkt, JD_LOGGER_REG_MIN_PRIORITY, self.min_priority)
+        cmd = pkt.service_command
+        if cmd == JD_LOGGER_REG_MIN_PRIORITY:
+            d = cast(int, pkt.unpack("u8")[0])
+            elapsed = now() - self._last_listener_time
+            if d <= self.min_priority or elapsed > 1500:
+                self.min_priority = d
+                self._last_listener_time = now()
+        return super().handle_packet(pkt)
+
+    def report(self, priority: int, msg: str):
+        if now() - self._last_listener_time > 3000:
+            self._last_listener_time = 0
+            self.min_priority = JD_LOGGER_PRIORITY_SILENT
+
+        if not msg or not self._last_listener_time or priority < self.min_priority:
+            return
+
+        # TODO: chunk msg
+        self.send_report(JDPacket.packed(priority, "s", msg))
 
 
 class UniqueBrainServer(Server):

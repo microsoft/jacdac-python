@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v0.0.12 (2021-11-20)
+### Fix
+* Handle disconnection ([`d9c0449`](https://github.com/microsoft/jacdac-python/commit/d9c04492d8c6515be0626d92fa3f8990f9505138))
+
 ## v0.0.11 (2021-11-19)
 ### Fix
 * Cleanup test ([`f2c8a13`](https://github.com/microsoft/jacdac-python/commit/f2c8a1336fdae335aa08b5c85e29d684dc56117b))

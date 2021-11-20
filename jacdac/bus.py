@@ -480,10 +480,10 @@ class RawRegisterClient(EventEmitter):
 
 
 class Server(EventEmitter):
-    def __init__(self, bus: Bus, service_class: int) -> None:
+    def __init__(self, bus: Bus, service_class: int, *, instance_name: str = None) -> None:
         super().__init__(bus)
         self.service_class = service_class
-        self.instance_name: Optional[str] = None
+        self.instance_name = instance_name
         self.service_index = None
         self._status_code = 0  # u16, u16
         self.service_index = len(self.bus.servers)
@@ -503,7 +503,7 @@ class Server(EventEmitter):
         if cmd == JD_GET(JD_REG_STATUS_CODE):
             self.handle_status_code(pkt)
         elif cmd == JD_GET(JD_REG_INSTANCE_NAME):
-            self.handle_instance_name(pkt)
+            self._handle_instance_name(pkt)
         else:
             # self.state_updated = False
             self.handle_packet(pkt)
@@ -529,6 +529,9 @@ class Server(EventEmitter):
 
     def handle_status_code(self, pkt: JDPacket):
         self.handle_reg_u32(pkt, JD_REG_STATUS_CODE, self._status_code)
+
+    def handle_reg_u8(self, pkt: JDPacket, register: int, current: int):
+        return self.handle_reg(pkt, register, "u8", current)
 
     def handle_reg_u32(self, pkt: JDPacket, register: int, current: int):
         return self.handle_reg(pkt, register, "u32", current)
@@ -561,7 +564,7 @@ class Server(EventEmitter):
                 current = cast(RegType, v)
         return current
 
-    def handle_instance_name(self, pkt: JDPacket):
+    def _handle_instance_name(self, pkt: JDPacket):
         self.send_report(JDPacket(cmd=pkt.service_command,
                          data=bytearray(self.instance_name or "", "utf-8")))
 
@@ -569,6 +572,40 @@ class Server(EventEmitter):
         prefix = "{}.{}>".format(self.bus.self_device,
                                  self.instance_name or self.service_index)
         log(prefix + text, *args)
+
+
+# TODO: stream sensors
+class SensorServer(Server):
+    def __init__(self, bus: Bus, service_class: int, streaming_interval: int, *, instance_name: str = None, streaming_preferred_interval: int = None) -> None:
+        super().__init__(bus, service_class, instance_name=instance_name)
+        self.streaming_samples = 0
+        self.streaming_preferred_interval: Optional[int] = streaming_preferred_interval
+        self.streaming_interval = streaming_interval
+
+    def handle_packet(self, pkt: JDPacket):
+        cmd = pkt.service_command
+        if cmd == JD_GET(JD_REG_STREAMING_SAMPLES) or cmd == JD_SET(JD_REG_STREAMING_SAMPLES):
+            self._handle_streaming_samples(pkt)
+        elif cmd == JD_GET(JD_REG_STREAMING_INTERVAL) or cmd == JD_SET(JD_REG_STREAMING_SAMPLES):
+            self._handle_streaming_interval(pkt)
+        elif cmd == JD_GET(JD_REG_STREAMING_PREFERRED_INTERVAL):
+            self._handle_streaming_preferred_interval(pkt)
+        super().handle_packet(pkt)
+
+    def _handle_streaming_samples(self, pkt: JDPacket):
+        self.streaming_samples = self.handle_reg_u8(pkt, JD_REG_STREAMING_SAMPLES,
+                                                    self.streaming_samples)
+
+    def _handle_streaming_interval(self, pkt: JDPacket):
+        self.streaming_interval = self.handle_reg_u32(
+            pkt, JD_REG_STREAMING_INTERVAL, self.streaming_interval)
+
+    def _handle_streaming_preferred_interval(self, pkt: JDPacket):
+        if self.streaming_preferred_interval:
+            self.handle_reg_u32(
+                pkt, JD_REG_STREAMING_PREFERRED_INTERVAL, self.streaming_preferred_interval)
+        else:
+            self.send_report(pkt.not_implemented())
 
 
 class ControlServer(Server):

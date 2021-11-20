@@ -62,11 +62,14 @@ class Transport:
         pass
 
 # TODO: replace randbytes
+
+
 def _rand_device_id():
     r: List[int] = []
     for i in range(8):
         r.append(random.getrandbits(8))
     return bytearray(r).hex()
+
 
 class Bus(EventEmitter):
     """A Jacdac bus that managed devices, service client, registers."""
@@ -344,6 +347,7 @@ class RawRegisterClient(EventEmitter):
         self._refreshed_at = 0
         self.client = client
         self.pack_format = pack_format
+        self.not_implemented = False
 
     def current(self, refresh_ms: int = -1):
         if refresh_ms < 0 or self._refreshed_at + refresh_ms >= now():
@@ -390,7 +394,7 @@ class RawRegisterClient(EventEmitter):
         self.client.send_cmd(pkt)
 
     def refresh(self):
-        if self._refreshed_at < 0:
+        if self._refreshed_at < 0 or self.not_implemented:
             return  # already in progress
 
         def do_refresh():
@@ -421,6 +425,8 @@ class RawRegisterClient(EventEmitter):
 
     # can't be called from event handlers!
     def query(self, refresh_ms: int = 500):
+        if self.not_implemented:
+            return None
         curr = self.current(refresh_ms)
         if curr:
             return curr
@@ -432,10 +438,13 @@ class RawRegisterClient(EventEmitter):
         return self._data
 
     async def query_async(self, refresh_ms: int = 500):
+        if self.not_implemented:
+            return None
         curr = self.current(refresh_ms)
         if curr:
             return curr
         self.refresh()
+        # todo: test if changed
         await self.event(EV_CHANGE)
         if self._data is None:
             raise RuntimeError(
@@ -443,6 +452,8 @@ class RawRegisterClient(EventEmitter):
         return self._data
 
     def query_no_wait(self, refresh_ms: int = -1):
+        if self.not_implemented:
+            return None
         curr = self.current(refresh_ms)
         if curr:
             return curr
@@ -450,6 +461,8 @@ class RawRegisterClient(EventEmitter):
         return self._data
 
     def handle_packet(self, pkt: JDPacket):
+        if self.not_implemented:
+            return
         if pkt.is_reg_get and pkt.reg_code == self.code:
             self._data = pkt.data
             self._refreshed_at = now()
@@ -924,6 +937,17 @@ class Device(EventEmitter):
     def process_packet(self, pkt: JDPacket):
         self.last_seen = now()
         self.emit(EV_PACKET_RECEIVE, pkt)
+
+        if pkt.service_command == JD_CMD_COMMAND_NOT_IMPLEMENTED:
+            cmd = util.u16(pkt.data, 0)
+            if cmd >> 12 == CMD_GET_REG >> 12:
+                reg_code = cmd & CMD_REG_MASK
+                srv_index = pkt.service_index
+                for c in self.clients:
+                    if c.service_index == srv_index:
+                        c.register(reg_code).not_implemented = True
+                        break
+            return
 
         service_class = self.service_class_at(pkt.service_index)
         if not service_class or service_class == 0xffffffff:

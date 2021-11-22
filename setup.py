@@ -1,7 +1,6 @@
 from setuptools import setup
-
-__version__ = "0.0.12"
+from jacdac.constants import JD_VERSION
 
 setup(
-    version=__version__,
+    version=JD_VERSION,
 )

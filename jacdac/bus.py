@@ -7,6 +7,7 @@ import time
 import sys
 
 from typing import Any, Callable, Coroutine, Optional, Tuple, TypeVar, Union, cast, List, Dict
+from textwrap import wrap
 
 from .constants import *
 from .logger.constants import *
@@ -868,8 +869,9 @@ class LoggerServer(Server):
         if not msg or not self._last_listener_time or priority < self.min_priority:
             return
 
-        # TODO: chunk msg
-        self.send_report(JDPacket.packed(cmd, "s", msg))
+        chunks = wrap(msg, JD_SERIAL_MAX_PAYLOAD_SIZE)
+        for chunk in chunks:
+            self.send_report(JDPacket.packed(cmd, "s", chunk))
 
 
 class UniqueBrainServer(Server):

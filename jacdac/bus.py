@@ -200,6 +200,7 @@ class Bus(EventEmitter):
     def __init__(self, transport: Transport, *,
                  device_id: str = None,
                  product_identifier: int = None,
+                 firmware_version: str = None,
                  device_description: str = None,
                  disable_logger: Optional[bool] = False,
                  disable_brain: Optional[bool] = False,
@@ -224,6 +225,7 @@ class Bus(EventEmitter):
         self.servers: List['Server'] = []
         self.logger: Optional[LoggerServer] = None
         self.product_identifier = product_identifier
+        self.firmware_version = firmware_version
         self.device_description = device_description
         self.disable_brain = disable_brain
         self.disable_logger = disable_logger
@@ -831,9 +833,15 @@ class ControlServer(Server):
             elif self.bus.product_identifier and reg_code == JD_CONTROL_REG_PRODUCT_IDENTIFIER:
                 self.send_report(JDPacket.packed(
                     JD_GET(JD_CONTROL_REG_PRODUCT_IDENTIFIER), "u32", self.bus.product_identifier))
-            elif self.bus.device_description and reg_code == JD_CONTROL_REG_DEVICE_DESCRIPTION:
+            elif self.bus.firmware_version and reg_code == JD_CONTROL_REG_FIRMWARE_VERSION:
                 self.send_report(JDPacket.packed(
-                    JD_GET(JD_CONTROL_REG_DEVICE_DESCRIPTION), "s", self.bus.device_description))
+                    JD_GET(JD_CONTROL_REG_PRODUCT_IDENTIFIER), "s", self.bus.firmware_version))
+            elif reg_code == JD_CONTROL_REG_DEVICE_DESCRIPTION:
+                uname = os.uname()
+                descr = self.bus.device_description or "{}, {}, {}".format(
+                    uname.nodename, uname.sysname, uname.release)
+                self.send_report(JDPacket.packed(
+                    JD_GET(JD_CONTROL_REG_DEVICE_DESCRIPTION), "s", descr))
             else:
                 self.send_report(pkt.not_implemented())
         else:
@@ -843,7 +851,8 @@ class ControlServer(Server):
             elif cmd == JD_CONTROL_CMD_IDENTIFY:
                 self.bus.emit(EV_IDENTIFY)
             elif cmd == JD_CONTROL_CMD_RESET:
-                sys.exit()  # TODO?
+                # TODO: reset support
+                raise RuntimeError("reset requested")
             else:
                 self.send_report(pkt.not_implemented())
 

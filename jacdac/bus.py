@@ -4,7 +4,6 @@ import asyncio
 import queue
 import os
 import time
-import sys
 
 from typing import Any, Callable, Coroutine, Optional, Tuple, TypeVar, Union, cast, List, Dict
 from textwrap import wrap

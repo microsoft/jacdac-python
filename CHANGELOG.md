@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v0.0.15 (2021-11-22)
+### Fix
+* Use nested packages as well in pip ([`6f13b99`](https://github.com/microsoft/jacdac-python/commit/6f13b99f323ff81050a9f67a19b51c4989107695))
+
 ## v0.0.14 (2021-11-22)
 ### Fix
 * Trigger release ([`21228b0`](https://github.com/microsoft/jacdac-python/commit/21228b06b458c9f355643773cd0876e32ad80e3c))

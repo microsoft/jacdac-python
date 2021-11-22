@@ -16,7 +16,8 @@ def create_dev_tools_bus(*, device_description: str = None):
     transport = WebSocketTransport("ws://localhost:8081")
     bus = Bus(transport,
               device_description=device_description,
-              default_logger_min_priority=JD_LOGGER_PRIORITY_DEBUG
+              default_logger_min_priority=JD_LOGGER_PRIORITY_DEBUG,
+              settings_file_name="./jacdac.devtools.settings.json"
               )
     return bus
 

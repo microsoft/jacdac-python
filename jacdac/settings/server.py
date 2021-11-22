@@ -1,5 +1,5 @@
-from typing import Optional, cast
-from jacdac.bus import Bus, Server, JDPacket, EventHandlerFn, UnsubscribeFn
+from typing import cast
+from jacdac.bus import Bus, Server, JDPacket
 from .constants import *
 from json import load, dump
 from os import path
@@ -12,8 +12,8 @@ class SettingsServer(Server):
     Implements a server for the `Settings <https://microsoft.github.io/jacdac-docs/services/settings>`_ service.
     """
 
-    def __init__(self, bus: Bus, file_name: str = "./jacdac.settings.json") -> None:
-        super().__init__(bus, JD_SERVICE_CLASS_SETTINGS, instance_name="settings")
+    def __init__(self, bus: Bus, file_name: str) -> None:
+        super().__init__(bus, JD_SERVICE_CLASS_SETTINGS)
         self.file_name = file_name
 
     def handle_packet(self, pkt: JDPacket):
@@ -36,19 +36,20 @@ class SettingsServer(Server):
         key: str = cast(str, pkt.unpack("s")[0])
         secret = key.startswith("$")
         value = bytearray(0)
-        if secret:
-            value = bytearray(0)
-        else:
-            if not key is None and path.exists(self.file_name):
-                with open(self.file_name, "rt") as f:
-                    settings = load(f)
-                    if key in settings:
+        if not key is None and path.exists(self.file_name):
+            with open(self.file_name, "rt") as f:
+                settings = load(f)
+                if key in settings:
+                    if secret:  # don't return value
+                        value = bytearray(0)
+                    else:
                         value = bytearray(b64decode(settings[key]))
         self.send_report(JDPacket.packed(
             JD_SETTINGS_CMD_GET, "z b", key, value))
 
     def _handle_delete(self, pkt: JDPacket):
         [key] = pkt.unpack("s")
+        self.debug("delete key {}", key)
         with open(self.file_name, "wt") as f:
             settings = {}
             try:
@@ -63,6 +64,7 @@ class SettingsServer(Server):
 
     def _handle_set(self, pkt: JDPacket):
         [key, value] = pkt.unpack("z b")
+        self.debug("set key {}", key)
         with open(self.file_name, "wt") as f:
             try:
                 settings = load(f)
@@ -73,6 +75,7 @@ class SettingsServer(Server):
         self.send_change_event()
 
     def _handle_clear(self, pkt: JDPacket):
+        self.debug("clear keys")
         with open(self.file_name, "wt") as f:
             f.write("{}")
         self.send_change_event()

@@ -148,7 +148,7 @@ class EventEmitter:
         msg = prefix + text
         logger = self.bus.logger
         if logger:
-            logger.report(priority, msg, args)
+            logger.report(priority, msg, *args)
 
     def log(self, text: str, *args: object):
         self._add_log_report(JD_LOGGER_PRIORITY_LOG, text, *args)
@@ -201,7 +201,8 @@ class Bus(EventEmitter):
                  product_identifier: int = None,
                  device_description: str = None,
                  disable_logger: Optional[bool] = False,
-                 disable_brain: Optional[bool] = False) -> None:
+                 disable_brain: Optional[bool] = False,
+                 default_logger_min_priority: int = JD_LOGGER_PRIORITY_SILENT) -> None:
         super().__init__(self)
         self.devices: List['Device'] = []
         self.unattached_clients: List['Client'] = []
@@ -212,6 +213,7 @@ class Bus(EventEmitter):
         self.device_description = device_description
         self.disable_brain = disable_brain
         self.disable_logger = disable_logger
+        self.default_logger_min_priority = default_logger_min_priority
         self._event_counter = 0
         if device_id is None:
             device_id = _rand_device_id()
@@ -831,31 +833,32 @@ class LoggerServer(Server):
 
     def __init__(self, bus: Bus) -> None:
         super().__init__(bus, JD_SERVICE_CLASS_LOGGER, instance_name="log")
-        self.min_priority = JD_LOGGER_PRIORITY_DEBUG
+        self.min_priority = self.bus.default_logger_min_priority
         self._last_listener_time = 0
 
     def handle_packet(self, pkt: JDPacket):
         self.min_priority = self.handle_reg_u8(
             pkt, JD_LOGGER_REG_MIN_PRIORITY, self.min_priority)
         cmd = pkt.service_command
-        if cmd == JD_LOGGER_REG_MIN_PRIORITY:
+        if cmd == JD_SET(JD_LOGGER_REG_MIN_PRIORITY):
             d = cast(int, pkt.unpack("u8")[0])
-            elapsed = now() - self._last_listener_time
-            if d <= self.min_priority or elapsed > 1500:
+            self._last_listener_time = now()
+            if d < self.min_priority:
                 self.min_priority = d
-                self._last_listener_time = now()
+            self.debug("min priority: {}", self.min_priority)
         return super().handle_packet(pkt)
 
     def report(self, priority: int, msg: str, *args: object):
+        log(msg, *args)
+
         if now() - self._last_listener_time > 3000:
             self._last_listener_time = 0
-            self.min_priority = JD_LOGGER_PRIORITY_SILENT
+            self.min_priority = self.bus.default_logger_min_priority
 
         if not msg or not self._last_listener_time or priority < self.min_priority:
             return
 
         # TODO: chunk msg
-        log(msg, *args)
         self.send_report(JDPacket.packed(priority, "s", msg))
 
 

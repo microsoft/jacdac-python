@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v0.0.13 (2021-11-22)
+### Fix
+* Move version to constants.py ([`9ee5554`](https://github.com/microsoft/jacdac-python/commit/9ee5554495e13f032ff0adfd5f5f1321c1e2e644))
+
 ## v0.0.12 (2021-11-20)
 ### Fix
 * Handle disconnection ([`d9c0449`](https://github.com/microsoft/jacdac-python/commit/d9c04492d8c6515be0626d92fa3f8990f9505138))

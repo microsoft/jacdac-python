@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v0.0.14 (2021-11-22)
+### Fix
+* Trigger release ([`21228b0`](https://github.com/microsoft/jacdac-python/commit/21228b06b458c9f355643773cd0876e32ad80e3c))
+
 ## v0.0.13 (2021-11-22)
 ### Fix
 * Move version to constants.py ([`9ee5554`](https://github.com/microsoft/jacdac-python/commit/9ee5554495e13f032ff0adfd5f5f1321c1e2e644))

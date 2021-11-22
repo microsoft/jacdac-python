@@ -277,7 +277,7 @@ class Bus(EventEmitter):
 
         if self.settings_file_name:
             from .settings.server import SettingsServer
-            self.settings = SettingsServer(self, self.settings_file_name)
+            self.settings = SettingsServer(self)
 
         if not self.disable_brain:
             UniqueBrainServer(self)

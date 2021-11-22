@@ -2,8 +2,16 @@ from typing import cast
 from jacdac.bus import Bus, Server, JDPacket
 from .constants import *
 from json import load, dump
-from os import path
+from os import path, makedirs
 from base64 import b64decode, b64encode
+
+
+def value_to_json(value: bytearray) -> str:
+    return b64encode(value).hex()
+
+
+def json_to_value(text: str) -> bytearray:
+    return bytearray(b64decode(bytearray.fromhex(text)))
 
 
 class SettingsServer(Server):
@@ -12,9 +20,17 @@ class SettingsServer(Server):
     Implements a server for the `Settings <https://microsoft.github.io/jacdac-docs/services/settings>`_ service.
     """
 
-    def __init__(self, bus: Bus, file_name: str) -> None:
+    def __init__(self, bus: Bus) -> None:
         super().__init__(bus, JD_SERVICE_CLASS_SETTINGS)
-        self.file_name = file_name
+        if not path.exists(path.dirname(self.file_name)):
+            makedirs(path.dirname(self.file_name))
+
+    @property
+    def file_name(self) -> str:
+        f = self.bus.settings_file_name
+        if f is None:
+            raise RuntimeError("settings file name not set")
+        return f
 
     def handle_packet(self, pkt: JDPacket):
         cmd = pkt.service_command
@@ -43,7 +59,7 @@ class SettingsServer(Server):
                     if secret:  # don't return value
                         value = bytearray(0)
                     else:
-                        value = bytearray(b64decode(settings[key]))
+                        value = json_to_value(settings[key])
         self.send_report(JDPacket.packed(
             JD_SETTINGS_CMD_GET, "z b", key, value))
 
@@ -70,7 +86,7 @@ class SettingsServer(Server):
                 settings = load(f)
             except:
                 settings = {}
-            settings[key] = b64encode(cast(bytearray, value))
+            settings[key] = value_to_json(cast(bytearray, value))
             dump(settings, f)
         self.send_change_event()
 

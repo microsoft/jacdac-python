@@ -131,3 +131,5 @@ dmypy.json
 docs/generated/
 docs/autoapi/
 docs/_build/
+
+.jacdac/

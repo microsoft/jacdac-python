@@ -200,10 +200,24 @@ class Bus(EventEmitter):
     def __init__(self, transport: Transport, *,
                  device_id: str = None,
                  product_identifier: int = None,
+                 firmware_version: str = None,
                  device_description: str = None,
                  disable_logger: Optional[bool] = False,
                  disable_brain: Optional[bool] = False,
-                 default_logger_min_priority: int = JD_LOGGER_PRIORITY_SILENT) -> None:
+                 default_logger_min_priority: int = JD_LOGGER_PRIORITY_SILENT,
+                 settings_file_name: str = None) -> None:
+        """Instantiates a new Jacdac bus
+
+        Args:
+            transport (Transport): packet transport
+            settings_file_name (str): Optional settings file location. Enables settings service.
+            device_id (str, optional): Optional device identifier. Auto-generated if not specified.
+            product_identifier (int, optional): Optional product identifier.
+            device_description (str, optional): Optional device description.
+            disable_logger (Optional[bool], optional): Disable the logger service. Defaults to False.
+            disable_brain (Optional[bool], optional): Disable unique brain service. Defaults to False.
+            default_logger_min_priority (int, optional): Optional mininimum logger priority. Defaults to JD_LOGGER_PRIORITY_SILENT.
+        """
         super().__init__(self)
         self.devices: List['Device'] = []
         self.unattached_clients: List['Client'] = []
@@ -211,10 +225,12 @@ class Bus(EventEmitter):
         self.servers: List['Server'] = []
         self.logger: Optional[LoggerServer] = None
         self.product_identifier = product_identifier
+        self.firmware_version = firmware_version
         self.device_description = device_description
         self.disable_brain = disable_brain
         self.disable_logger = disable_logger
         self.default_logger_min_priority = default_logger_min_priority
+        self.settings_file_name = settings_file_name
         self._event_counter = 0
         if device_id is None:
             device_id = _rand_device_id()
@@ -260,6 +276,10 @@ class Bus(EventEmitter):
 
         if not self.disable_logger:
             self.logger = LoggerServer(self)
+
+        if self.settings_file_name:
+            from .settings.server import SettingsServer
+            self.settings = SettingsServer(self)
 
         if not self.disable_brain:
             UniqueBrainServer(self)
@@ -813,9 +833,15 @@ class ControlServer(Server):
             elif self.bus.product_identifier and reg_code == JD_CONTROL_REG_PRODUCT_IDENTIFIER:
                 self.send_report(JDPacket.packed(
                     JD_GET(JD_CONTROL_REG_PRODUCT_IDENTIFIER), "u32", self.bus.product_identifier))
-            elif self.bus.device_description and reg_code == JD_CONTROL_REG_DEVICE_DESCRIPTION:
+            elif self.bus.firmware_version and reg_code == JD_CONTROL_REG_FIRMWARE_VERSION:
                 self.send_report(JDPacket.packed(
-                    JD_GET(JD_CONTROL_REG_DEVICE_DESCRIPTION), "s", self.bus.device_description))
+                    JD_GET(JD_CONTROL_REG_PRODUCT_IDENTIFIER), "s", self.bus.firmware_version))
+            elif reg_code == JD_CONTROL_REG_DEVICE_DESCRIPTION:
+                uname = os.uname()
+                descr = self.bus.device_description or "{}, {}, {}".format(
+                    uname.nodename, uname.sysname, uname.release)
+                self.send_report(JDPacket.packed(
+                    JD_GET(JD_CONTROL_REG_DEVICE_DESCRIPTION), "s", descr))
             else:
                 self.send_report(pkt.not_implemented())
         else:
@@ -825,7 +851,8 @@ class ControlServer(Server):
             elif cmd == JD_CONTROL_CMD_IDENTIFY:
                 self.bus.emit(EV_IDENTIFY)
             elif cmd == JD_CONTROL_CMD_RESET:
-                sys.exit()  # TODO?
+                # TODO: reset support
+                raise RuntimeError("reset requested")
             else:
                 self.send_report(pkt.not_implemented())
 
@@ -833,7 +860,7 @@ class ControlServer(Server):
 class LoggerServer(Server):
 
     def __init__(self, bus: Bus) -> None:
-        super().__init__(bus, JD_SERVICE_CLASS_LOGGER, instance_name="log")
+        super().__init__(bus, JD_SERVICE_CLASS_LOGGER)
         self.min_priority = self.bus.default_logger_min_priority
         self._last_listener_time = 0
 

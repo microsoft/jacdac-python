@@ -845,7 +845,6 @@ class LoggerServer(Server):
             self._last_listener_time = now()
             if d < self.min_priority:
                 self.min_priority = d
-            self.debug("min priority: {}", self.min_priority)
         return super().handle_packet(pkt)
 
     def report(self, priority: int, msg: str, *args: object):

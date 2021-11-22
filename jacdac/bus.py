@@ -520,11 +520,13 @@ class Bus(EventEmitter):
         self.pipes.append(pipe)
 
     def remove_pipe(self, pipe: 'InPipe'):
-        self.pipes.remove(pipe)
+        if pipe in self.pipes:
+            self.pipes.remove(pipe)
 
 
 class InPipe(EventEmitter):
     """Incoming pipe"""
+
     def __init__(self, bus: Bus):
         super().__init__(bus)
         self.bus = bus
@@ -586,6 +588,7 @@ class InPipe(EventEmitter):
 
 class OutPipe(EventEmitter):
     """Out going packet pipe"""
+
     def __init__(self, bus: 'Bus', pkt: JDPacket) -> None:
         super().__init__(bus)
         [device_id_bytes, port] = pkt.unpack("b[8] u16")

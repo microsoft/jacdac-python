@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v0.0.16 (2021-11-22)
+### Fix
+* Move setup to .py ([`26de946`](https://github.com/microsoft/jacdac-python/commit/26de946cf24730920a9b8ba42895b0822071621f))
+
 ## v0.0.15 (2021-11-22)
 ### Fix
 * Use nested packages as well in pip ([`6f13b99`](https://github.com/microsoft/jacdac-python/commit/6f13b99f323ff81050a9f67a19b51c4989107695))

@@ -33,14 +33,19 @@ class SettingsServer(Server):
         return super().handle_packet(pkt)
 
     def _handle_get(self, pkt: JDPacket):
-        [key] = pkt.unpack("s")
-        value: Optional[bytearray] = None
-        if not key is None and path.exists(self.file_name):
-            with open(self.file_name, "rt") as f:
-                settings = load(f)
-                if key in settings:
-                    value = bytearray(b64decode(settings[key]))
-        # todo
+        key: str = cast(str, pkt.unpack("s")[0])
+        secret = key.startswith("$")
+        value = bytearray(0)
+        if secret:
+            value = bytearray(0)
+        else:
+            if not key is None and path.exists(self.file_name):
+                with open(self.file_name, "rt") as f:
+                    settings = load(f)
+                    if key in settings:
+                        value = bytearray(b64decode(settings[key]))
+        self.send_report(JDPacket.packed(
+            JD_SETTINGS_CMD_GET, "z b", key, value))
 
     def _handle_delete(self, pkt: JDPacket):
         [key] = pkt.unpack("s")

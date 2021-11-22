@@ -1,5 +1,7 @@
-from typing import cast
-from jacdac.bus import Bus, Server, JDPacket
+from io import TextIOWrapper
+from typing import Any, cast
+from jacdac.bus import Bus, Server, JDPacket, OutPipe
+from jacdac.pack import jdpack
 from .constants import *
 from json import load, dump
 from os import path, makedirs
@@ -48,14 +50,23 @@ class SettingsServer(Server):
             self._handle_delete(pkt)
         return super().handle_packet(pkt)
 
+    def _is_secret(self, key: str) -> bool:
+        return key.startswith("$")
+
+    def _read_settings(self, f: TextIOWrapper) -> Any:
+        try:
+            return load(f)
+        except:
+            return {}
+
     def _handle_get(self, pkt: JDPacket):
         key: str = cast(str, pkt.unpack("s")[0])
-        secret = key.startswith("$")
         value = bytearray(0)
         if not key is None and path.exists(self.file_name):
-            with open(self.file_name, "rt") as f:
-                settings = load(f)
+            with open(self.file_name, "r+") as f:
+                settings = self._read_settings(f)
                 if key in settings:
+                    secret = self._is_secret(key)
                     if secret:  # don't return value
                         value = bytearray(0)
                     else:
@@ -66,28 +77,21 @@ class SettingsServer(Server):
     def _handle_delete(self, pkt: JDPacket):
         [key] = pkt.unpack("s")
         self.debug("delete key {}", key)
-        with open(self.file_name, "wt") as f:
-            settings = {}
-            try:
-                settings = load(f)
-            except:
-                pass
-            if settings is None:
-                settings = {}
-            del settings[key]
-            dump(settings, f)
-        self.send_change_event()
+        if not key is None and path.exists(self.file_name):
+            with open(self.file_name, "r+") as f:
+                settings = self._read_settings(f)
+                del settings[key]
+                dump(settings, f)
+            self.send_change_event()
 
     def _handle_set(self, pkt: JDPacket):
         [key, value] = pkt.unpack("z b")
         self.debug("set key {}", key)
-        with open(self.file_name, "wt") as f:
-            try:
-                settings = load(f)
-            except:
-                settings = {}
+        with open(self.file_name, "r+") as f:
+            settings = self._read_settings(f)
             settings[key] = value_to_json(cast(bytearray, value))
-            dump(settings, f)
+            f.seek(0)
+            dump(settings, f, skipkeys=True, sort_keys=True, indent=2)
         self.send_change_event()
 
     def _handle_clear(self, pkt: JDPacket):
@@ -97,7 +101,29 @@ class SettingsServer(Server):
         self.send_change_event()
 
     def _handle_list(self, pkt: JDPacket):
-        pass
+        pipe = OutPipe(self.bus, pkt)
+        if path.exists(self.file_name):
+            with open(self.file_name, "rt") as f:
+                settings = self._read_settings(f)
+                keys = settings.keys()
+                print(keys)
+                for key in keys:
+                    secret = self._is_secret(key)
+                    if secret:  # don't return value
+                        value = bytearray(0)
+                    else:
+                        value = json_to_value(settings[key])
+                    print(key, secret, value)
+                    pipe.write(bytearray(jdpack("z b", key, value)))
+        pipe.close()
 
     def _handle_list_keys(self, pkt: JDPacket):
-        pass
+        pipe = OutPipe(self.bus, pkt)
+        if path.exists(self.file_name):
+            with open(self.file_name, "rt") as f:
+                settings = self._read_settings(f)
+                keys = settings.keys()
+                print(keys)
+                for key in keys:
+                    pipe.write(bytearray(jdpack("s", key)))
+        pipe.close()

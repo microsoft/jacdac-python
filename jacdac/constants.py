@@ -42,6 +42,11 @@ CMD_EVENT_CODE_MASK = const(0xff)
 CMD_EVENT_COUNTER_MASK = const(0x7f)
 CMD_EVENT_COUNTER_POS = const(8)
 
+PIPE_PORT_SHIFT = const(7)
+PIPE_COUNTER_MASK = const(0x001f)
+PIPE_CLOSE_MASK = const(0x0020)
+PIPE_METADATA_MASK = (0x0040)
+
 
 def JD_GET(code: int):
     assert 0 <= code and code <= 0xfff

@@ -34,11 +34,11 @@ class JDPacket:
         util.set_u16(self._header, 14, cmd)
 
     @property
-    def device_identifier(self) -> str:
+    def device_id(self) -> str:
         return util.buf2hex(self._header[4:12])
 
-    @device_identifier.setter
-    def device_identifier(self, id_str: str):
+    @device_id.setter
+    def device_id(self, id_str: str):
         id = util.hex2buf(id_str)
         if len(id) != 8:
             raise ValueError()

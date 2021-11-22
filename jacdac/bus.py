@@ -4,7 +4,8 @@ import queue
 import os
 import time
 
-from random import getrandbits
+from functools import reduce
+from random import getrandbits, randrange
 from typing import Any, Callable, Coroutine, Optional, Tuple, TypeVar, Union, cast, List, Dict
 from textwrap import wrap
 
@@ -35,8 +36,8 @@ EV_IDENTIFY = "identify"
 EV_CONNECTED = "connected"
 EV_DISCONNECTED = "disconnected"
 
-#_ACK_RETRIES = const(4)
-#_ACK_DELAY = const(40)
+# _ACK_RETRIES = const(4)
+# _ACK_DELAY = const(40)
 
 RegType = TypeVar('RegType', bound=Union[PackType, PackTuple])
 HandlerFn = Callable[..., Union[None, Coroutine[Any, Any, None]]]
@@ -223,6 +224,8 @@ class Bus(EventEmitter):
         self.all_clients: List['Client'] = []
         self.servers: List['Server'] = []
         self.logger: Optional[LoggerServer] = None
+        self.pipes: List['InPipe'] = []
+
         self.product_identifier = product_identifier
         self.firmware_version = firmware_version
         self.device_description = device_description
@@ -231,6 +234,7 @@ class Bus(EventEmitter):
         self.default_logger_min_priority = default_logger_min_priority
         self.settings_file_name = settings_file_name
         self._event_counter = 0
+
         if device_id is None:
             device_id = rand_u64().hex()
         self.self_device = Device(self, device_id, bytearray(4))
@@ -318,7 +322,7 @@ class Bus(EventEmitter):
             while ptr < 12 + frame[2]:
                 sz = frame[ptr] + 4
                 pktbytes = frame[0:12] + frame[ptr:ptr+sz]
-                #log("PKT: {}-{} / {}", ptr, len(frame), pktbytes.hex())
+                # log("PKT: {}-{} / {}", ptr, len(frame), pktbytes.hex())
                 pkt = JDPacket(frombytes=pktbytes)
                 if ptr > 12:
                     pkt.requires_ack = False
@@ -423,8 +427,9 @@ class Bus(EventEmitter):
 
     def process_packet(self, pkt: JDPacket):
         logv("route: {}", pkt)
-        dev_id = pkt.device_identifier
+        dev_id = pkt.device_id
         multi_command_class = pkt.multicommand_class
+        service_index = pkt.service_index
 
         # TODO implement send queue for packet compression
 
@@ -437,13 +442,22 @@ class Bus(EventEmitter):
 
         self.emit(EV_PACKET_PROCESS, pkt)
 
+        if service_index == JD_SERVICE_INDEX_PIPE and pkt.device_id == self.self_device.device_id:
+            port = pkt.service_command >> PIPE_PORT_SHIFT
+            pipe = next(filter(lambda p: p.port == port, self.pipes), None)
+            if pipe:
+                pipe.handle_packet(pkt)
+            else:
+                self.debug("unknown pipe port {}", port)
+            return
+
         if multi_command_class != None:
             if not pkt.is_command:
                 return  # only commands supported in multi-command
             for h in self.servers:
                 if h.service_class == multi_command_class:
                     # pretend it's directly addressed to us
-                    pkt.device_identifier = self.self_device.device_id
+                    pkt.device_id = self.self_device.device_id
                     pkt.service_index = h.service_index
                     h.handle_packet_outer(pkt)
         elif dev_id == self.self_device.device_id and pkt.is_command:
@@ -474,7 +488,7 @@ class Bus(EventEmitter):
 
                     matches = False
                     if not dev:
-                        dev = Device(self, pkt.device_identifier, pkt.data)
+                        dev = Device(self, pkt.device_id, pkt.data)
                         # ask for uptime
                         # dev.send_ctrl_command(CMD_GET_REG | ControlReg.Uptime)
                         self.emit(EV_DEVICE_CONNECT, dev)
@@ -497,6 +511,123 @@ class Bus(EventEmitter):
                 return
 
             dev.process_packet(pkt)
+
+    def add_pipe(self, pipe: 'InPipe'):
+        port = randrange(1, 511)
+        while any(p.port == port for p in self.pipes):
+            port = randrange(1, 511)
+        pipe.port = port
+        self.pipes.append(pipe)
+
+    def remove_pipe(self, pipe: 'InPipe'):
+        self.pipes.remove(pipe)
+
+
+class InPipe(EventEmitter):
+    def __init__(self, bus: Bus):
+        super().__init__(bus)
+        self.bus = bus
+        self.port = -1
+        self.next_cnt = 0
+        self.closed = False
+        self.in_q: List[bytearray] = []
+        self.port = -1
+        self.bus.add_pipe(self)
+
+    def open_command(self, cmd: int):
+        return JDPacket.packed(cmd, "b[8] u16 u16", bytearray.fromhex(self.bus.self_device.device_id), self.port, 0)
+
+    def bytes_available(self) -> int:
+        return reduce(lambda x, y: x + len(y), self.in_q, 0)
+
+    def read(self) -> Optional[bytearray]:
+        while True:
+            if len(self.in_q):
+                return self.in_q.pop(0)
+            if self.closed:
+                return None
+            self.wait_for(EV_REPORT_RECEIVE)
+
+    def _close(self):
+        self.closed = True
+        self.bus.remove_pipe(self)
+
+    def close(self):
+        self._close()
+        self.in_q = []
+
+    def meta(self, pkt: JDPacket):
+        pass
+
+    def handle_packet(self, pkt: JDPacket):
+        cmd = pkt.service_command
+        if (cmd & PIPE_COUNTER_MASK) != (self.next_cnt & PIPE_COUNTER_MASK):
+            return
+        self.next_cnt += 1
+        if cmd & PIPE_CLOSE_MASK:
+            self._close()
+        if cmd & PIPE_METADATA_MASK:
+            self.meta(pkt)
+        else:
+            self.in_q.append(pkt.data)
+            self.emit(EV_REPORT_RECEIVE)
+
+    def read_list(self) -> List[bytearray]:
+        r: List[bytearray] = []
+        while True:
+            buf = self.read()
+            if not buf:
+                break
+            if len(buf):
+                r.append(buf)
+        return r
+
+
+class OutPipe(EventEmitter):
+    def __init__(self, bus: 'Bus', pkt: JDPacket) -> None:
+        super().__init__(bus)
+        [device_id_bytes, port] = pkt.unpack("b[8] u16")
+
+        self.device_id = cast(bytearray, device_id_bytes).hex()
+        self.port = cast(int, port)
+        self.next_cnt = 0
+
+    @property
+    def open(self):
+        return not not self.port
+
+    def write_ex(self, buf: bytearray, flags: int):
+        if not self.port:
+            return
+        pkt = JDPacket(
+            cmd=(self.next_cnt & PIPE_COUNTER_MASK) |
+            (self.port << PIPE_PORT_SHIFT) |
+            flags,
+            data=buf
+        )
+        self.next_cnt += 1
+        if flags & PIPE_CLOSE_MASK:
+            self.port = None
+        pkt.service_index = JD_SERVICE_INDEX_PIPE
+        pkt.requires_ack = True
+        pkt.device_id = self.device_id
+        self.bus._send_core(pkt)
+        # TODO: check acks
+        # if not pkt._send_with_ack(self.device_id):
+        #    self.port = None
+        #    throw "out pipe error: no ACK"
+
+    def write(self, buf: bytearray):
+        self.write_ex(buf, 0)
+
+    def write_and_close(self, buf: bytearray):
+        self.write_ex(buf, PIPE_CLOSE_MASK)
+
+    def close(self):
+        self.write_and_close(bytearray(0))
+
+    def write_meta(self, buf: bytearray):
+        self.write_ex(buf, PIPE_METADATA_MASK)
 
 
 class RawRegisterClient(EventEmitter):
@@ -676,7 +807,7 @@ class Server(EventEmitter):
 
     def send_report(self, pkt: JDPacket):
         pkt.service_index = self.service_index
-        pkt.device_identifier = self.bus.self_device.device_id
+        pkt.device_id = self.bus.self_device.device_id
         self.bus._send_core(pkt)
 
     def send_event(self, event_code: int, data: bytes = None):
@@ -971,7 +1102,7 @@ class Client(EventEmitter):
         if self.current_device is None:
             return
         pkt.service_index = self.service_index
-        pkt.device_identifier = self.current_device.device_id
+        pkt.device_id = self.current_device.device_id
         pkt._header[3] |= JD_FRAME_FLAG_COMMAND
         self.bus._send_core(pkt)
 

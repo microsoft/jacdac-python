@@ -850,8 +850,19 @@ class LoggerServer(Server):
 
     def report(self, priority: int, msg: str, *args: object):
         log(msg, *args)
+        cmd: int = -1
+        if priority == JD_LOGGER_PRIORITY_DEBUG:
+            cmd = JD_LOGGER_CMD_DEBUG
+        elif priority == JD_LOGGER_PRIORITY_LOG:
+            cmd = JD_LOGGER_CMD_LOG
+        elif priority == JD_LOGGER_PRIORITY_WARNING:
+            cmd = JD_LOGGER_CMD_WARN
+        elif priority == JD_LOGGER_CMD_ERROR:
+            cmd = JD_LOGGER_CMD_ERROR
+        else:
+            return
 
-        if now() - self._last_listener_time > 3000:
+        if now() - self._last_listener_time > JD_LOGGER_LISTENER_TIMEOUT:
             self._last_listener_time = 0
             self.min_priority = self.bus.default_logger_min_priority
 
@@ -859,7 +870,7 @@ class LoggerServer(Server):
             return
 
         # TODO: chunk msg
-        self.send_report(JDPacket.packed(priority, "s", msg))
+        self.send_report(JDPacket.packed(cmd, "s", msg))
 
 
 class UniqueBrainServer(Server):

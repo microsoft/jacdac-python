@@ -23,6 +23,8 @@ JD_REGISTER_POLL_REPORT_VOLATILE_MAX_INTERVAL = 5000
 JD_REGISTER_OPTIONAL_POLL_COUNT = 3
 JD_STREAMING_DEFAULT_INTERVAL = 50
 
+JD_LOGGER_LISTENER_TIMEOUT = 3000
+
 # Registers 0x001-0x07f - r/w common to all services
 # Registers 0x080-0x0ff - r/w defined per-service
 # Registers 0x100-0x17f - r/o common to all services

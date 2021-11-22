@@ -1,10 +1,10 @@
 import threading
-import random
 import asyncio
 import queue
 import os
 import time
 
+from random import getrandbits
 from typing import Any, Callable, Coroutine, Optional, Tuple, TypeVar, Union, cast, List, Dict
 from textwrap import wrap
 
@@ -186,11 +186,11 @@ class Transport:
 # TODO: replace randbytes
 
 
-def _rand_device_id():
+def rand_u64():
     r: List[int] = []
     for i in range(8):
-        r.append(random.getrandbits(8))
-    return bytearray(r).hex()
+        r.append(getrandbits(8))
+    return bytearray(r)
 
 
 class Bus(EventEmitter):
@@ -232,7 +232,7 @@ class Bus(EventEmitter):
         self.settings_file_name = settings_file_name
         self._event_counter = 0
         if device_id is None:
-            device_id = _rand_device_id()
+            device_id = rand_u64().hex()
         self.self_device = Device(self, device_id, bytearray(4))
         self.process_thread = threading.Thread(target=self._process_task)
         self.transport = transport

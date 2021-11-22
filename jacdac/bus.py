@@ -837,8 +837,9 @@ class ControlServer(Server):
                     JD_GET(JD_CONTROL_REG_PRODUCT_IDENTIFIER), "s", self.bus.firmware_version))
             elif reg_code == JD_CONTROL_REG_DEVICE_DESCRIPTION:
                 uname = os.uname()
-                descr = self.bus.device_description or "{}, {}, {}".format(
-                    uname.nodename, uname.sysname, uname.release)
+                descr = "{}, {}, {}, {}, jacdac {}".format(
+                    self.bus.device_description or "",
+                    uname.nodename, uname.sysname, uname.release, JD_VERSION)
                 self.send_report(JDPacket.packed(
                     JD_GET(JD_CONTROL_REG_DEVICE_DESCRIPTION), "s", descr))
             else:

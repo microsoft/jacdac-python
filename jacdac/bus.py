@@ -188,10 +188,7 @@ class Transport:
 
 
 def rand_u64():
-    r: List[int] = []
-    for i in range(8):
-        r.append(getrandbits(8))
-    return bytearray(r)
+    return bytearray([getrandbits(8) for _ in range(8)])
 
 
 class Bus(EventEmitter):
@@ -202,8 +199,8 @@ class Bus(EventEmitter):
                  product_identifier: int = None,
                  firmware_version: str = None,
                  device_description: str = None,
-                 disable_logger: Optional[bool] = False,
-                 disable_brain: Optional[bool] = False,
+                 disable_logger: bool = False,
+                 disable_brain: bool = False,
                  default_logger_min_priority: int = JD_LOGGER_PRIORITY_SILENT,
                  settings_file_name: str = None) -> None:
         """Instantiates a new Jacdac bus
@@ -214,8 +211,8 @@ class Bus(EventEmitter):
             device_id (str, optional): Optional device identifier. Auto-generated if not specified.
             product_identifier (int, optional): Optional product identifier.
             device_description (str, optional): Optional device description.
-            disable_logger (Optional[bool], optional): Disable the logger service. Defaults to False.
-            disable_brain (Optional[bool], optional): Disable unique brain service. Defaults to False.
+            disable_logger (bool, optional): Disable the logger service. Defaults to False.
+            disable_brain (bool, optional): Disable unique brain service. Defaults to False.
             default_logger_min_priority (int, optional): Optional mininimum logger priority. Defaults to JD_LOGGER_PRIORITY_SILENT.
         """
         super().__init__(self)

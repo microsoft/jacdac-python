@@ -430,12 +430,11 @@ class Bus(EventEmitter):
 
         # TODO implement send queue for packet compression
 
-        # if (pkt.requires_ack):
-        #     pkt.requires_ack = False  # make sure we only do it once
-        #     if pkt.device_identifier == self.self_device.device_id:
-        #         ack = JDPacket(cmd=pkt.crc)
-        #         ack.service_index = JD_SERVICE_INDEX_CRC_ACK
-        #         ack._send_report(self.self_device)
+        if pkt.requires_ack and pkt.device_id == self.self_device.device_id:
+            ack = JDPacket(cmd=pkt.crc)
+            ack.service_index = JD_SERVICE_INDEX_CRC_ACK
+            ack.device_id = self.self_device.device_id
+            self._send_core(ack)
 
         self.emit(EV_PACKET_PROCESS, pkt)
 

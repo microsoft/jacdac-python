@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v0.0.19 (2021-11-23)
+### Fix
+* Sensor server streaming ([`8177a95`](https://github.com/microsoft/jacdac-python/commit/8177a95e4d33d585d4f1ae402f4ebba9963e7a99))
+
 ## v0.0.18 (2021-11-23)
 ### Fix
 * Support for optional default sensor value ([`5a7f5f8`](https://github.com/microsoft/jacdac-python/commit/5a7f5f81c865a5f859b3a14d50c789e0c2d021d4))

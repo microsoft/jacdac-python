@@ -262,11 +262,6 @@ class Bus(EventEmitter):
         else:
             self.loop.call_soon(cb, *args)
 
-    # TODO: typing for cb
-    def run_in_background(self, cb: Any):
-        loop = asyncio.get_running_loop()
-        loop.run_in_executor(None, cb)
-
     def _sender(self):
         while True:
             pkt = self._sendq.get()
@@ -1118,7 +1113,8 @@ class Client(EventEmitter):
         pkt.service_index = self.service_index
         pkt.device_id = self.current_device.device_id
         pkt._header[3] |= JD_FRAME_FLAG_COMMAND
-        self.bus._send_core(pkt)
+
+        self.bus.run(self.bus._send_core, pkt)
 
     def send_cmd_packed(self, cmd: int, *args: PackType):
         if args is None:

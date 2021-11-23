@@ -1,3 +1,4 @@
+import asyncio
 from typing import Optional, Union, cast
 from azure.iot.device.aio import IoTHubDeviceClient
 from azure.iot.device import Message
@@ -23,7 +24,7 @@ class AzureIotHubHealthServer(Server):
         super().__init__(bus, JD_SERVICE_CLASS_AZURE_IOT_HUB_HEALTH)
         self.device_client: Optional[IoTHubDeviceClient] = None
         self._connection_status = AzureIotHubHealthConnectionStatus.DISCONNECTED
-        self.bus.run_in_background(self.connect)
+        asyncio.create_task(self.connect())
 
     async def send_message(self, msg: Union[str, Message]):
         self.debug("send message")
@@ -112,11 +113,11 @@ class AzureIotHubHealthServer(Server):
 
     def handle_connect(self, pkt: JDPacket):
         self.debug("connect requested")
-        self.bus.run_in_background(self.connect)
+        asyncio.create_task(self.connect())
 
     def handle_disconnect(self, pkt: JDPacket):
         self.debug("disconnect requested")
-        self.bus.run_in_background(self.disconnect)
+        asyncio.create_task(self.disconnect())
 
     def handle_set_connection_string(self, pkt: JDPacket):
         [conn_str] = pkt.unpack("s")

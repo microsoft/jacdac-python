@@ -3,3 +3,4 @@ websocket-client
 setuptools
 build
 typing
+azure-iot-device

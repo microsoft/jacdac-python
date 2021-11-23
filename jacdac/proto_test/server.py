@@ -11,6 +11,8 @@ class ProtoTestServer(Server):
         self.rw_i32 = 0
         self.rw_u32 = 0
         self.rw_str = ""
+        self.rw_bytes = bytearray(0)
+        self.rw_u8_string = [0, ""]
 
     def handle_packet(self, pkt: JDPacket):
         cmd = pkt.service_command
@@ -57,6 +59,17 @@ class ProtoTestServer(Server):
                         JD_PROTO_TEST_PACK_FORMATS[JD_PROTO_TEST_REG_RO_STRING], self.rw_str)
         if cmd == JD_PROTO_TEST_CMD_C_STRING:
             [self.rw_str] = pkt.unpack(JD_PROTO_TEST_PACK_FORMATS[JD_PROTO_TEST_CMD_C_STRING])
+
+        rw_bytes = self.handle_reg(pkt, JD_PROTO_TEST_REG_RW_BYTES,
+                                 JD_PROTO_TEST_PACK_FORMATS[JD_PROTO_TEST_REG_RW_BYTES], self.rw_bytes)
+        if rw_bytes != self.rw_bytes:
+            self.rw_bytes = rw_bytes
+            self.send_event(JD_PROTO_TEST_EV_E_BYTES, jdpack(
+                JD_PROTO_TEST_PACK_FORMATS[JD_PROTO_TEST_REG_RW_BYTES], self.rw_bytes))
+        self.handle_reg(pkt, JD_PROTO_TEST_REG_RO_BYTES,
+                        JD_PROTO_TEST_PACK_FORMATS[JD_PROTO_TEST_REG_RO_BYTES], self.rw_bytes)
+        if cmd == JD_PROTO_TEST_CMD_C_BYTES:
+            [self.rw_bytes] = pkt.unpack(JD_PROTO_TEST_PACK_FORMATS[JD_PROTO_TEST_CMD_C_BYTES])
 
         return super().handle_packet(pkt)
 

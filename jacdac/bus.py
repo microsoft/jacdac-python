@@ -262,6 +262,11 @@ class Bus(EventEmitter):
         else:
             self.loop.call_soon(cb, *args)
 
+    # TODO: typing for cb
+    def run_in_background(self, cb: Any):
+        loop = asyncio.get_running_loop()
+        loop.run_in_executor(None, cb)
+
     def _sender(self):
         while True:
             pkt = self._sendq.get()
@@ -814,9 +819,13 @@ class Server(EventEmitter):
     def send_event(self, event_code: int, data: bytes = None):
         pkt = JDPacket(cmd=self.bus.mk_event_cmd(event_code), data=data)
         def resend(): self.send_report(pkt)
-        resend()
-        self.bus.loop.call_later(0.020, resend)
-        self.bus.loop.call_later(0.100, resend)
+
+        def trisend():
+            resend()
+            self.bus.loop.call_later(0.020, resend)
+            self.bus.loop.call_later(0.100, resend)
+
+        self.bus.run(trisend)
 
     def send_change_event(self):
         self.send_event(JD_EV_CHANGE)
@@ -1029,8 +1038,12 @@ class LoggerServer(Server):
             return
 
         chunks = wrap(msg, JD_SERIAL_MAX_PAYLOAD_SIZE)
-        for chunk in chunks:
-            self.send_report(JDPacket.packed(cmd, "s", chunk))
+
+        def send_chunks():
+            for chunk in chunks:
+                self.send_report(JDPacket.packed(cmd, "s", chunk))
+
+        self.bus.run(send_chunks)
 
 
 class UniqueBrainServer(Server):

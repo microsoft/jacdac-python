@@ -1,8 +1,10 @@
 import asyncio
 from typing import Any, Optional, Union, cast
 from azure.iot.device.aio import IoTHubDeviceClient
+from azure.iot.device import Message
 
 from jacdac.pack import jdpack
+
 from ..bus import Bus, Server
 from ..packet import JDPacket
 from .constants import *
@@ -15,12 +17,10 @@ class AzureIotHubHealthServer(Server):
         super().__init__(bus, JD_SERVICE_CLASS_AZURE_IOT_HUB_HEALTH)
         self.device_client: Optional[IoTHubDeviceClient] = None
         self._connection_status = AzureIotHubHealthConnectionStatus.DISCONNECTED
-        loop = asyncio.get_running_loop()
-        loop.run_in_executor(None, self.connect)
+        self.bus.run_in_background(self.connect)
 
-    async def send_message(self, msg: Union[str, Any]):
-        self.debug("send message, conn {}", self._connection_status)
-
+    async def send_message(self, msg: Union[str, Message]):
+        self.debug("send message")
         if self.connection_status == AzureIotHubHealthConnectionStatus.DISCONNECTED:
             await self.connect()
 
@@ -29,7 +29,8 @@ class AzureIotHubHealthServer(Server):
                 await self.device_client.send_message(msg)  # type: ignore
                 self.send_event(JD_AZURE_IOT_HUB_HEALTH_EV_MESSAGE_SENT)
             except Exception as e:
-                self.error("send message error {}", e)
+                print(e)
+                self.error("send message error")
                 await self.disconnect()
 
     @property
@@ -40,7 +41,6 @@ class AzureIotHubHealthServer(Server):
     def connection_status(self, value: AzureIotHubHealthConnectionStatus):
         if self._connection_status != value:
             self._connection_status = value
-            self.debug("connection status: {}", self._connection_status)
             self.send_event(JD_AZURE_IOT_HUB_HEALTH_EV_CONNECTION_STATUS_CHANGE, jdpack(
                 JD_AZURE_IOT_HUB_HEALTH_PACK_FORMATS[JD_AZURE_IOT_HUB_HEALTH_EV_CONNECTION_STATUS_CHANGE], self._connection_status))
 
@@ -100,12 +100,12 @@ class AzureIotHubHealthServer(Server):
         return super().handle_packet(pkt)
 
     def handle_connect(self, pkt: JDPacket):
-        loop = asyncio.get_running_loop()
-        loop.run_in_executor(None, self.connect)
+        self.debug("connect requested")
+        self.bus.run_in_background(self.connect)
 
     def handle_disconnect(self, pkt: JDPacket):
-        loop = asyncio.get_running_loop()
-        loop.run_in_executor(None, self.disconnect)
+        self.debug("disconnect requested")
+        self.bus.run_in_background(self.disconnect)
 
     def handle_set_connection_string(self, pkt: JDPacket):
         [conn_str] = pkt.unpack("s")

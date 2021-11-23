@@ -1,3 +1,5 @@
+from abc import abstractmethod
+from asyncio.tasks import Task
 import threading
 import asyncio
 import queue
@@ -872,13 +874,29 @@ class Server(EventEmitter):
                                self.instance_name or self.service_index)
 
 
-# TODO: stream sensors
 class SensorServer(Server):
     def __init__(self, bus: Bus, service_class: int, streaming_interval: int, *, instance_name: str = None, streaming_preferred_interval: int = None) -> None:
         super().__init__(bus, service_class, instance_name=instance_name)
-        self.streaming_samples = 0
+        self.streaming_samples: int = 0
         self.streaming_preferred_interval: Optional[int] = streaming_preferred_interval
         self.streaming_interval = streaming_interval
+        self._stream_task: Optional[Task[None]] = None
+
+    @abstractmethod
+    def send_reading(self):
+        pass
+
+    def _start_streaming(self):
+        if self.streaming_samples > 0 and not self._stream_task:
+            self._stream_task = asyncio.ensure_future(self._stream())
+
+    async def _stream(self):
+        while(self.streaming_samples > 0):
+            self.streaming_samples = self.streaming_samples - 1
+            self.send_reading()
+            interval = max(20, self.streaming_interval)
+            await asyncio.sleep(interval / 1000)
+        self._stream_task = None
 
     def handle_packet(self, pkt: JDPacket):
         cmd = pkt.service_command
@@ -893,6 +911,7 @@ class SensorServer(Server):
     def _handle_streaming_samples(self, pkt: JDPacket):
         self.streaming_samples = self.handle_reg_u8(pkt, JD_REG_STREAMING_SAMPLES,
                                                     self.streaming_samples)
+        self._start_streaming()
 
     def _handle_streaming_interval(self, pkt: JDPacket):
         self.streaming_interval = self.handle_reg_u32(

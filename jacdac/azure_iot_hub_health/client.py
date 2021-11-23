@@ -17,14 +17,14 @@ class AzureIotHubHealthClient(Client):
     @property
     def hub_name(self) -> Optional[str]:
         """
-        Something like `my-iot-hub.azure-devices.net`; empty string when not properly configured, 
+        (Optional) Something like `my-iot-hub.azure-devices.net` if available., 
         """
         return self.register(JD_AZURE_IOT_HUB_HEALTH_REG_HUB_NAME).value()
 
     @property
     def hub_device_id(self) -> Optional[str]:
         """
-        Device identifier in Azure Iot Hub, 
+        (Optional) Device identifier in Azure Iot Hub if available., 
         """
         return self.register(JD_AZURE_IOT_HUB_HEALTH_REG_HUB_DEVICE_ID).value()
 

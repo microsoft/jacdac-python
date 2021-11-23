@@ -19,11 +19,12 @@ class RoleManagerClient(Client):
      * should be co-located on a single device
      * (eg., here the `left_leg` "location" is expected to have both an accelerometer and a gyro service on a single device).
     Implements a client for the `Role Manager <https://microsoft.github.io/jacdac-docs/services/rolemanager>`_ service.
+
     """
 
     def __init__(self, bus: Bus, role: str) -> None:
         super().__init__(bus, JD_SERVICE_CLASS_ROLE_MANAGER, JD_ROLE_MANAGER_PACK_FORMATS, role)
-    
+
 
     @property
     def auto_bind(self) -> Optional[bool]:

@@ -8,11 +8,12 @@ class LightBulbClient(Client):
     """
     A light bulb controller.
     Implements a client for the `Light bulb <https://microsoft.github.io/jacdac-docs/services/lightbulb>`_ service.
+
     """
 
     def __init__(self, bus: Bus, role: str) -> None:
         super().__init__(bus, JD_SERVICE_CLASS_LIGHT_BULB, JD_LIGHT_BULB_PACK_FORMATS, role)
-    
+
 
     @property
     def brightness(self) -> Optional[float]:

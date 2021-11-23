@@ -8,11 +8,12 @@ class TvocClient(SensorClient):
     """
     Measures equivalent Total Volatile Organic Compound levels.
     Implements a client for the `Total Volatile organic compound <https://microsoft.github.io/jacdac-docs/services/tvoc>`_ service.
+
     """
 
-    def __init__(self, bus: Bus, role: str) -> None:
+    def __init__(self, bus: Bus, role: str, *, missing_TVOC_value: float = None) -> None:
         super().__init__(bus, JD_SERVICE_CLASS_TVOC, JD_TVOC_PACK_FORMATS, role)
-    
+        self.missing_TVOC_value = missing_TVOC_value
 
     @property
     def TVOC(self) -> Optional[float]:
@@ -20,7 +21,7 @@ class TvocClient(SensorClient):
         Total volatile organic compound readings in parts per billion., _: ppb
         """
         self.refresh_reading()
-        return self.register(JD_TVOC_REG_TVOC).value()
+        return self.register(JD_TVOC_REG_TVOC).value(self.missing_TVOC_value)
 
     @property
     def TVOC_error(self) -> Optional[float]:

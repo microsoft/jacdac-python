@@ -8,11 +8,12 @@ class MicrophoneClient(Client):
     """
     A single-channel microphone.
     Implements a client for the `Microphone <https://microsoft.github.io/jacdac-docs/services/microphone>`_ service.
+
     """
 
     def __init__(self, bus: Bus, role: str) -> None:
         super().__init__(bus, JD_SERVICE_CLASS_MICROPHONE, JD_MICROPHONE_PACK_FORMATS, role)
-    
+
 
     @property
     def sampling_period(self) -> Optional[int]:

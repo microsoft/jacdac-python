@@ -8,11 +8,12 @@ class HumidityClient(SensorClient):
     """
     A sensor measuring humidity of outside environment.
     Implements a client for the `Humidity <https://microsoft.github.io/jacdac-docs/services/humidity>`_ service.
+
     """
 
-    def __init__(self, bus: Bus, role: str) -> None:
+    def __init__(self, bus: Bus, role: str, *, missing_humidity_value: float = None) -> None:
         super().__init__(bus, JD_SERVICE_CLASS_HUMIDITY, JD_HUMIDITY_PACK_FORMATS, role, preferred_interval = 5000)
-    
+        self.missing_humidity_value = missing_humidity_value
 
     @property
     def humidity(self) -> Optional[float]:
@@ -20,7 +21,7 @@ class HumidityClient(SensorClient):
         The relative humidity in percentage of full water saturation., _: %RH
         """
         self.refresh_reading()
-        return self.register(JD_HUMIDITY_REG_HUMIDITY).value()
+        return self.register(JD_HUMIDITY_REG_HUMIDITY).value(self.missing_humidity_value)
 
     @property
     def humidity_error(self) -> Optional[float]:

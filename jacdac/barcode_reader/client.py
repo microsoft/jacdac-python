@@ -8,11 +8,12 @@ class BarcodeReaderClient(Client):
     """
     A device that reads various barcodes, like QR codes. For the web, see [BarcodeDetector](https://developer.mozilla.org/en-US/docs/Web/API/BarcodeDetector).
     Implements a client for the `Barcode reader <https://microsoft.github.io/jacdac-docs/services/barcodereader>`_ service.
+
     """
 
     def __init__(self, bus: Bus, role: str) -> None:
         super().__init__(bus, JD_SERVICE_CLASS_BARCODE_READER, JD_BARCODE_READER_PACK_FORMATS, role)
-    
+
 
     @property
     def enabled(self) -> Optional[bool]:

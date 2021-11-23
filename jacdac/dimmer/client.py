@@ -8,11 +8,12 @@ class DimmerClient(Client):
     """
     A light or fan controller that dims the current on a line.
     Implements a client for the `Dimmer <https://microsoft.github.io/jacdac-docs/services/dimmer>`_ service.
+
     """
 
     def __init__(self, bus: Bus, role: str) -> None:
         super().__init__(bus, JD_SERVICE_CLASS_DIMMER, JD_DIMMER_PACK_FORMATS, role)
-    
+
 
     @property
     def intensity(self) -> Optional[float]:

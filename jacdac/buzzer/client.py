@@ -8,11 +8,12 @@ class BuzzerClient(Client):
     """
     A simple buzzer.
     Implements a client for the `Buzzer <https://microsoft.github.io/jacdac-docs/services/buzzer>`_ service.
+
     """
 
     def __init__(self, bus: Bus, role: str) -> None:
         super().__init__(bus, JD_SERVICE_CLASS_BUZZER, JD_BUZZER_PACK_FORMATS, role)
-    
+
 
     @property
     def volume(self) -> Optional[float]:

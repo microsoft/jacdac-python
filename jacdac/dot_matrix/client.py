@@ -8,11 +8,12 @@ class DotMatrixClient(Client):
     """
     A rectangular dot matrix display, made of monochrome LEDs or Braille pins.
     Implements a client for the `Dot Matrix <https://microsoft.github.io/jacdac-docs/services/dotmatrix>`_ service.
+
     """
 
     def __init__(self, bus: Bus, role: str) -> None:
         super().__init__(bus, JD_SERVICE_CLASS_DOT_MATRIX, JD_DOT_MATRIX_PACK_FORMATS, role)
-    
+
 
     @property
     def dots(self) -> Optional[bytes]:

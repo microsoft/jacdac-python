@@ -8,11 +8,12 @@ class AccelerometerClient(SensorClient):
     """
     A 3-axis accelerometer.
     Implements a client for the `Accelerometer <https://microsoft.github.io/jacdac-docs/services/accelerometer>`_ service.
+
     """
 
-    def __init__(self, bus: Bus, role: str) -> None:
+    def __init__(self, bus: Bus, role: str, *, missing_forces_value: Tuple[float, float, float] = None) -> None:
         super().__init__(bus, JD_SERVICE_CLASS_ACCELEROMETER, JD_ACCELEROMETER_PACK_FORMATS, role)
-    
+        self.missing_forces_value = missing_forces_value
 
     @property
     def forces(self) -> Optional[Tuple[float, float, float]]:
@@ -20,7 +21,7 @@ class AccelerometerClient(SensorClient):
         Indicates the current forces acting on accelerometer., x: g,y: g,z: g
         """
         self.refresh_reading()
-        return self.register(JD_ACCELEROMETER_REG_FORCES).value()
+        return self.register(JD_ACCELEROMETER_REG_FORCES).value(self.missing_forces_value)
 
     @property
     def forces_error(self) -> Optional[float]:

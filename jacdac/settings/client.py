@@ -8,11 +8,12 @@ class SettingsClient(Client):
     """
     Non-volatile key-value storage interface for storing settings.
     Implements a client for the `Settings <https://microsoft.github.io/jacdac-docs/services/settings>`_ service.
+
     """
 
     def __init__(self, bus: Bus, role: str) -> None:
         super().__init__(bus, JD_SERVICE_CLASS_SETTINGS, JD_SETTINGS_PACK_FORMATS, role)
-    
+
 
     def on_change(self, handler: EventHandlerFn) -> UnsubscribeFn:
         """

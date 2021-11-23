@@ -10,11 +10,12 @@ class ArcadeGamepadClient(Client):
      * A gamepad with direction and action buttons for one player.
      * If a device has multiple controllers, it should have multiple gamepad services, using consecutive service identifiers.
     Implements a client for the `Arcade Gamepad <https://microsoft.github.io/jacdac-docs/services/arcadegamepad>`_ service.
+
     """
 
     def __init__(self, bus: Bus, role: str) -> None:
         super().__init__(bus, JD_SERVICE_CLASS_ARCADE_GAMEPAD, JD_ARCADE_GAMEPAD_PACK_FORMATS, role)
-    
+
 
     def on_down(self, handler: EventHandlerFn) -> UnsubscribeFn:
         """

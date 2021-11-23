@@ -8,11 +8,12 @@ class SevenSegmentDisplayClient(Client):
     """
     A 7-segment numeric display, with one or more digits.
     Implements a client for the `7-segment display <https://microsoft.github.io/jacdac-docs/services/sevensegmentdisplay>`_ service.
+
     """
 
     def __init__(self, bus: Bus, role: str) -> None:
         super().__init__(bus, JD_SERVICE_CLASS_SEVEN_SEGMENT_DISPLAY, JD_SEVEN_SEGMENT_DISPLAY_PACK_FORMATS, role)
-    
+
 
     @property
     def digits(self) -> Optional[bytes]:

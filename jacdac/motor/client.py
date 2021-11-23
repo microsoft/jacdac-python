@@ -8,11 +8,12 @@ class MotorClient(Client):
     """
     A bi-directional DC motor.
     Implements a client for the `Motor <https://microsoft.github.io/jacdac-docs/services/motor>`_ service.
+
     """
 
     def __init__(self, bus: Bus, role: str) -> None:
         super().__init__(bus, JD_SERVICE_CLASS_MOTOR, JD_MOTOR_PACK_FORMATS, role)
-    
+
 
     @property
     def duty(self) -> Optional[float]:

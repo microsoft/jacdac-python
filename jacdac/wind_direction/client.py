@@ -8,11 +8,12 @@ class WindDirectionClient(SensorClient):
     """
     A sensor that measures wind direction.
     Implements a client for the `Wind direction <https://microsoft.github.io/jacdac-docs/services/winddirection>`_ service.
+
     """
 
-    def __init__(self, bus: Bus, role: str) -> None:
+    def __init__(self, bus: Bus, role: str, *, missing_wind_direction_value: int = None) -> None:
         super().__init__(bus, JD_SERVICE_CLASS_WIND_DIRECTION, JD_WIND_DIRECTION_PACK_FORMATS, role, preferred_interval = 1000)
-    
+        self.missing_wind_direction_value = missing_wind_direction_value
 
     @property
     def wind_direction(self) -> Optional[int]:
@@ -20,7 +21,7 @@ class WindDirectionClient(SensorClient):
         The direction of the wind., _: °
         """
         self.refresh_reading()
-        return self.register(JD_WIND_DIRECTION_REG_WIND_DIRECTION).value()
+        return self.register(JD_WIND_DIRECTION_REG_WIND_DIRECTION).value(self.missing_wind_direction_value)
 
     @property
     def wind_direction_error(self) -> Optional[int]:

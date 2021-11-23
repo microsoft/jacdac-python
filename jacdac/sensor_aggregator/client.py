@@ -9,11 +9,12 @@ class SensorAggregatorClient(SensorClient):
     Aggregate data from multiple sensors into a single stream
      * (often used as input to machine learning models on the same device, see model runner service).
     Implements a client for the `Sensor Aggregator <https://microsoft.github.io/jacdac-docs/services/sensoraggregator>`_ service.
+
     """
 
-    def __init__(self, bus: Bus, role: str) -> None:
+    def __init__(self, bus: Bus, role: str, *, missing_current_sample_value: bytes = None) -> None:
         super().__init__(bus, JD_SERVICE_CLASS_SENSOR_AGGREGATOR, JD_SENSOR_AGGREGATOR_PACK_FORMATS, role)
-    
+        self.missing_current_sample_value = missing_current_sample_value
 
     @property
     def num_samples(self) -> Optional[int]:
@@ -47,6 +48,6 @@ class SensorAggregatorClient(SensorClient):
         Last collected sample., 
         """
         self.refresh_reading()
-        return self.register(JD_SENSOR_AGGREGATOR_REG_CURRENT_SAMPLE).value()
+        return self.register(JD_SENSOR_AGGREGATOR_REG_CURRENT_SAMPLE).value(self.missing_current_sample_value)
 
     

@@ -8,11 +8,12 @@ class ThermocoupleClient(SensorClient):
     """
     A thermocouple using a heat probe to gather temperatures.
     Implements a client for the `Thermocouple <https://microsoft.github.io/jacdac-docs/services/thermocouple>`_ service.
+
     """
 
-    def __init__(self, bus: Bus, role: str) -> None:
+    def __init__(self, bus: Bus, role: str, *, missing_temperature_value: float = None) -> None:
         super().__init__(bus, JD_SERVICE_CLASS_THERMOCOUPLE, JD_THERMOCOUPLE_PACK_FORMATS, role, preferred_interval = 1000)
-    
+        self.missing_temperature_value = missing_temperature_value
 
     @property
     def temperature(self) -> Optional[float]:
@@ -20,7 +21,7 @@ class ThermocoupleClient(SensorClient):
         The temperature., _: °C
         """
         self.refresh_reading()
-        return self.register(JD_THERMOCOUPLE_REG_TEMPERATURE).value()
+        return self.register(JD_THERMOCOUPLE_REG_TEMPERATURE).value(self.missing_temperature_value)
 
     @property
     def min_temperature(self) -> Optional[float]:

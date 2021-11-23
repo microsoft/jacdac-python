@@ -8,11 +8,12 @@ class TrafficLightClient(Client):
     """
     Controls a mini traffic with a red, orange and green LED.
     Implements a client for the `Traffic Light <https://microsoft.github.io/jacdac-docs/services/trafficlight>`_ service.
+
     """
 
     def __init__(self, bus: Bus, role: str) -> None:
         super().__init__(bus, JD_SERVICE_CLASS_TRAFFIC_LIGHT, JD_TRAFFIC_LIGHT_PACK_FORMATS, role)
-    
+
 
     @property
     def red(self) -> Optional[bool]:

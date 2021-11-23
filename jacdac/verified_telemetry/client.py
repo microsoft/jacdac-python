@@ -8,11 +8,12 @@ class VerifiedTelemetryClient(Client):
     """
     A mixin service that exposes verified telemetry information for a sensor (see https://github.com/Azure/Verified-Telemetry/tree/main/PnPModel).
     Implements a client for the `Verified Telemetry <https://microsoft.github.io/jacdac-docs/services/verifiedtelemetrysensor>`_ service.
+
     """
 
     def __init__(self, bus: Bus, role: str) -> None:
         super().__init__(bus, JD_SERVICE_CLASS_VERIFIED_TELEMETRY, JD_VERIFIED_TELEMETRY_PACK_FORMATS, role)
-    
+
 
     @property
     def telemetry_status(self) -> Optional[VerifiedTelemetryStatus]:

@@ -8,11 +8,12 @@ class CapacitiveButtonClient(Client):
     """
     A configuration service for a capacitive push-button.
     Implements a client for the `Capacitive Button <https://microsoft.github.io/jacdac-docs/services/capacitivebutton>`_ service.
+
     """
 
     def __init__(self, bus: Bus, role: str) -> None:
         super().__init__(bus, JD_SERVICE_CLASS_CAPACITIVE_BUTTON, JD_CAPACITIVE_BUTTON_PACK_FORMATS, role)
-    
+
 
     @property
     def threshold(self) -> Optional[float]:

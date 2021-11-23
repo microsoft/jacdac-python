@@ -18,11 +18,12 @@ class WifiClient(Client):
      * 
      * Updating networks (setting password, priorties, forgetting) does not trigger an automatic reconnect.
     Implements a client for the `WIFI <https://microsoft.github.io/jacdac-docs/services/wifi>`_ service.
+
     """
 
     def __init__(self, bus: Bus, role: str) -> None:
         super().__init__(bus, JD_SERVICE_CLASS_WIFI, JD_WIFI_PACK_FORMATS, role)
-    
+
 
     @property
     def enabled(self) -> Optional[bool]:

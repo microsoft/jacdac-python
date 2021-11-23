@@ -8,11 +8,12 @@ class CompassClient(SensorClient):
     """
     A sensor that measures the heading.
     Implements a client for the `Compass <https://microsoft.github.io/jacdac-docs/services/compass>`_ service.
+
     """
 
-    def __init__(self, bus: Bus, role: str) -> None:
+    def __init__(self, bus: Bus, role: str, *, missing_heading_value: float = None) -> None:
         super().__init__(bus, JD_SERVICE_CLASS_COMPASS, JD_COMPASS_PACK_FORMATS, role, preferred_interval = 1000)
-    
+        self.missing_heading_value = missing_heading_value
 
     @property
     def heading(self) -> Optional[float]:
@@ -20,7 +21,7 @@ class CompassClient(SensorClient):
         The heading with respect to the magnetic north., _: °
         """
         self.refresh_reading()
-        return self.register(JD_COMPASS_REG_HEADING).value()
+        return self.register(JD_COMPASS_REG_HEADING).value(self.missing_heading_value)
 
     @property
     def enabled(self) -> Optional[bool]:

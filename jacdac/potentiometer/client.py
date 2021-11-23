@@ -8,11 +8,12 @@ class PotentiometerClient(SensorClient):
     """
     A slider or rotary potentiometer.
     Implements a client for the `Potentiometer <https://microsoft.github.io/jacdac-docs/services/potentiometer>`_ service.
+
     """
 
-    def __init__(self, bus: Bus, role: str) -> None:
+    def __init__(self, bus: Bus, role: str, *, missing_position_value: float = None) -> None:
         super().__init__(bus, JD_SERVICE_CLASS_POTENTIOMETER, JD_POTENTIOMETER_PACK_FORMATS, role)
-    
+        self.missing_position_value = missing_position_value
 
     @property
     def position(self) -> Optional[float]:
@@ -20,7 +21,7 @@ class PotentiometerClient(SensorClient):
         The relative position of the slider., _: /
         """
         self.refresh_reading()
-        return self.register(JD_POTENTIOMETER_REG_POSITION).float_value(100)
+        return self.register(JD_POTENTIOMETER_REG_POSITION).float_value(self.missing_position_value, 100)
 
     @property
     def variant(self) -> Optional[PotentiometerVariant]:

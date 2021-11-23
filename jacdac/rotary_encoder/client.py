@@ -8,11 +8,12 @@ class RotaryEncoderClient(SensorClient):
     """
     An incremental rotary encoder - converts angular motion of a shaft to digital signal.
     Implements a client for the `Rotary encoder <https://microsoft.github.io/jacdac-docs/services/rotaryencoder>`_ service.
+
     """
 
-    def __init__(self, bus: Bus, role: str) -> None:
+    def __init__(self, bus: Bus, role: str, *, missing_position_value: int = None) -> None:
         super().__init__(bus, JD_SERVICE_CLASS_ROTARY_ENCODER, JD_ROTARY_ENCODER_PACK_FORMATS, role)
-    
+        self.missing_position_value = missing_position_value
 
     @property
     def position(self) -> Optional[int]:
@@ -21,7 +22,7 @@ class RotaryEncoderClient(SensorClient):
         Increases by `1` for a clockwise "click", by `-1` for counter-clockwise., _: #
         """
         self.refresh_reading()
-        return self.register(JD_ROTARY_ENCODER_REG_POSITION).value()
+        return self.register(JD_ROTARY_ENCODER_REG_POSITION).value(self.missing_position_value)
 
     @property
     def clicks_per_turn(self) -> Optional[int]:

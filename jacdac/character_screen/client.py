@@ -8,11 +8,12 @@ class CharacterScreenClient(Client):
     """
     A screen that displays characters.
     Implements a client for the `Character Screen <https://microsoft.github.io/jacdac-docs/services/characterscreen>`_ service.
+
     """
 
     def __init__(self, bus: Bus, role: str) -> None:
         super().__init__(bus, JD_SERVICE_CLASS_CHARACTER_SCREEN, JD_CHARACTER_SCREEN_PACK_FORMATS, role)
-    
+
 
     @property
     def message(self) -> Optional[str]:

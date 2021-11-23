@@ -8,11 +8,12 @@ class WeightScaleClient(SensorClient):
     """
     A weight measuring sensor.
     Implements a client for the `Weight Scale <https://microsoft.github.io/jacdac-docs/services/weightscale>`_ service.
+
     """
 
-    def __init__(self, bus: Bus, role: str) -> None:
+    def __init__(self, bus: Bus, role: str, *, missing_weight_value: float = None) -> None:
         super().__init__(bus, JD_SERVICE_CLASS_WEIGHT_SCALE, JD_WEIGHT_SCALE_PACK_FORMATS, role)
-    
+        self.missing_weight_value = missing_weight_value
 
     @property
     def weight(self) -> Optional[float]:
@@ -20,7 +21,7 @@ class WeightScaleClient(SensorClient):
         The reported weight., _: kg
         """
         self.refresh_reading()
-        return self.register(JD_WEIGHT_SCALE_REG_WEIGHT).value()
+        return self.register(JD_WEIGHT_SCALE_REG_WEIGHT).value(self.missing_weight_value)
 
     @property
     def weight_error(self) -> Optional[float]:

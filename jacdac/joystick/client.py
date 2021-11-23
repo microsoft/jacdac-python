@@ -8,11 +8,12 @@ class JoystickClient(SensorClient):
     """
     A two axis directional joystick
     Implements a client for the `Joystick <https://microsoft.github.io/jacdac-docs/services/joystick>`_ service.
+
     """
 
-    def __init__(self, bus: Bus, role: str) -> None:
+    def __init__(self, bus: Bus, role: str, *, missing_direction_value: Tuple[JoystickButtons, float, float] = None) -> None:
         super().__init__(bus, JD_SERVICE_CLASS_JOYSTICK, JD_JOYSTICK_PACK_FORMATS, role)
-    
+        self.missing_direction_value = missing_direction_value
 
     @property
     def direction(self) -> Optional[Tuple[JoystickButtons, float, float]]:
@@ -23,7 +24,7 @@ class JoystickClient(SensorClient):
         The primary button on the joystick is `A`., x: /,y: /
         """
         self.refresh_reading()
-        return self.register(JD_JOYSTICK_REG_DIRECTION).value()
+        return self.register(JD_JOYSTICK_REG_DIRECTION).value(self.missing_direction_value)
 
     @property
     def variant(self) -> Optional[JoystickVariant]:

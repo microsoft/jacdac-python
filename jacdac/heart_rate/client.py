@@ -11,11 +11,12 @@ class HeartRateClient(SensorClient):
      * 
      * **Jacdac is NOT suitable for medical devices and should NOT be used in any kind of device to diagnose or treat any medical conditions.**
     Implements a client for the `Heart Rate <https://microsoft.github.io/jacdac-docs/services/heartrate>`_ service.
+
     """
 
-    def __init__(self, bus: Bus, role: str) -> None:
+    def __init__(self, bus: Bus, role: str, *, missing_heart_rate_value: float = None) -> None:
         super().__init__(bus, JD_SERVICE_CLASS_HEART_RATE, JD_HEART_RATE_PACK_FORMATS, role, preferred_interval = 1000)
-    
+        self.missing_heart_rate_value = missing_heart_rate_value
 
     @property
     def heart_rate(self) -> Optional[float]:
@@ -23,7 +24,7 @@ class HeartRateClient(SensorClient):
         The estimated heart rate., _: bpm
         """
         self.refresh_reading()
-        return self.register(JD_HEART_RATE_REG_HEART_RATE).value()
+        return self.register(JD_HEART_RATE_REG_HEART_RATE).value(self.missing_heart_rate_value)
 
     @property
     def heart_rate_error(self) -> Optional[float]:

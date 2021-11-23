@@ -8,11 +8,12 @@ class ColorClient(SensorClient):
     """
     Senses RGB colors
     Implements a client for the `Color <https://microsoft.github.io/jacdac-docs/services/color>`_ service.
+
     """
 
-    def __init__(self, bus: Bus, role: str) -> None:
+    def __init__(self, bus: Bus, role: str, *, missing_color_value: Tuple[float, float, float] = None) -> None:
         super().__init__(bus, JD_SERVICE_CLASS_COLOR, JD_COLOR_PACK_FORMATS, role)
-    
+        self.missing_color_value = missing_color_value
 
     @property
     def color(self) -> Optional[Tuple[float, float, float]]:
@@ -20,6 +21,6 @@ class ColorClient(SensorClient):
         Detected color in the RGB color space., red: /,green: /,blue: /
         """
         self.refresh_reading()
-        return self.register(JD_COLOR_REG_COLOR).value()
+        return self.register(JD_COLOR_REG_COLOR).value(self.missing_color_value)
 
     

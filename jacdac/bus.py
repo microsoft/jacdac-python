@@ -675,22 +675,22 @@ class RawRegisterClient(EventEmitter):
 
         self.bus.run(send)
 
-    def value(self) -> Optional[Any]:
+    def value(self, default_value: Any = None) -> Optional[Any]:
         """Extracts the value of the first field."""
         values = self.values()
         if values is None:
-            return None
+            return default_value
         else:
             return values[0]
 
-    def bool_value(self) -> Optional[bool]:
+    def bool_value(self, default_value: bool = None) -> Optional[bool]:
         """Extracts the value of the first field as a boolean."""
         value = self.value()
-        return bool(value) if not value is None else None
+        return bool(value) if not value is None else default_value
 
-    def float_value(self, scale: int = 1) -> Optional[float]:
+    def float_value(self, default_value: float = None, scale: int = 1) -> Optional[float]:
         value = self.value()
-        return float(value) * scale if not value is None else None
+        return float(value) * scale if not value is None else default_value
 
     def _query(self):
         if not self.client.connected:

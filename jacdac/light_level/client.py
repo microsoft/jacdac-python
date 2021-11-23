@@ -8,11 +8,12 @@ class LightLevelClient(SensorClient):
     """
     A sensor that measures luminosity level.
     Implements a client for the `Light level <https://microsoft.github.io/jacdac-docs/services/lightlevel>`_ service.
+
     """
 
-    def __init__(self, bus: Bus, role: str) -> None:
+    def __init__(self, bus: Bus, role: str, *, missing_light_level_value: float = None) -> None:
         super().__init__(bus, JD_SERVICE_CLASS_LIGHT_LEVEL, JD_LIGHT_LEVEL_PACK_FORMATS, role)
-    
+        self.missing_light_level_value = missing_light_level_value
 
     @property
     def light_level(self) -> Optional[float]:
@@ -20,7 +21,7 @@ class LightLevelClient(SensorClient):
         Detect light level, _: /
         """
         self.refresh_reading()
-        return self.register(JD_LIGHT_LEVEL_REG_LIGHT_LEVEL).float_value(100)
+        return self.register(JD_LIGHT_LEVEL_REG_LIGHT_LEVEL).float_value(self.missing_light_level_value, 100)
 
     @property
     def variant(self) -> Optional[LightLevelVariant]:

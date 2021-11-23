@@ -10,11 +10,12 @@ class ServoClient(SensorClient):
      * 
      * The `min/max_angle/pulse` may be read-only if the servo is permanently affixed to its Jacdac controller.
     Implements a client for the `Servo <https://microsoft.github.io/jacdac-docs/services/servo>`_ service.
+
     """
 
-    def __init__(self, bus: Bus, role: str) -> None:
+    def __init__(self, bus: Bus, role: str, *, missing_current_angle_value: float = None) -> None:
         super().__init__(bus, JD_SERVICE_CLASS_SERVO, JD_SERVO_PACK_FORMATS, role)
-    
+        self.missing_current_angle_value = missing_current_angle_value
 
     @property
     def angle(self) -> Optional[float]:
@@ -111,6 +112,6 @@ class ServoClient(SensorClient):
         (Optional) The current physical position of the arm., _: °
         """
         self.refresh_reading()
-        return self.register(JD_SERVO_REG_CURRENT_ANGLE).value()
+        return self.register(JD_SERVO_REG_CURRENT_ANGLE).value(self.missing_current_angle_value)
 
     

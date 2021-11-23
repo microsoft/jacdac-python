@@ -8,11 +8,12 @@ class ThermometerClient(SensorClient):
     """
     A thermometer measuring outside or inside environment.
     Implements a client for the `Thermometer <https://microsoft.github.io/jacdac-docs/services/thermometer>`_ service.
+
     """
 
-    def __init__(self, bus: Bus, role: str) -> None:
+    def __init__(self, bus: Bus, role: str, *, missing_temperature_value: float = None) -> None:
         super().__init__(bus, JD_SERVICE_CLASS_THERMOMETER, JD_THERMOMETER_PACK_FORMATS, role, preferred_interval = 1000)
-    
+        self.missing_temperature_value = missing_temperature_value
 
     @property
     def temperature(self) -> Optional[float]:
@@ -20,7 +21,7 @@ class ThermometerClient(SensorClient):
         The temperature., _: °C
         """
         self.refresh_reading()
-        return self.register(JD_THERMOMETER_REG_TEMPERATURE).value()
+        return self.register(JD_THERMOMETER_REG_TEMPERATURE).value(self.missing_temperature_value)
 
     @property
     def min_temperature(self) -> Optional[float]:

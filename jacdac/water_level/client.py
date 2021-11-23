@@ -8,11 +8,12 @@ class WaterLevelClient(SensorClient):
     """
     A sensor that measures liquid/water level.
     Implements a client for the `Water level <https://microsoft.github.io/jacdac-docs/services/waterlevel>`_ service.
+
     """
 
-    def __init__(self, bus: Bus, role: str) -> None:
+    def __init__(self, bus: Bus, role: str, *, missing_level_value: float = None) -> None:
         super().__init__(bus, JD_SERVICE_CLASS_WATER_LEVEL, JD_WATER_LEVEL_PACK_FORMATS, role)
-    
+        self.missing_level_value = missing_level_value
 
     @property
     def level(self) -> Optional[float]:
@@ -20,7 +21,7 @@ class WaterLevelClient(SensorClient):
         The reported water level., _: /
         """
         self.refresh_reading()
-        return self.register(JD_WATER_LEVEL_REG_LEVEL).float_value(100)
+        return self.register(JD_WATER_LEVEL_REG_LEVEL).float_value(self.missing_level_value, 100)
 
     @property
     def variant(self) -> Optional[WaterLevelVariant]:

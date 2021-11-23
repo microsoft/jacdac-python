@@ -8,11 +8,12 @@ class RealTimeClockClient(SensorClient):
     """
     Real time clock to support collecting data with precise time stamps.
     Implements a client for the `Real time clock <https://microsoft.github.io/jacdac-docs/services/realtimeclock>`_ service.
+
     """
 
-    def __init__(self, bus: Bus, role: str) -> None:
+    def __init__(self, bus: Bus, role: str, *, missing_local_time_value: Tuple[int, int, int, int, int, int, int] = None) -> None:
         super().__init__(bus, JD_SERVICE_CLASS_REAL_TIME_CLOCK, JD_REAL_TIME_CLOCK_PACK_FORMATS, role, preferred_interval = 1000)
-    
+        self.missing_local_time_value = missing_local_time_value
 
     @property
     def local_time(self) -> Optional[Tuple[int, int, int, int, int, int, int]]:
@@ -23,7 +24,7 @@ class RealTimeClockClient(SensorClient):
         Default streaming period is 1 second., 
         """
         self.refresh_reading()
-        return self.register(JD_REAL_TIME_CLOCK_REG_LOCAL_TIME).value()
+        return self.register(JD_REAL_TIME_CLOCK_REG_LOCAL_TIME).value(self.missing_local_time_value)
 
     @property
     def drift(self) -> Optional[float]:

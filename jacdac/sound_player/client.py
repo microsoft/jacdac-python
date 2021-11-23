@@ -8,11 +8,12 @@ class SoundPlayerClient(Client):
     """
     A device that can play various sounds stored locally. This service is typically paired with a ``storage`` service for storing sounds.
     Implements a client for the `Sound player <https://microsoft.github.io/jacdac-docs/services/soundplayer>`_ service.
+
     """
 
     def __init__(self, bus: Bus, role: str) -> None:
         super().__init__(bus, JD_SERVICE_CLASS_SOUND_PLAYER, JD_SOUND_PLAYER_PACK_FORMATS, role)
-    
+
 
     @property
     def volume(self) -> Optional[float]:

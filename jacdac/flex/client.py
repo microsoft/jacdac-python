@@ -8,11 +8,12 @@ class FlexClient(SensorClient):
     """
     A bending or deflection sensor.
     Implements a client for the `Flex <https://microsoft.github.io/jacdac-docs/services/flex>`_ service.
+
     """
 
-    def __init__(self, bus: Bus, role: str) -> None:
+    def __init__(self, bus: Bus, role: str, *, missing_bending_value: float = None) -> None:
         super().__init__(bus, JD_SERVICE_CLASS_FLEX, JD_FLEX_PACK_FORMATS, role)
-    
+        self.missing_bending_value = missing_bending_value
 
     @property
     def bending(self) -> Optional[float]:
@@ -20,7 +21,7 @@ class FlexClient(SensorClient):
         The relative position of the slider., _: /
         """
         self.refresh_reading()
-        return self.register(JD_FLEX_REG_BENDING).float_value(100)
+        return self.register(JD_FLEX_REG_BENDING).float_value(self.missing_bending_value, 100)
 
     @property
     def variant(self) -> Optional[FlexVariant]:

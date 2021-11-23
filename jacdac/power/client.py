@@ -8,11 +8,12 @@ class PowerClient(SensorClient):
     """
     A power-provider service.
     Implements a client for the `Power <https://microsoft.github.io/jacdac-docs/services/power>`_ service.
+
     """
 
-    def __init__(self, bus: Bus, role: str) -> None:
+    def __init__(self, bus: Bus, role: str, *, missing_current_draw_value: int = None) -> None:
         super().__init__(bus, JD_SERVICE_CLASS_POWER, JD_POWER_PACK_FORMATS, role)
-    
+        self.missing_current_draw_value = missing_current_draw_value
 
     @property
     def allowed(self) -> Optional[bool]:
@@ -55,7 +56,7 @@ class PowerClient(SensorClient):
         (Optional) Present current draw from the bus., _: mA
         """
         self.refresh_reading()
-        return self.register(JD_POWER_REG_CURRENT_DRAW).value()
+        return self.register(JD_POWER_REG_CURRENT_DRAW).value(self.missing_current_draw_value)
 
     @property
     def battery_voltage(self) -> Optional[int]:

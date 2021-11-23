@@ -8,11 +8,12 @@ class ButtonClientBase(SensorClient):
     """
     A push-button, which returns to inactive position when not operated anymore.
     Implements a client for the `Button <https://microsoft.github.io/jacdac-docs/services/button>`_ service.
+
     """
 
-    def __init__(self, bus: Bus, role: str) -> None:
+    def __init__(self, bus: Bus, role: str, *, missing_pressure_value: float = None) -> None:
         super().__init__(bus, JD_SERVICE_CLASS_BUTTON, JD_BUTTON_PACK_FORMATS, role)
-    
+        self.missing_pressure_value = missing_pressure_value
 
     @property
     def pressure(self) -> Optional[float]:
@@ -20,7 +21,7 @@ class ButtonClientBase(SensorClient):
         Indicates the pressure state of the button, where ``0`` is open., _: /
         """
         self.refresh_reading()
-        return self.register(JD_BUTTON_REG_PRESSURE).float_value(100)
+        return self.register(JD_BUTTON_REG_PRESSURE).float_value(self.missing_pressure_value, 100)
 
     @property
     def analog(self) -> Optional[bool]:

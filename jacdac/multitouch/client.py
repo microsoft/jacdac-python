@@ -8,11 +8,12 @@ class MultitouchClient(Client):
     """
     A capacitive touch sensor with multiple inputs.
     Implements a client for the `Multitouch <https://microsoft.github.io/jacdac-docs/services/multitouch>`_ service.
+
     """
 
     def __init__(self, bus: Bus, role: str) -> None:
         super().__init__(bus, JD_SERVICE_CLASS_MULTITOUCH, JD_MULTITOUCH_PACK_FORMATS, role)
-    
+
 
     def on_touch(self, handler: EventHandlerFn) -> UnsubscribeFn:
         """

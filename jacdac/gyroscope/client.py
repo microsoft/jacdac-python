@@ -8,11 +8,12 @@ class GyroscopeClient(SensorClient):
     """
     A 3-axis gyroscope.
     Implements a client for the `Gyroscope <https://microsoft.github.io/jacdac-docs/services/gyroscope>`_ service.
+
     """
 
-    def __init__(self, bus: Bus, role: str) -> None:
+    def __init__(self, bus: Bus, role: str, *, missing_rotation_rates_value: Tuple[float, float, float] = None) -> None:
         super().__init__(bus, JD_SERVICE_CLASS_GYROSCOPE, JD_GYROSCOPE_PACK_FORMATS, role)
-    
+        self.missing_rotation_rates_value = missing_rotation_rates_value
 
     @property
     def rotation_rates(self) -> Optional[Tuple[float, float, float]]:
@@ -20,7 +21,7 @@ class GyroscopeClient(SensorClient):
         Indicates the current rates acting on gyroscope., x: °/s,y: °/s,z: °/s
         """
         self.refresh_reading()
-        return self.register(JD_GYROSCOPE_REG_ROTATION_RATES).value()
+        return self.register(JD_GYROSCOPE_REG_ROTATION_RATES).value(self.missing_rotation_rates_value)
 
     @property
     def rotation_rates_error(self) -> Optional[float]:

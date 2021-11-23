@@ -8,11 +8,12 @@ class ReflectedLightClient(SensorClient):
     """
     A sensor that detects light and dark surfaces, commonly used for line following robots.
     Implements a client for the `Reflected light <https://microsoft.github.io/jacdac-docs/services/reflectedlight>`_ service.
+
     """
 
-    def __init__(self, bus: Bus, role: str) -> None:
+    def __init__(self, bus: Bus, role: str, *, missing_brightness_value: float = None) -> None:
         super().__init__(bus, JD_SERVICE_CLASS_REFLECTED_LIGHT, JD_REFLECTED_LIGHT_PACK_FORMATS, role)
-    
+        self.missing_brightness_value = missing_brightness_value
 
     @property
     def brightness(self) -> Optional[float]:
@@ -20,7 +21,7 @@ class ReflectedLightClient(SensorClient):
         Reports the reflected brightness. It may be a digital value or, for some sensor, analog value., _: /
         """
         self.refresh_reading()
-        return self.register(JD_REFLECTED_LIGHT_REG_BRIGHTNESS).float_value(100)
+        return self.register(JD_REFLECTED_LIGHT_REG_BRIGHTNESS).float_value(self.missing_brightness_value, 100)
 
     @property
     def variant(self) -> Optional[ReflectedLightVariant]:

@@ -8,11 +8,12 @@ class SwitchClient(SensorClient):
     """
     A switch, which keeps its position.
     Implements a client for the `Switch <https://microsoft.github.io/jacdac-docs/services/switch>`_ service.
+
     """
 
-    def __init__(self, bus: Bus, role: str) -> None:
+    def __init__(self, bus: Bus, role: str, *, missing_active_value: bool = None) -> None:
         super().__init__(bus, JD_SERVICE_CLASS_SWITCH, JD_SWITCH_PACK_FORMATS, role)
-    
+        self.missing_active_value = missing_active_value
 
     @property
     def active(self) -> Optional[bool]:
@@ -20,7 +21,7 @@ class SwitchClient(SensorClient):
         Indicates whether the switch is currently active (on)., 
         """
         self.refresh_reading()
-        return self.register(JD_SWITCH_REG_ACTIVE).bool_value()
+        return self.register(JD_SWITCH_REG_ACTIVE).bool_value(self.missing_active_value)
 
     @property
     def variant(self) -> Optional[SwitchVariant]:

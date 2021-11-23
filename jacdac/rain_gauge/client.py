@@ -8,11 +8,12 @@ class RainGaugeClient(SensorClient):
     """
     Measures the amount of liquid precipitation over an area in a predefined period of time.
     Implements a client for the `Rain gauge <https://microsoft.github.io/jacdac-docs/services/raingauge>`_ service.
+
     """
 
-    def __init__(self, bus: Bus, role: str) -> None:
+    def __init__(self, bus: Bus, role: str, *, missing_precipitation_value: float = None) -> None:
         super().__init__(bus, JD_SERVICE_CLASS_RAIN_GAUGE, JD_RAIN_GAUGE_PACK_FORMATS, role, preferred_interval = 60000)
-    
+        self.missing_precipitation_value = missing_precipitation_value
 
     @property
     def precipitation(self) -> Optional[float]:
@@ -20,7 +21,7 @@ class RainGaugeClient(SensorClient):
         Total precipitation recorded so far., _: mm
         """
         self.refresh_reading()
-        return self.register(JD_RAIN_GAUGE_REG_PRECIPITATION).value()
+        return self.register(JD_RAIN_GAUGE_REG_PRECIPITATION).value(self.missing_precipitation_value)
 
     @property
     def precipitation_precision(self) -> Optional[float]:

@@ -8,11 +8,12 @@ class RelayClient(Client):
     """
     A switching relay.
     Implements a client for the `Relay <https://microsoft.github.io/jacdac-docs/services/relay>`_ service.
+
     """
 
     def __init__(self, bus: Bus, role: str) -> None:
         super().__init__(bus, JD_SERVICE_CLASS_RELAY, JD_RELAY_PACK_FORMATS, role)
-    
+
 
     @property
     def closed(self) -> Optional[bool]:

@@ -8,11 +8,12 @@ class MagnetometerClient(SensorClient):
     """
     A 3-axis magnetometer.
     Implements a client for the `Magnetometer <https://microsoft.github.io/jacdac-docs/services/magnetomer>`_ service.
+
     """
 
-    def __init__(self, bus: Bus, role: str) -> None:
+    def __init__(self, bus: Bus, role: str, *, missing_forces_value: Tuple[int, int, int] = None) -> None:
         super().__init__(bus, JD_SERVICE_CLASS_MAGNETOMETER, JD_MAGNETOMETER_PACK_FORMATS, role)
-    
+        self.missing_forces_value = missing_forces_value
 
     @property
     def forces(self) -> Optional[Tuple[int, int, int]]:
@@ -21,7 +22,7 @@ class MagnetometerClient(SensorClient):
         For reference: `1 mgauss` is `100 nT` (and `1 gauss` is `100 000 nT`)., x: nT,y: nT,z: nT
         """
         self.refresh_reading()
-        return self.register(JD_MAGNETOMETER_REG_FORCES).value()
+        return self.register(JD_MAGNETOMETER_REG_FORCES).value(self.missing_forces_value)
 
     @property
     def forces_error(self) -> Optional[int]:

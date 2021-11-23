@@ -8,11 +8,12 @@ class MatrixKeypadClient(Client):
     """
     A matrix of buttons connected as a keypad
     Implements a client for the `Matrix Keypad <https://microsoft.github.io/jacdac-docs/services/matrixkeypad>`_ service.
+
     """
 
     def __init__(self, bus: Bus, role: str) -> None:
         super().__init__(bus, JD_SERVICE_CLASS_MATRIX_KEYPAD, JD_MATRIX_KEYPAD_PACK_FORMATS, role)
-    
+
 
     @property
     def rows(self) -> Optional[int]:

@@ -10,11 +10,12 @@ class IndexedScreenClient(Client):
      * 
      * This is often run over an SPI connection, not regular single-wire JACDAC.
     Implements a client for the `Indexed screen <https://microsoft.github.io/jacdac-docs/services/indexedscreen>`_ service.
+
     """
 
     def __init__(self, bus: Bus, role: str) -> None:
         super().__init__(bus, JD_SERVICE_CLASS_INDEXED_SCREEN, JD_INDEXED_SCREEN_PACK_FORMATS, role)
-    
+
 
     @property
     def brightness(self) -> Optional[float]:

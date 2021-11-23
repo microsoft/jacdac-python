@@ -8,11 +8,12 @@ class UvIndexClient(SensorClient):
     """
     The UV Index is a measure of the intensity of ultraviolet (UV) rays from the Sun.
     Implements a client for the `UV index <https://microsoft.github.io/jacdac-docs/services/uvindex>`_ service.
+
     """
 
-    def __init__(self, bus: Bus, role: str) -> None:
+    def __init__(self, bus: Bus, role: str, *, missing_uv_index_value: float = None) -> None:
         super().__init__(bus, JD_SERVICE_CLASS_UV_INDEX, JD_UV_INDEX_PACK_FORMATS, role)
-    
+        self.missing_uv_index_value = missing_uv_index_value
 
     @property
     def uv_index(self) -> Optional[float]:
@@ -20,7 +21,7 @@ class UvIndexClient(SensorClient):
         Ultraviolet index, typically refreshed every second., _: uv
         """
         self.refresh_reading()
-        return self.register(JD_UV_INDEX_REG_UV_INDEX).value()
+        return self.register(JD_UV_INDEX_REG_UV_INDEX).value(self.missing_uv_index_value)
 
     @property
     def uv_index_error(self) -> Optional[float]:

@@ -8,11 +8,12 @@ class AzureIotHubHealthClient(Client):
     """
     Health and diagnostics information about the Azure Iot Hub connection.
     Implements a client for the `Azure IoT Hub Health <https://microsoft.github.io/jacdac-docs/services/azureiothubhealth>`_ service.
+
     """
 
     def __init__(self, bus: Bus, role: str) -> None:
         super().__init__(bus, JD_SERVICE_CLASS_AZURE_IOT_HUB_HEALTH, JD_AZURE_IOT_HUB_HEALTH_PACK_FORMATS, role)
-    
+
 
     @property
     def hub_name(self) -> Optional[str]:

@@ -10,11 +10,12 @@ class ArcadeSoundClient(Client):
      * 
      * This is typically run over an SPI connection, not regular single-wire JACDAC.
     Implements a client for the `Arcade Sound <https://microsoft.github.io/jacdac-docs/services/arcadesound>`_ service.
+
     """
 
     def __init__(self, bus: Bus, role: str) -> None:
         super().__init__(bus, JD_SERVICE_CLASS_ARCADE_SOUND, JD_ARCADE_SOUND_PACK_FORMATS, role)
-    
+
 
     @property
     def sample_rate(self) -> Optional[float]:

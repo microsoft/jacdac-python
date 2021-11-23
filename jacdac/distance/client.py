@@ -8,11 +8,12 @@ class DistanceClient(SensorClient):
     """
     A sensor that determines the distance of an object without any physical contact involved.
     Implements a client for the `Distance <https://microsoft.github.io/jacdac-docs/services/distance>`_ service.
+
     """
 
-    def __init__(self, bus: Bus, role: str) -> None:
+    def __init__(self, bus: Bus, role: str, *, missing_distance_value: float = None) -> None:
         super().__init__(bus, JD_SERVICE_CLASS_DISTANCE, JD_DISTANCE_PACK_FORMATS, role)
-    
+        self.missing_distance_value = missing_distance_value
 
     @property
     def distance(self) -> Optional[float]:
@@ -20,7 +21,7 @@ class DistanceClient(SensorClient):
         Current distance from the object, _: m
         """
         self.refresh_reading()
-        return self.register(JD_DISTANCE_REG_DISTANCE).value()
+        return self.register(JD_DISTANCE_REG_DISTANCE).value(self.missing_distance_value)
 
     @property
     def min_range(self) -> Optional[float]:

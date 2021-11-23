@@ -12,11 +12,12 @@ class ModelRunnerClient(Client):
      * Input is provided by Sensor Aggregator service on the same device.
      * Multiple instances of this service may be present, if more than one model format is supported by a device.
     Implements a client for the `Model Runner <https://microsoft.github.io/jacdac-docs/services/modelrunner>`_ service.
+
     """
 
     def __init__(self, bus: Bus, role: str) -> None:
         super().__init__(bus, JD_SERVICE_CLASS_MODEL_RUNNER, JD_MODEL_RUNNER_PACK_FORMATS, role)
-    
+
 
     @property
     def auto_invoke_every(self) -> Optional[int]:

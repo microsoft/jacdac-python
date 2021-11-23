@@ -8,11 +8,12 @@ class MotionClient(SensorClient):
     """
     A sensor, typically PIR, that detects object motion within a certain range
     Implements a client for the `Motion <https://microsoft.github.io/jacdac-docs/services/motion>`_ service.
+
     """
 
-    def __init__(self, bus: Bus, role: str) -> None:
+    def __init__(self, bus: Bus, role: str, *, missing_moving_value: bool = None) -> None:
         super().__init__(bus, JD_SERVICE_CLASS_MOTION, JD_MOTION_PACK_FORMATS, role, preferred_interval = 1000)
-    
+        self.missing_moving_value = missing_moving_value
 
     @property
     def moving(self) -> Optional[bool]:
@@ -20,7 +21,7 @@ class MotionClient(SensorClient):
         Reports is movement is currently detected by the sensor., 
         """
         self.refresh_reading()
-        return self.register(JD_MOTION_REG_MOVING).bool_value()
+        return self.register(JD_MOTION_REG_MOVING).bool_value(self.missing_moving_value)
 
     @property
     def max_distance(self) -> Optional[float]:

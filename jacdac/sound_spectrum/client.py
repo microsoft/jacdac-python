@@ -8,11 +8,12 @@ class SoundSpectrumClient(SensorClient):
     """
     A microphone that analyzes the sound specturm
     Implements a client for the `Sound Spectrum <https://microsoft.github.io/jacdac-docs/services/soundspectrum>`_ service.
+
     """
 
-    def __init__(self, bus: Bus, role: str) -> None:
+    def __init__(self, bus: Bus, role: str, *, missing_frequency_bins_value: bytes = None) -> None:
         super().__init__(bus, JD_SERVICE_CLASS_SOUND_SPECTRUM, JD_SOUND_SPECTRUM_PACK_FORMATS, role)
-    
+        self.missing_frequency_bins_value = missing_frequency_bins_value
 
     @property
     def frequency_bins(self) -> Optional[bytes]:
@@ -20,7 +21,7 @@ class SoundSpectrumClient(SensorClient):
         The computed frequency data., 
         """
         self.refresh_reading()
-        return self.register(JD_SOUND_SPECTRUM_REG_FREQUENCY_BINS).value()
+        return self.register(JD_SOUND_SPECTRUM_REG_FREQUENCY_BINS).value(self.missing_frequency_bins_value)
 
     @property
     def enabled(self) -> Optional[bool]:

@@ -8,11 +8,12 @@ class SpeechSynthesisClient(Client):
     """
     A speech synthesizer
     Implements a client for the `Speech synthesis <https://microsoft.github.io/jacdac-docs/services/speechsynthesis>`_ service.
+
     """
 
     def __init__(self, bus: Bus, role: str) -> None:
         super().__init__(bus, JD_SERVICE_CLASS_SPEECH_SYNTHESIS, JD_SPEECH_SYNTHESIS_PACK_FORMATS, role)
-    
+
 
     @property
     def enabled(self) -> Optional[bool]:

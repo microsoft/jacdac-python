@@ -9,11 +9,12 @@ class ProtoTestClient(Client):
     This is test service to validate the protocol packet transmissions between the browser and a MCU.
      * Use this page if you are porting Jacdac to a new platform.
     Implements a client for the `Protocol Test <https://microsoft.github.io/jacdac-docs/services/prototest>`_ service.
+
     """
 
     def __init__(self, bus: Bus, role: str) -> None:
         super().__init__(bus, JD_SERVICE_CLASS_PROTO_TEST, JD_PROTO_TEST_PACK_FORMATS, role)
-    
+
 
     @property
     def rw_bool(self) -> Optional[bool]:

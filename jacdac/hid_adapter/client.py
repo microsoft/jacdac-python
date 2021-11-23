@@ -8,11 +8,12 @@ class HidAdapterClient(Client):
     """
     A service for configuring how Jacdac device map to HID input events. Users can have multiple configurations and swap between them by writing to `current_configuration`.
     Implements a client for the `HID Adapter <https://microsoft.github.io/jacdac-docs/services/hidadapter>`_ service.
+
     """
 
     def __init__(self, bus: Bus, role: str) -> None:
         super().__init__(bus, JD_SERVICE_CLASS_HID_ADAPTER, JD_HID_ADAPTER_PACK_FORMATS, role)
-    
+
 
     @property
     def num_configurations(self) -> Optional[int]:

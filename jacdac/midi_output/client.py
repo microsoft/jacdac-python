@@ -8,11 +8,12 @@ class MidiOutputClient(Client):
     """
     A MIDI output device.
     Implements a client for the `MIDI output <https://microsoft.github.io/jacdac-docs/services/midioutput>`_ service.
+
     """
 
     def __init__(self, bus: Bus, role: str) -> None:
         super().__init__(bus, JD_SERVICE_CLASS_MIDI_OUTPUT, JD_MIDI_OUTPUT_PACK_FORMATS, role)
-    
+
 
     @property
     def enabled(self) -> Optional[bool]:

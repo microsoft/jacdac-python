@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v0.0.17 (2021-11-23)
+### Fix
+* Asyncio stuff ([`e490cc4`](https://github.com/microsoft/jacdac-python/commit/e490cc4396f4d7272859ac6dffe521eeb35265d8))
+
 ## v0.0.16 (2021-11-22)
 ### Fix
 * Move setup to .py ([`26de946`](https://github.com/microsoft/jacdac-python/commit/26de946cf24730920a9b8ba42895b0822071621f))

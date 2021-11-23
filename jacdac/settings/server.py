@@ -87,11 +87,12 @@ class SettingsServer(Server):
     def _handle_set(self, pkt: JDPacket):
         [key, value] = pkt.unpack("z b")
         self.debug("set key {}", key)
-        with open(self.file_name, "a+") as f:
-            f.seek(0) # note that r+ won't create file, so we're using a+ and seek to beginning
-            settings = self._read_settings(f)
+        settings = {}
+        if path.exists(self.file_name):
+            with open(self.file_name, "r") as f:
+                settings = self._read_settings(f)
+        with open(self.file_name, "w+") as f:
             settings[key] = value_to_json(cast(bytearray, value))
-            f.seek(0)
             dump(settings, f, skipkeys=True, sort_keys=True, indent=2)
         self.send_change_event()
 

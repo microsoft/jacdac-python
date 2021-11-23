@@ -1,5 +1,4 @@
-import asyncio
-from typing import Any, Optional, Union, cast
+from typing import Optional, Union, cast
 from azure.iot.device.aio import IoTHubDeviceClient
 from azure.iot.device import Message
 
@@ -19,6 +18,7 @@ class AzureIotHubHealthServer(Server):
 
     pip install azure-iot-device
     """
+
     def __init__(self, bus: Bus) -> None:
         super().__init__(bus, JD_SERVICE_CLASS_AZURE_IOT_HUB_HEALTH)
         self.device_client: Optional[IoTHubDeviceClient] = None

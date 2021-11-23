@@ -58,7 +58,8 @@ class SoundPlayServer(Server):
         for f in listdir(self.sound_dir):
             if path.basename(f) == name:
                 fp = path.join(self.sound_dir, f)
-                playsound(fp, False)
+                if self.sound_player:
+                    self.sound_player(fp)
                 break
 
     def handle_list_sounds(self, pkt: JDPacket):

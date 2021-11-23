@@ -13,6 +13,12 @@ CONNECTION_STRING_FILE = "./.jacdac/iothub.txt"
 
 
 class AzureIotHubHealthServer(Server):
+    """A Azure IoT Hub Health server
+
+    This server uses the 'azure-iot-device' PyPi package
+
+    pip install azure-iot-device
+    """
     def __init__(self, bus: Bus) -> None:
         super().__init__(bus, JD_SERVICE_CLASS_AZURE_IOT_HUB_HEALTH)
         self.device_client: Optional[IoTHubDeviceClient] = None

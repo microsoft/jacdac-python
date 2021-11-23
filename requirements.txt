@@ -4,3 +4,5 @@ setuptools
 build
 typing
 azure-iot-device
+pygame
+playsound

@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v0.0.18 (2021-11-23)
+### Fix
+* Support for optional default sensor value ([`5a7f5f8`](https://github.com/microsoft/jacdac-python/commit/5a7f5f81c865a5f859b3a14d50c789e0c2d021d4))
+
 ## v0.0.17 (2021-11-23)
 ### Fix
 * Asyncio stuff ([`e490cc4`](https://github.com/microsoft/jacdac-python/commit/e490cc4396f4d7272859ac6dffe521eeb35265d8))

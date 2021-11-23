@@ -62,7 +62,7 @@ class SettingsServer(Server):
     def _handle_get(self, pkt: JDPacket):
         key: str = cast(str, pkt.unpack("s")[0])
         value = bytearray(0)
-        if not key is None and path.exists(self.file_name):
+        if key is not None and path.exists(self.file_name):
             with open(self.file_name, "r+") as f:
                 settings = self._read_settings(f)
                 if key in settings:
@@ -87,7 +87,8 @@ class SettingsServer(Server):
     def _handle_set(self, pkt: JDPacket):
         [key, value] = pkt.unpack("z b")
         self.debug("set key {}", key)
-        with open(self.file_name, "r+") as f:
+        with open(self.file_name, "a+") as f:
+            f.seek(0) # note that r+ won't create file, so we're using a+ and seek to beginning
             settings = self._read_settings(f)
             settings[key] = value_to_json(cast(bytearray, value))
             f.seek(0)

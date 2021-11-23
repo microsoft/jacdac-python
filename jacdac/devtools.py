@@ -1,3 +1,4 @@
+from os import mkdir
 from jacdac.logger.constants import JD_LOGGER_PRIORITY_DEBUG
 from .bus import Bus
 from .transports.ws import WebSocketTransport
@@ -14,6 +15,10 @@ def create_dev_tools_bus(*, device_description: str = None):
     print("run scripts/devtools.sh to launch the development server")
     print("open http://localhost:8081 to connect")
     transport = WebSocketTransport("ws://localhost:8081")
+    try:
+        mkdir(".jacdac")
+    except:
+        pass
     bus = Bus(transport,
               device_description=device_description,
               default_logger_min_priority=JD_LOGGER_PRIORITY_DEBUG,

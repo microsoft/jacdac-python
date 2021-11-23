@@ -21,6 +21,7 @@ class AzureIotHubHealthServer(Server):
 
     async def send_message(self, msg: Union[str, Message]):
         self.debug("send message")
+        self._check_connection()
         if self.connection_status == AzureIotHubHealthConnectionStatus.DISCONNECTED:
             await self.connect()
 
@@ -43,6 +44,10 @@ class AzureIotHubHealthServer(Server):
             self._connection_status = value
             self.send_event(JD_AZURE_IOT_HUB_HEALTH_EV_CONNECTION_STATUS_CHANGE, jdpack(
                 JD_AZURE_IOT_HUB_HEALTH_PACK_FORMATS[JD_AZURE_IOT_HUB_HEALTH_EV_CONNECTION_STATUS_CHANGE], self._connection_status))
+
+    def _check_connection(self):
+        if self.connection_status == AzureIotHubHealthConnectionStatus.CONNECTED and not self.device_client.connected:  # type: ignore
+            self.connection_status = AzureIotHubHealthConnectionStatus.DISCONNECTED
 
     async def connect(self):
         if self.device_client:

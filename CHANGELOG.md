@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v0.0.20 (2021-11-24)
+### Fix
+* Remove current_device ([`c2be442`](https://github.com/microsoft/jacdac-python/commit/c2be44255908d7e7938e015e7f0c11e6613e2d5c))
+
 ## v0.0.19 (2021-11-23)
 ### Fix
 * Sensor server streaming ([`8177a95`](https://github.com/microsoft/jacdac-python/commit/8177a95e4d33d585d4f1ae402f4ebba9963e7a99))

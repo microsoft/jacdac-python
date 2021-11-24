@@ -1,5 +1,6 @@
 from abc import abstractmethod
 from asyncio.tasks import Task
+from configparser import ConfigParser
 import threading
 import asyncio
 import queue
@@ -207,8 +208,8 @@ class Bus(EventEmitter):
                  disable_brain: bool = False,
                  disable_dev_tools: bool = False,
                  hf2_portname: str = None,
-                 default_logger_min_priority: int = JD_LOGGER_PRIORITY_SILENT,
-                 storage_dir: str = "./.jacdac/"
+                 default_logger_min_priority: int = None,
+                 storage_dir: str = None
                  ) -> None:
         """Instantiates a new Jacdac bus
 
@@ -227,6 +228,7 @@ class Bus(EventEmitter):
             hf2_portname (str, optional): port name exposing HF2 packets.
         """
         super().__init__(self)
+
         self.devices: List['Device'] = []
         self.unattached_clients: List['Client'] = []
         self.all_clients: List['Client'] = []
@@ -234,20 +236,36 @@ class Bus(EventEmitter):
         self.logger: Optional[LoggerServer] = None
         self.role_manager: Optional[RoleManagerServer] = None
         self.pipes: List['InPipe'] = []
-
-        self.product_identifier = product_identifier
-        self.firmware_version = firmware_version
-        self.device_description = device_description
-        self.disable_brain = disable_brain
-        self.disable_logger = disable_logger
-        self.disable_settings = disable_settings
-        self.disable_role_manager = disable_role_manager
-        self.default_logger_min_priority = default_logger_min_priority
-        self.storage_dir = storage_dir
         self._event_counter = 0
 
-        if device_id is None:
-            device_id = rand_u64().hex()
+        # merge .ctor configuration with files
+        config = ConfigParser()
+        config.read(["./jacdac.ini", "./.jacdac/config.ini", "./setup.cfg"])
+        if not config.has_section("jacdac"):
+            cfg = config.add_section("jacdac")
+        cfg = config["jacdac"]
+        device_id = device_id or cfg.get(
+            "device_id", rand_u64().hex())
+        self.product_identifier: Optional[int] = product_identifier or cfg.getint(
+            "product_identifier", None)
+        self.firmware_version: Optional[str] = firmware_version or cfg.get(
+            "firmware_version", None)
+        self.device_description: Optional[str] = device_description
+        self.disable_brain = disable_brain or cfg.getboolean(
+            "disable_brain", False)
+        self.disable_logger = disable_logger or cfg.getboolean(
+            "disable_logger", False)
+        self.disable_settings = disable_settings or cfg.getboolean(
+            "disable_settings", False)
+        self.disable_dev_tools = disable_dev_tools or cfg.getboolean(
+            "disable_dev_tools", False)
+        self.disable_role_manager = disable_role_manager or cfg.getboolean(
+            "disable_role_manager", False)
+        self.default_logger_min_priority = default_logger_min_priority or cfg.getint(
+            "default_logger_min_priority", JD_LOGGER_PRIORITY_SILENT)
+        self.storage_dir = storage_dir or cfg.get("storage_dir", "./.jacdac")
+        self.hr2_portname = hf2_portname or cfg.get("hf2_portname")
+
         self.self_device = Device(self, device_id, bytearray(4))
         self.process_thread = threading.Thread(target=self._process_task)
         self.transports: List[Transport] = transports or []

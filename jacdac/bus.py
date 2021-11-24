@@ -211,7 +211,9 @@ class Bus(EventEmitter):
                  default_logger_min_priority: int = None,
                  storage_dir: str = None
                  ) -> None:
-        """Instantiates a new Jacdac bus
+        """Creates a new Jacdac bus.
+
+        All configuration options, aside form transports, can also be specified in ini configuration files ./jacdac.config, ./.jacdac/config.ini or setup.cfg.
 
         Args:
             transports (List[Transport]): packet transports

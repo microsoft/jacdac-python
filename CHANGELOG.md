@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v0.0.22 (2021-11-24)
+### Fix
+* Simplify api for Bus creation ([`e593c92`](https://github.com/microsoft/jacdac-python/commit/e593c92341545d126c0d9157202e873abd194d95))
+
 ## v0.0.21 (2021-11-24)
 ### Fix
 * Towards role manager support ([`17ee407`](https://github.com/microsoft/jacdac-python/commit/17ee4077fc5ecfe76adbf82dd614c261fa80ba29))

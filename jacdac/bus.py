@@ -10,6 +10,7 @@ from functools import reduce
 from random import getrandbits, randrange
 from typing import Any, Callable, Coroutine, Optional, Tuple, TypeVar, Union, cast, List, Dict
 from textwrap import wrap
+from os import path
 
 from .constants import *
 from .logger.constants import *
@@ -202,23 +203,24 @@ class Bus(EventEmitter):
                  device_description: str = None,
                  disable_logger: bool = False,
                  disable_role_manager: bool = False,
+                 disable_settings: bool = False,
                  disable_brain: bool = False,
                  disable_dev_tools: bool = False,
                  hf2_portname: str = None,
                  default_logger_min_priority: int = JD_LOGGER_PRIORITY_SILENT,
-                 role_manager_file_name: str = "./.jacdac/roles.json",
-                 settings_file_name: str = "./.jacdac/settings.json"
+                 storage_dir: str = "./.jacdac/"
                  ) -> None:
         """Instantiates a new Jacdac bus
 
         Args:
             transports (List[Transport]): packet transports
-            settings_file_name (str): Optional settings file location. Enables settings service.
+            storage_dir (str): Optional settings directory where settings, roles are stored.
             device_id (str, optional): Optional device identifier. Auto-generated if not specified.
             product_identifier (int, optional): Optional product identifier.
             device_description (str, optional): Optional device description.
             disable_logger (bool, optional): Disable the logger service. Defaults to False.
             disable_role_manager (bool, optional): Disable the role manager service. Defaults to False.
+            disable_settings (bool, optional): Disable the settings service. Defaults to False.
             disable_brain (bool, optional): Disable unique brain service. Defaults to False.
             default_logger_min_priority (int, optional): Optional mininimum logger priority. Defaults to JD_LOGGER_PRIORITY_SILENT.
             disable_dev_tools (bool, optional): Do not try to connect to developer tools server.
@@ -238,10 +240,10 @@ class Bus(EventEmitter):
         self.device_description = device_description
         self.disable_brain = disable_brain
         self.disable_logger = disable_logger
+        self.disable_settings = disable_settings
         self.disable_role_manager = disable_role_manager
         self.default_logger_min_priority = default_logger_min_priority
-        self.settings_file_name = settings_file_name
-        self.role_manager_file_name = role_manager_file_name
+        self.storage_dir = storage_dir
         self._event_counter = 0
 
         if device_id is None:
@@ -300,11 +302,10 @@ class Bus(EventEmitter):
         if not self.disable_logger:
             self.logger = LoggerServer(self)
 
-        if not self.disable_role_manager:
-            self.role_manager = RoleManagerServer(
-                self, self.role_manager_file_name)
+        if self.storage_dir and not self.disable_role_manager:
+            self.role_manager = RoleManagerServer(self)
 
-        if self.settings_file_name:
+        if self.storage_dir and not self.disable_settings:
             from .settings.server import SettingsServer
             self.settings = SettingsServer(self)
 
@@ -1106,9 +1107,10 @@ class UniqueBrainServer(Server):
 
 
 class RoleManagerServer(Server):
-    def __init__(self, bus: Bus, file_name: str) -> None:
+    def __init__(self, bus: Bus) -> None:
         super().__init__(bus, JD_SERVICE_CLASS_ROLE_MANAGER)
 
+        file_name = path.join(self.bus.storage_dir, "roles.json")
         from jacdac.settings_file import SettingsFile
         self.settings = SettingsFile(file_name)
         self.auto_bind = 1

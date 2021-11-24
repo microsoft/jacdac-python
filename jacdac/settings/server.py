@@ -3,6 +3,7 @@ from jacdac.bus import Bus, Server, JDPacket, OutPipe
 from jacdac.pack import jdpack
 from .constants import *
 from ..settings_file import SettingsFile
+from os import path
 
 
 class SettingsServer(Server):
@@ -13,14 +14,8 @@ class SettingsServer(Server):
 
     def __init__(self, bus: Bus) -> None:
         super().__init__(bus, JD_SERVICE_CLASS_SETTINGS)
-        self.settings = SettingsFile(self.file_name)
-
-    @property
-    def file_name(self) -> str:
-        f = self.bus.settings_file_name
-        if f is None:
-            raise RuntimeError("settings file name not set")
-        return f
+        file_name = path.join(self.bus.storage_dir, "settings.json")
+        self.settings = SettingsFile(file_name)
 
     def handle_packet(self, pkt: JDPacket):
         cmd = pkt.service_command

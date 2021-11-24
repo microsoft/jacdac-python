@@ -31,6 +31,7 @@ def create_bus_from_config() -> Bus:
         "disable_logger", False),
         disable_role_manager=cfg.getboolean(
         "disable_role_manager", False),
+        disable_settings=cfg.getboolean("disable_settings", False),
         disable_brain=cfg.getboolean(
         "disable_brain", False),
         disable_dev_tools=cfg.getboolean(
@@ -38,8 +39,6 @@ def create_bus_from_config() -> Bus:
         hf2_portname=cfg.get("hf2_portname", None),
         default_logger_min_priority=cfg.getint(
         "default_logger_min_priority", JD_LOGGER_PRIORITY_SILENT),
-        role_manager_file_name=cfg.get(
-        "role_manager_file_name", None),
-        settings_file_name=cfg.get(
-        "settings_file_name", None)
+        storage_dir=cfg.get(
+        "storage_dir", None),
     )

@@ -1077,7 +1077,6 @@ class Client(EventEmitter):
         self.pack_formats = pack_formats
         self.service_index = None
         self.device: Optional['Device'] = None
-        self.current_device:  Optional['Device'] = None
         self.role = role
         self._registers: List[RawRegisterClient] = []
         bus.unattached_clients.append(self)
@@ -1127,10 +1126,10 @@ class Client(EventEmitter):
 
     def send_cmd(self, pkt: JDPacket):
         """Sends a command packet to the server"""
-        if self.current_device is None:
+        if self.device is None:
             return
         pkt.service_index = self.service_index
-        pkt.device_id = self.current_device.device_id
+        pkt.device_id = self.device.device_id
         pkt._header[3] |= JD_FRAME_FLAG_COMMAND
 
         self.bus.run(self.bus._send_core, pkt)
@@ -1415,5 +1414,5 @@ class Device(EventEmitter):
             if (c.broadcast and c.service_class == service_class) or \
                (not c.broadcast and c.service_index == pkt.service_index):
                 # log(`handle pkt at ${client.role} rep=${pkt.serviceCommand}`)
-                c.current_device = self
+                c.device = self
                 c.handle_packet_outer(pkt)

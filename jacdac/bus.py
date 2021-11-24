@@ -1126,6 +1126,96 @@ class UniqueBrainServer(Server):
         super().__init__(bus, JD_SERVICE_CLASS_UNIQUE_BRAIN)
 
 
+class DeviceWrapper:
+    def __init__(self, device: 'Device') -> None:
+        self.device = device
+        self.bindings: Dict[int, 'RoleBinding'] = {}
+        self.score = -1
+
+
+class RoleBinding:
+    def __init__(self, role_manager: 'RoleManagerServer', role: str, service_class: int) -> None:
+        self.role_manager = role_manager
+        self.role = role
+        self.service_class = service_class
+        self.bound_to_dev: Optional[Device] = None
+        self.bound_to_service_idx: Optional[int] = None
+
+    def host(self) -> str:
+        slash_idx = self.role.find("/")
+        if slash_idx < 0:
+            return self.role
+        else:
+            return self.role[0: slash_idx]
+
+    def select(self, devwrap: DeviceWrapper, service_idx: int):
+        dev = devwrap.device
+        if dev == self.bound_to_dev and service_idx == self.bound_to_service_idx:
+            return
+
+        devwrap.bindings[service_idx] = self
+        self.role_manager.set_role(self.role, dev, service_idx)
+        self.bound_to_dev = dev
+        self.bound_to_service_idx = service_idx
+
+
+class ServerBindings:
+    def __init__(self, host: str) -> None:
+        self.host = host
+        self.bindings: List[RoleBinding] = []
+
+    @property
+    def fully_bound(self) -> bool:
+        for binding in self.bindings:
+            if not binding.bound_to_dev:
+                return False
+        return True
+
+    def score_for(self, devwrap: DeviceWrapper, select: Optional[bool] = False):
+        """candidate devices are ordered by [numBound, numPossible, device_id]
+        where numBound is number of clients already bound to this device
+        and numPossible is number of clients that can possibly be additionally bound
+        """
+        num_bound = 0
+        num_possible = 0
+        dev = devwrap.device
+        missing: List[RoleBinding] = []
+        for b in self.bindings:
+            if b.bound_to_dev:
+                if b.bound_to_dev == dev:
+                    num_bound += 1
+            else:
+                missing.append(b)
+
+        sbuf = dev.services
+        for idx in range(4, len(sbuf), 4):
+            service_index = idx >> 2
+            # if service is already bound to some client, move on
+            if service_index in devwrap.bindings:
+                continue
+
+            service_class = util.u32(sbuf, idx)
+            for i in range(len(missing)):
+                if missing[i].service_class == service_class:
+                    # we've got a match!
+                    num_possible += 1  # this can be assigned
+                    # in fact, assign if requested
+                    if select:
+                        missing[i].select(devwrap, service_index)
+                    # this one is no longer missing
+                    missing.pop(i)
+                    # move on to the next service in announce
+                    break
+
+        # if nothing can be assigned, the score is zero
+        if num_possible == 0:
+            return 0
+
+        # otherwise the score is [numBound, numPossible], lexicographic
+        # numPossible can't be larger than ~64, leave it a few more bits
+        return (num_bound << 8) | num_possible
+
+
 class RoleManagerServer(Server):
     def __init__(self, bus: Bus) -> None:
         super().__init__(bus, JD_SERVICE_CLASS_ROLE_MANAGER)
@@ -1202,6 +1292,7 @@ class RoleManagerServer(Server):
 
     def handle_clear_all_roles(self, pkt: JDPacket):
         self.settings.clear()
+        self.bus.clear_attach_cache()
         self.bind_roles()
 
     def handle_set_role(self, pkt: JDPacket):
@@ -1209,7 +1300,19 @@ class RoleManagerServer(Server):
         role = cast(str, payload[2])
         if role:
             self.settings.write(role, pkt.data)
+            self.bus.clear_attach_cache()
             self.bind_roles()
+
+    def set_role(self, role: str, device: Optional['Device'], service_idx: Optional[int]):
+        if not device or service_idx is None:
+            self.settings.delete(role)
+        else:
+            self.settings.write(role, bytearray(
+                jdpack("b[8] u8 s", bytearray.fromhex(device.device_id), service_idx, role)))
+
+    def is_match_role(self, role: str, device: 'Device', service_idx: int):
+        current = self.settings.read(role)
+        return current == jdpack("b[8] u8 s", bytearray.fromhex(device.device_id), service_idx, role)
 
     def _binding_hash(self):
         r = ""
@@ -1222,6 +1325,7 @@ class RoleManagerServer(Server):
         new_hash = self._binding_hash()
         if self._old_binding_hash != new_hash:
             self._old_binding_hash = new_hash
+            self.bus.clear_attach_cache()
             self.send_change_event()
 
     def bind_roles(self):
@@ -1230,6 +1334,80 @@ class RoleManagerServer(Server):
             return
         self.debug("bind roles, {}/{} to bind",
                    len(self.bus.unattached_clients), len(self.bus.all_clients))
+        bindings: List[RoleBinding] = []
+        wraps: List[DeviceWrapper] = []
+        for device in self.bus.devices:
+            wraps.append(DeviceWrapper(device))
+        for cl in self.bus.all_clients:
+            if not cl.broadcast and cl.role:
+                b = RoleBinding(self, cl.role, cl.service_class)
+                if cl.device:
+                    b.bound_to_dev = cl.device
+                    b.bound_to_service_idx = cl.service_index
+                    for w in wraps:
+                        if w.device == cl.device and not cl.service_index is None:
+                            w.bindings[cl.service_index] = b
+                            break
+                bindings.append(b)
+        servers: List[ServerBindings] = []
+        # Group all clients by host
+        for b in bindings:
+            hn = b.host()
+            h: Optional[ServerBindings] = None
+            for server in servers:
+                if server.host == hn:
+                    h = server
+                    break
+            if not h:
+                h = ServerBindings(hn)
+                servers.append(h)
+            h.bindings.append(b)
+
+        # exclude hosts that have already everything bound
+        servers = list(filter(lambda h: not h.fully_bound, servers))
+
+        while len(servers) > 0:
+            # Get host with maximum number of clients (resolve ties by name)
+            # This gives priority to assignment of "more complicated" hosts, which are generally more difficult to assign
+            h = servers[0]
+            for i in range(1, len(servers)):
+                a = h
+                b = servers[i]
+                if len(a.bindings) - len(b.bindings) < 0 or b.host < a.host:
+                    h = b
+            for d in wraps:
+                d.score = h.score_for(d)
+
+            dev = wraps[0]
+            for i in range(1, len(wraps)):
+                a = dev
+                b = wraps[i]
+                if a.score - b.score < 0 or b.device.device_id < a.device.device_id:
+                    dev = b
+
+            if dev.score == 0:
+                # nothing can be assigned, on any device
+                servers.remove(h)
+                continue
+
+            # assign services in order of names - this way foo/servo1 will be assigned before foo/servo2
+            # in list of advertised services
+            h.bindings = sorted(h.bindings, key=lambda entry: entry.role)
+
+            # "recompute" score, assigning names in process
+            h.score_for(dev, True)
+
+            # if everything bound on this host, remove it from further consideration
+            if h.fully_bound:
+                servers.remove(h)
+            else:
+                # otherwise, remove bindings on the current device, to update sort order
+                # it's unclear we need this
+                h.bindings = list(
+                    filter(lambda b: b.bound_to_dev != dev.device, h.bindings))
+
+        # trigger event as needed
+        self._check_changes()
 
 
 class Client(EventEmitter):
@@ -1526,8 +1704,15 @@ class Device(EventEmitter):
     def matches_role_at(self, role: str, service_idx: int):
         if not role or role == self.device_id or role == "{}:{}".format(self.device_id, service_idx):
             return True
-        return True
-        # TODO: return jacdac._rolemgr.getRole(self.deviceId, serviceIdx) == role
+        # requires role binding
+        if role.find(":") > -1:
+            return False
+
+        role_manager = self.bus.role_manager
+        if not role_manager:
+            return True
+
+        return role_manager.is_match_role(role, self, service_idx)
 
     @ property
     def num_service_classes(self):

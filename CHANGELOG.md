@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v0.0.21 (2021-11-24)
+### Fix
+* Towards role manager support ([`17ee407`](https://github.com/microsoft/jacdac-python/commit/17ee4077fc5ecfe76adbf82dd614c261fa80ba29))
+
 ## v0.0.20 (2021-11-24)
 ### Fix
 * Remove current_device ([`c2be442`](https://github.com/microsoft/jacdac-python/commit/c2be44255908d7e7938e015e7f0c11e6613e2d5c))

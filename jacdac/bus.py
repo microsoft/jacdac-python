@@ -12,6 +12,7 @@ from random import getrandbits, randrange
 from typing import Any, Callable, Coroutine, Optional, Tuple, TypeVar, Union, cast, List, Dict
 from textwrap import wrap
 from os import path
+from hashlib import sha1
 
 from .constants import *
 from .logger.constants import *
@@ -546,8 +547,6 @@ class Bus(EventEmitter):
                     matches = False
                     if not dev:
                         dev = Device(self, pkt.device_id, pkt.data)
-                        # ask for uptime
-                        # dev.send_ctrl_command(CMD_GET_REG | ControlReg.Uptime)
                         self.emit(EV_DEVICE_CONNECT, dev)
                     else:
                         matches = _service_matches(dev, pkt.data)
@@ -990,6 +989,7 @@ class ControlServer(Server):
     def __init__(self, bus: Bus) -> None:
         super().__init__(bus, JD_SERVICE_CLASS_CONTROL)
         self.restart_counter = 0
+        self.auto_bind_cnt = 0
 
     def queue_announce(self):
         logv("announce: %d " % self.restart_counter)
@@ -1009,12 +1009,12 @@ class ControlServer(Server):
         self.send_report(JDPacket(cmd=0, data=buf))
 
         # auto bind
-        # if jacdac.role_manager_server.auto_bind:
-        #     self.auto_bind_cnt++
-        #     # also, only do it every two announces (TBD)
-        #     if self.auto_bind_cnt >= 2:
-        #         self.auto_bind_cnt = 0
-        #         jacdac.role_manager_server.bind_roles()
+        if self.bus.role_manager and self.bus.role_manager.auto_bind:
+            self.auto_bind_cnt += 1
+            # also, only do it every two announces (TBD)
+            if self.auto_bind_cnt >= 2:
+                self.auto_bind_cnt = 0
+                self.bus.role_manager.bind_roles()
 
     # def handle_flood_ping(self, pkt: JDPacket):
     #     num_responses, counter, size = pkt.unpack("IIB")
@@ -1135,6 +1135,8 @@ class RoleManagerServer(Server):
         self.settings = SettingsFile(file_name)
         self.auto_bind = 1
 
+        self._old_binding_hash = ""
+
     def handle_packet(self, pkt: JDPacket):
         self.auto_bind = self.handle_reg_u8(
             pkt, JD_ROLE_MANAGER_REG_AUTO_BIND, self.auto_bind)
@@ -1176,10 +1178,6 @@ class RoleManagerServer(Server):
             pipe.write(payload)
         pipe.close()
 
-    def handle_clear_all_roles(self, pkt: JDPacket):
-        self.settings.clear()
-        self.send_change_event()
-
     def handle_get_role(self, pkt: JDPacket):
         payload = pkt.unpack("b[8] u8")
         device_id_b = cast(bytearray, payload[0])
@@ -1194,13 +1192,6 @@ class RoleManagerServer(Server):
         self.send_report(JDPacket.packed(
             JD_ROLE_MANAGER_CMD_GET_ROLE, "u[8] u8 s", device_id_b, service_index, role))
 
-    def handle_set_role(self, pkt: JDPacket):
-        payload = pkt.unpack("b[8] u8 s")
-        role = cast(str, payload[2])
-        if role:
-            self.settings.write(role, pkt.data)
-            self.send_change_event()
-
     def handle_all_roles_allocated(self, pkt: JDPacket):
         res = 1
         for client in self.bus.all_clients:
@@ -1208,6 +1199,37 @@ class RoleManagerServer(Server):
                 res = 0
                 break
         self.send_report(JDPacket.packed(pkt.service_command, "u8", res))
+
+    def handle_clear_all_roles(self, pkt: JDPacket):
+        self.settings.clear()
+        self.bind_roles()
+
+    def handle_set_role(self, pkt: JDPacket):
+        payload = pkt.unpack("b[8] u8 s")
+        role = cast(str, payload[2])
+        if role:
+            self.settings.write(role, pkt.data)
+            self.bind_roles()
+
+    def _binding_hash(self):
+        r = ""
+        for client in self.bus.all_clients:
+            r += "{}:{}:{},".format(client.role,
+                                    client.broadcast or client.device, client.service_index)
+        return sha1(r.encode("utf-8")).hexdigest()
+
+    def _check_changes(self):
+        new_hash = self._binding_hash()
+        if self._old_binding_hash != new_hash:
+            self._old_binding_hash = new_hash
+            self.send_change_event()
+
+    def bind_roles(self):
+        if len(self.bus.unattached_clients) == 0:
+            self._check_changes()
+            return
+        self.debug("bind roles, {}/{} to bind",
+                   len(self.bus.unattached_clients), len(self.bus.all_clients))
 
 
 class Client(EventEmitter):

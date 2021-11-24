@@ -1,15 +1,18 @@
 from io import TextIOWrapper
-from typing import Any, List, Optional
+from typing import Any, List, Optional, Tuple
 from .constants import *
 from json import load, dump
 from os import path, makedirs
 from base64 import b64decode, b64encode
 
+
 def value_to_json(value: bytearray) -> str:
     return b64encode(value).hex()
 
+
 def json_to_value(text: str) -> bytearray:
     return bytearray(b64decode(bytearray.fromhex(text)))
+
 
 class SettingsFile:
     def __init__(self, file_name: str) -> None:
@@ -65,7 +68,24 @@ class SettingsFile:
         with open(self.file_name, "wt") as f:
             f.write("{}")
 
-    def list(self) -> List[str]:
+    def list(self, secrets: bool = False) -> List[Tuple[str, bytearray]]:
+        if not path.exists(self.file_name):
+            return []
+        with open(self.file_name, "rt") as f:
+            settings = self._read_settings(f)
+            resp: List[Tuple[str, bytearray]] = []
+            keys = settings.keys()
+            for key in keys:
+                value = bytearray(0)
+                secret = self.is_secret(key)
+                if not secrets and secret:  # don't return value
+                    value = bytearray(1)
+                    value[0] = 0
+                else:
+                    value = json_to_value(settings[key])
+            return resp
+
+    def list_keys(self) -> List[str]:
         if not path.exists(self.file_name):
             return []
         with open(self.file_name, "rt") as f:

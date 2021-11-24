@@ -58,15 +58,13 @@ class SettingsServer(Server):
 
     def _handle_list(self, pkt: JDPacket):
         pipe = OutPipe(self.bus, pkt)
-        keys = self.settings.list()
-        for key in keys:
-            value = self.settings.read(key)
+        for key, value in self.settings.list():
             pipe.write(bytearray(jdpack("z b", key, value)))
         pipe.close()
 
     def _handle_list_keys(self, pkt: JDPacket):
         pipe = OutPipe(self.bus, pkt)
-        keys = self.settings.list()
+        keys = self.settings.list_keys()
         for key in keys:
             pipe.write(bytearray(jdpack("s", key)))
         pipe.close()

@@ -1172,8 +1172,7 @@ class RoleManagerServer(Server):
 
     def handle_list_stored_roles(self, pkt: JDPacket):
         pipe = OutPipe(self.bus, pkt)
-        for role in self.settings.list():
-            payload = self.settings.read(role)
+        for role, payload in self.settings.list():
             pipe.write(payload)
         pipe.close()
 
@@ -1197,15 +1196,17 @@ class RoleManagerServer(Server):
 
     def handle_set_role(self, pkt: JDPacket):
         payload = pkt.unpack("b[8] u8 s")
-        device_id_b = cast(bytearray, payload[0])
-        device_id = device_id_b.hex()
-        service_index = cast(int, payload[1])
         role = cast(str, payload[2])
-        self.send_change_event()
-        # TODO
+        if role:
+            self.settings.write(role, pkt.data)
+            self.send_change_event()
 
     def handle_all_roles_allocated(self, pkt: JDPacket):
-        res = 0 if len(self.bus.unattached_clients) > 0 else 1
+        res = 1
+        for client in self.bus.all_clients:
+            if not client.broadcast and not client.device:
+                res = 0
+                break
         self.send_report(JDPacket.packed(pkt.service_command, "u8", res))
 
 

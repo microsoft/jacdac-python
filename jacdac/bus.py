@@ -1217,6 +1217,8 @@ class ServerBindings:
 
 
 class RoleManagerServer(Server):
+    """A server for the role manager service
+    """
     def __init__(self, bus: Bus) -> None:
         super().__init__(bus, JD_SERVICE_CLASS_ROLE_MANAGER)
 

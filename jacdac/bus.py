@@ -15,12 +15,12 @@ from .constants import *
 from .logger.constants import *
 from .control.constants import *
 from .system.constants import *
+from .role_manager.constants import *
 from .unique_brain.constants import *
 from .packet import *
 
 from .util import now, log, logv
 from .pack import PackTuple, PackType, jdpack, jdunpack
-
 
 EV_CHANGE = "change"
 EV_DEVICE_CONNECT = "deviceConnect"
@@ -202,9 +202,11 @@ class Bus(EventEmitter):
                  firmware_version: str = None,
                  device_description: str = None,
                  disable_logger: bool = False,
+                 disable_role_manager: bool = False,
                  disable_brain: bool = False,
                  default_logger_min_priority: int = JD_LOGGER_PRIORITY_SILENT,
-                 settings_file_name: str = None) -> None:
+                 role_manager_file_name: str = "./.jacdac/roles.json",
+                 settings_file_name: str = "./.jacdac/settings.json") -> None:
         """Instantiates a new Jacdac bus
 
         Args:
@@ -214,6 +216,7 @@ class Bus(EventEmitter):
             product_identifier (int, optional): Optional product identifier.
             device_description (str, optional): Optional device description.
             disable_logger (bool, optional): Disable the logger service. Defaults to False.
+            disable_role_manager (bool, optional): Disable the role manager service. Defaults to False.
             disable_brain (bool, optional): Disable unique brain service. Defaults to False.
             default_logger_min_priority (int, optional): Optional mininimum logger priority. Defaults to JD_LOGGER_PRIORITY_SILENT.
         """
@@ -223,6 +226,7 @@ class Bus(EventEmitter):
         self.all_clients: List['Client'] = []
         self.servers: List['Server'] = []
         self.logger: Optional[LoggerServer] = None
+        self.role_manager: Optional[RoleManagerServer] = None
         self.pipes: List['InPipe'] = []
 
         self.product_identifier = product_identifier
@@ -230,8 +234,10 @@ class Bus(EventEmitter):
         self.device_description = device_description
         self.disable_brain = disable_brain
         self.disable_logger = disable_logger
+        self.disable_role_manager = disable_role_manager
         self.default_logger_min_priority = default_logger_min_priority
         self.settings_file_name = settings_file_name
+        self.role_manager_file_name = role_manager_file_name
         self._event_counter = 0
 
         if device_id is None:
@@ -278,6 +284,10 @@ class Bus(EventEmitter):
 
         if not self.disable_logger:
             self.logger = LoggerServer(self)
+
+        if not self.disable_role_manager:
+            self.role_manager = RoleManagerServer(
+                self, self.role_manager_file_name)
 
         if self.settings_file_name:
             from .settings.server import SettingsServer
@@ -1067,6 +1077,88 @@ class UniqueBrainServer(Server):
         super().__init__(bus, JD_SERVICE_CLASS_UNIQUE_BRAIN)
 
 
+class RoleManagerServer(Server):
+    def __init__(self, bus: Bus, file_name: str) -> None:
+        super().__init__(bus, JD_SERVICE_CLASS_ROLE_MANAGER)
+
+        from jacdac.settings_file import SettingsFile
+        self.settings = SettingsFile(file_name)
+        self.auto_bind = 1
+
+    def handle_packet(self, pkt: JDPacket):
+        self.auto_bind = self.handle_reg_u8(
+            pkt, JD_ROLE_MANAGER_REG_AUTO_BIND, self.auto_bind)
+
+        cmd = pkt.service_command
+
+        if cmd == JD_ROLE_MANAGER_CMD_LIST_REQUIRED_ROLES:
+            self.handle_list_required_roles(pkt)
+        elif cmd == JD_ROLE_MANAGER_CMD_LIST_STORED_ROLES:
+            self.handle_list_stored_roles(pkt)
+        elif cmd == JD_ROLE_MANAGER_CMD_CLEAR_ALL_ROLES:
+            self.handle_clear_all_roles(pkt)
+        elif cmd == JD_ROLE_MANAGER_CMD_GET_ROLE:
+            self.handle_get_role(pkt)
+        elif cmd == JD_ROLE_MANAGER_CMD_SET_ROLE:
+            self.handle_set_role(pkt)
+        elif cmd == JD_GET(JD_ROLE_MANAGER_REG_ALL_ROLES_ALLOCATED):
+            self.handle_all_roles_allocated(pkt)
+        else:
+            super().handle_packet(pkt)
+
+    def handle_list_required_roles(self, pkt: JDPacket):
+        pipe = OutPipe(self.bus, pkt)
+        for client in self.bus.all_clients:
+            device_id = bytearray(0)
+            service_class = client.service_class
+            service_index = client.service_index or 0
+            role = client.role
+            if client.device:
+                device_id = bytearray.fromhex(client.device.device_id)
+            payload = jdpack("b[8] u32 u8 s", device_id,
+                             service_class, service_index, role)
+            pipe.write(bytearray(payload))
+        pipe.close()
+
+    def handle_list_stored_roles(self, pkt: JDPacket):
+        pipe = OutPipe(self.bus, pkt)
+        for role in self.settings.list():
+            payload = self.settings.read(role)
+            pipe.write(payload)
+        pipe.close()
+
+    def handle_clear_all_roles(self, pkt: JDPacket):
+        self.settings.clear()
+        self.send_change_event()
+
+    def handle_get_role(self, pkt: JDPacket):
+        payload = pkt.unpack("b[8] u8")
+        device_id_b = cast(bytearray, payload[0])
+        device_id = device_id_b.hex()
+        service_index = cast(int, payload[1])
+
+        role = ""
+        for client in self.bus.all_clients:
+            if client.device and client.device.device_id == device_id and client.service_index == service_index:
+                role = client.role
+                break
+        self.send_report(JDPacket.packed(
+            JD_ROLE_MANAGER_CMD_GET_ROLE, "u[8] u8 s", device_id_b, service_index, role))
+
+    def handle_set_role(self, pkt: JDPacket):
+        payload = pkt.unpack("b[8] u8 s")
+        device_id_b = cast(bytearray, payload[0])
+        device_id = device_id_b.hex()
+        service_index = cast(int, payload[1])
+        role = cast(str, payload[2])
+        self.send_change_event()
+        # TODO
+
+    def handle_all_roles_allocated(self, pkt: JDPacket):
+        res = 0 if len(self.bus.unattached_clients) > 0 else 1
+        self.send_report(JDPacket.packed(pkt.service_command, "u8", res))
+
+
 class Client(EventEmitter):
     """Base class to define service clients."""
 
@@ -1156,6 +1248,9 @@ class Client(EventEmitter):
         self.debug("attached {}/{} to client {}", dev, service_idx, self.role)
         dev.clients.append(self)
         self.emit(EV_CONNECTED)
+        if self.bus.role_manager:
+            self.bus.role_manager.send_change_event()
+
         return True
 
     def _detach(self):
@@ -1169,6 +1264,8 @@ class Client(EventEmitter):
             self.bus.unattached_clients.append(self)
             self.bus.clear_attach_cache()
         self.emit(EV_DISCONNECTED)
+        if self.bus.role_manager:
+            self.bus.role_manager.send_change_event()
 
     def on_connect(self, handler: EventHandlerFn) -> UnsubscribeFn:
         """Registers an event handler when the client connects to a server

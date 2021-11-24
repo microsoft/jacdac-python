@@ -214,7 +214,7 @@ def _jdpack_core(trg: Optional[bytearray], fmt: str, data: List[PackType], off: 
                     else:
                         raise ValueError("unexpected buffer")
                 else:
-                    raise ValueError("expecting string or buffer")
+                    raise ValueError("expecting string, bytes, bytearray")
 
                 sz = parser.size
                 if sz >= 0:

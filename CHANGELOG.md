@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v0.0.23 (2021-11-24)
+### Fix
+* Add comment for init files ([`46d50b5`](https://github.com/microsoft/jacdac-python/commit/46d50b58041dd0d03d5c96c44b9ca76cedfa8941))
+
 ## v0.0.22 (2021-11-24)
 ### Fix
 * Simplify api for Bus creation ([`e593c92`](https://github.com/microsoft/jacdac-python/commit/e593c92341545d126c0d9157202e873abd194d95))

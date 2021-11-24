@@ -1,13 +1,16 @@
-from typing import Optional
+from typing import Any, Optional
 
-from jacdac.pack import PackType, jdpack, jdunpack
+from .pack import PackType, jdpack, jdunpack
 from .constants import *
 from .system.constants import JD_CMD_COMMAND_NOT_IMPLEMENTED
 import jacdac.util as util
 
 
 class JDPacket:
-    def __init__(self, *, cmd: int = None, size: int = 0, frombytes: bytes = None, data: bytes = None) -> None:
+    """A Jacdac packet
+    """
+
+    def __init__(self, *, cmd: int = None, size: int = 0, frombytes: bytes = None, data: bytes = None, sender: Any = None) -> None:
         self.timestamp = util.now()
         if frombytes is None:
             self._header = bytearray(JD_SERIAL_HEADER_SIZE)
@@ -17,6 +20,7 @@ class JDPacket:
             self.data = bytearray(frombytes[JD_SERIAL_HEADER_SIZE:])
         if cmd is not None:
             self.service_command = cmd
+        self.sender = sender
 
     @staticmethod
     def packed(cmd: int, fmt: str, *args: PackType):

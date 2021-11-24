@@ -1,11 +1,11 @@
 from typing import Any, Type, List
-from jacdac.devtools import create_dev_tools_bus
+from ..bus import Bus
 from .client import ButtonClient
 from time import sleep
 
 if __name__ == '__main__':
 
-    bus = create_dev_tools_bus()
+    bus = Bus()
 
     def up(data: Any):
         print("up")

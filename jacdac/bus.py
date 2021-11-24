@@ -186,8 +186,6 @@ class Transport:
         # send a packet payload over the transport layer
         pass
 
-# TODO: replace randbytes
-
 
 def rand_u64():
     return bytearray([getrandbits(8) for _ in range(8)])
@@ -196,7 +194,8 @@ def rand_u64():
 class Bus(EventEmitter):
     """A Jacdac bus that managed devices, service client, registers."""
 
-    def __init__(self, transport: Transport, *,
+    def __init__(self, *,
+                 transports: List[Transport] = None,
                  device_id: str = None,
                  product_identifier: int = None,
                  firmware_version: str = None,
@@ -204,13 +203,16 @@ class Bus(EventEmitter):
                  disable_logger: bool = False,
                  disable_role_manager: bool = False,
                  disable_brain: bool = False,
+                 disable_dev_tools: bool = False,
+                 hf2_portname: str = None,
                  default_logger_min_priority: int = JD_LOGGER_PRIORITY_SILENT,
                  role_manager_file_name: str = "./.jacdac/roles.json",
-                 settings_file_name: str = "./.jacdac/settings.json") -> None:
+                 settings_file_name: str = "./.jacdac/settings.json"
+                 ) -> None:
         """Instantiates a new Jacdac bus
 
         Args:
-            transport (Transport): packet transport
+            transports (List[Transport]): packet transports
             settings_file_name (str): Optional settings file location. Enables settings service.
             device_id (str, optional): Optional device identifier. Auto-generated if not specified.
             product_identifier (int, optional): Optional product identifier.
@@ -219,6 +221,8 @@ class Bus(EventEmitter):
             disable_role_manager (bool, optional): Disable the role manager service. Defaults to False.
             disable_brain (bool, optional): Disable unique brain service. Defaults to False.
             default_logger_min_priority (int, optional): Optional mininimum logger priority. Defaults to JD_LOGGER_PRIORITY_SILENT.
+            disable_dev_tools (bool, optional): Do not try to connect to developer tools server.
+            hf2_portname (str, optional): port name exposing HF2 packets.
         """
         super().__init__(self)
         self.devices: List['Device'] = []
@@ -244,8 +248,15 @@ class Bus(EventEmitter):
             device_id = rand_u64().hex()
         self.self_device = Device(self, device_id, bytearray(4))
         self.process_thread = threading.Thread(target=self._process_task)
-        self.transport = transport
-        self._sendq: queue.Queue[bytes] = queue.Queue()
+        self.transports: List[Transport] = transports or []
+        if not disable_dev_tools:
+            from .transports.ws import WebSocketTransport
+            self.transports.append(WebSocketTransport(DEVTOOLS_SOCKET_URL))
+        if hf2_portname:
+            from .transports.hf2 import HF2Transport
+            self.transports.append(HF2Transport(hf2_portname))
+
+        self._sendq: queue.Queue[Tuple[Transport, bytes]] = queue.Queue()
         self.pending_tasks: List[asyncio.Task[None]] = []
 
         self.loop = asyncio.new_event_loop()
@@ -272,8 +283,12 @@ class Bus(EventEmitter):
 
     def _sender(self):
         while True:
-            pkt = self._sendq.get()
-            self.transport.send(pkt)
+            c = self._sendq.get()
+            sender = c[0]
+            pkt = c[1]
+            for transport in self.transports:
+                if sender != transport:
+                    transport.send(pkt)
 
     def _process_task(self):
         loop = self.loop
@@ -311,9 +326,13 @@ class Bus(EventEmitter):
             loop.call_later(0.500, announce)
         loop.call_later(0.500, announce)
 
-        def process_later(pkt: bytes):
-            loop.call_soon_threadsafe(self.process_frame, pkt)
-        self.transport.on_receive = process_later
+        def process_later(sender: Transport, pkt: bytes):
+            loop.call_soon_threadsafe(self.process_frame, sender, pkt)
+
+        for transport in self.transports:
+            def process(pkt: bytes):
+                process_later(transport, pkt)
+            transport.on_receive = process
 
         try:
             loop.run_forever()
@@ -321,10 +340,13 @@ class Bus(EventEmitter):
             loop.run_until_complete(loop.shutdown_asyncgens())
             loop.close()
 
-    def process_frame(self, frame: bytes):
+    def process_frame(self, sender: Transport, frame: bytes):
         if frame[2] - frame[12] < 4:
             # single packet in frame
-            self.process_packet(JDPacket(frombytes=frame))
+            pkt = JDPacket(frombytes=frame, sender=sender)
+            self.process_packet(pkt)
+            # dispatch to other transports
+            self._queue_core(pkt)
         else:
             # split into frames
             ptr = 12
@@ -332,10 +354,12 @@ class Bus(EventEmitter):
                 sz = frame[ptr] + 4
                 pktbytes = frame[0:12] + frame[ptr:ptr+sz]
                 # log("PKT: {}-{} / {}", ptr, len(frame), pktbytes.hex())
-                pkt = JDPacket(frombytes=pktbytes)
+                pkt = JDPacket(frombytes=pktbytes, sender=sender)
                 if ptr > 12:
                     pkt.requires_ack = False
                 self.process_packet(pkt)
+                # dispatch to other transports
+                self._queue_core(pkt)
                 ptr += (sz + 3) & ~3
 
     def force_jd_thread(self):
@@ -375,14 +399,18 @@ class Bus(EventEmitter):
             self.emit(EV_DEVICE_CHANGE)
             self.emit(EV_CHANGE)
 
-    def _send_core(self, pkt: JDPacket):
+    def _queue_core(self, pkt: JDPacket):
         assert len(pkt._data) == pkt._header[12]
         pkt._header[2] = len(pkt._data) + 4
         buf = pkt._header + pkt._data
         crc = util.crc16(buf, 2)
+        sender = cast(Transport, pkt.sender)
         util.set_u16(buf, 0, crc)
         util.set_u16(pkt._header, 0, crc)
-        self._sendq.put(buf)
+        self._sendq.put((sender, buf))
+
+    def _send_core(self, pkt: JDPacket):
+        self._queue_core(pkt)
         self.process_packet(pkt)  # handle loop-back packet
 
     def clear_attach_cache(self):
@@ -605,7 +633,7 @@ class OutPipe(EventEmitter):
         self.port = cast(int, port)
         self.next_cnt = 0
 
-    @property
+    @ property
     def open(self):
         return not not self.port
 
@@ -892,7 +920,7 @@ class SensorServer(Server):
         self.streaming_interval = streaming_interval
         self._stream_task: Optional[Task[None]] = None
 
-    @abstractmethod
+    @ abstractmethod
     def send_reading(self):
         pass
 
@@ -1185,7 +1213,7 @@ class Client(EventEmitter):
                 return reg
         return None
 
-    @property
+    @ property
     def connected(self) -> bool:
         """Indicates if the client is a connected to a server"""
         return True if self.device else False
@@ -1324,16 +1352,16 @@ class SensorClient(Client):
         super().__init__(bus, service_class, pack_formats, role)
         self.preferred_interval = preferred_interval
 
-    @property
+    @ property
     def streaming_samples(self) -> Optional[int]:
         """Queries the current estimated streaming samples value"""
         return self.register(JD_REG_STREAMING_SAMPLES).value()
 
-    @property
+    @ property
     def streaming_interval(self) -> Optional[int]:
         return self.register(JD_REG_STREAMING_INTERVAL).value()
 
-    @property
+    @ property
     def streaming_preferred_interval(self) -> Optional[int]:
         return self.register(JD_REG_STREAMING_PREFERRED_INTERVAL).value()
 
@@ -1404,7 +1432,7 @@ class Device(EventEmitter):
         self._ctrl_client: Optional[Client] = None
         bus.devices.append(self)
 
-    @property
+    @ property
     def ctrl_client(self):
         if self._ctrl_client is None:
             self._ctrl_client = Client(
@@ -1412,23 +1440,23 @@ class Device(EventEmitter):
             self._ctrl_client._attach(self, 0)
         return self._ctrl_client
 
-    @property
+    @ property
     def announce_flags(self):
         return util.u16(self.services, 0)
 
-    @property
+    @ property
     def reset_count(self):
         return self.announce_flags & JD_CONTROL_ANNOUNCE_FLAGS_RESTART_COUNTER_STEADY
 
-    @property
+    @ property
     def packet_count(self):
         return self.services[2]
 
-    @property
+    @ property
     def is_connected(self):
         return self.clients != None
 
-    @property
+    @ property
     def short_id(self):
         return util.short_id(self.device_id)
 
@@ -1456,7 +1484,7 @@ class Device(EventEmitter):
         return True
         # TODO: return jacdac._rolemgr.getRole(self.deviceId, serviceIdx) == role
 
-    @property
+    @ property
     def num_service_classes(self):
         return len(self.services) >> 2
 

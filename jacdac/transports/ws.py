@@ -1,17 +1,14 @@
 import threading
+from typing import Optional
 from websocket import WebSocketApp
 from jacdac.bus import Transport
 
 
 class WebSocketTransport(Transport):
-    # A websocket-based transport
-    #
-
-    url: str
-    ws: WebSocketApp
-
     def __init__(self, url: str):
         self.url = url
+        self.ws: Optional[WebSocketApp] = None
+        self.opened = False
         self.open()
 
     def open(self) -> None:
@@ -24,17 +21,20 @@ class WebSocketTransport(Transport):
         t.start()
 
     def send(self, pkt: bytes) -> None:
-        self.ws.send(pkt, opcode=2)  # type: ignore
+        if self.opened:
+            self.ws.send(pkt, opcode=2)  # type: ignore
 
     def on_message(self, ws: WebSocketApp, message: bytes):
         if self.on_receive:
             self.on_receive(message)
 
     def on_error(self, ws: WebSocketApp, error: str):
-        print(error)
+        if self.opened:
+            print(error)
 
     def on_close(self, ws: WebSocketApp, close_status_code: int, close_msg: str):
-        print("### closed ###")
+        self.opened = False
 
     def on_open(self, ws: WebSocketApp):
-        print("### open ###")
+        print("devtools server connected")
+        self.opened = True

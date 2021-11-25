@@ -10,7 +10,7 @@ if __name__ == '__main__':
         humidity_sensor = HumidityClient(bus, "weather.hum")
         thermometer = ThermometerClient(bus, "weather.temp")
         with open('weather.csv', 'w', newline='') as csvfile:
-            writer = csv.writer(csvfile, delimiter=', ', )
+            writer = csv.writer(csvfile, delimiter=',', )
             while True:
                 h = humidity_sensor.humidity
                 t = thermometer.temperature

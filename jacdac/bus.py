@@ -436,7 +436,11 @@ class Bus(EventEmitter):
         self.process_packet(pkt)  # handle loop-back packet
 
     def clear_attach_cache(self):
-        pass
+        self.debug("clear attach cache")
+        for d in self.devices:
+            # add a dummy byte at the end (if not done already), to force re-attach of services
+            if (len(d.services) & 3) == 0:
+                d.services.append(0)
 
     def mk_event_cmd(self, ev_code: int):
         if not self._event_counter:
@@ -1188,13 +1192,13 @@ class ServerBindings:
                 missing.append(b)
 
         sbuf = dev.services
-        for idx in range(4, len(sbuf), 4):
-            service_index = idx >> 2
+        n = dev.num_service_classes
+        for service_index in range(1, n):
             # if service is already bound to some client, move on
             if service_index in devwrap.bindings:
                 continue
 
-            service_class = util.u32(sbuf, idx)
+            service_class = dev.service_class_at(service_index)
             for i in range(len(missing)):
                 if missing[i].service_class == service_class:
                     # we've got a match!
@@ -1352,6 +1356,7 @@ class RoleManagerServer(Server):
                             break
                 bindings.append(b)
         servers: List[ServerBindings] = []
+
         # Group all clients by host
         for b in bindings:
             hn = b.host()
@@ -1712,7 +1717,7 @@ class Device(EventEmitter):
 
         role_manager = self.bus.role_manager
         if not role_manager:
-            return True
+            return False
 
         return role_manager.is_match_role(role, self, service_idx)
 

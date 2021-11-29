@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v0.0.25 (2021-11-29)
+### Fix
+* Update storage of roles ([`04f1455`](https://github.com/microsoft/jacdac-python/commit/04f145520a706c0231b25965405008ad8d1fdb97))
+
 ## v0.0.24 (2021-11-24)
 ### Fix
 * Role manager support ([`6750144`](https://github.com/microsoft/jacdac-python/commit/675014407d809300ff2047bf99279f6f79a3f060))

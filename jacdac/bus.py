@@ -1371,7 +1371,8 @@ class RoleManagerServer(Server):
             h.bindings.append(b)
 
         # exclude hosts that have already everything bound
-        servers = list(filter(lambda h: not h.fully_bound, servers))
+        servers = list(filter(lambda h: not h.fully_bound, servers))        
+        self.debug("servers not fully bound: {}", len(servers))
 
         while len(servers) > 0:
             # Get host with maximum number of clients (resolve ties by name)
@@ -1380,7 +1381,8 @@ class RoleManagerServer(Server):
             for i in range(1, len(servers)):
                 a = h
                 b = servers[i]
-                if len(a.bindings) - len(b.bindings) < 0 or b.host < a.host:
+                clen = len(a.bindings) - len(b.bindings)
+                if clen < 0 or (clen == 0 and b.host < a.host):
                     h = b
             for d in wraps:
                 d.score = h.score_for(d)
@@ -1389,8 +1391,12 @@ class RoleManagerServer(Server):
             for i in range(1, len(wraps)):
                 a = dev
                 b = wraps[i]
-                if a.score - b.score < 0 or b.device.device_id < a.device.device_id:
+                cscore = a.score - b.score
+                if cscore < 0 or (cscore == 0 and b.device.device_id < a.device.device_id):
                     dev = b
+
+            self.debug("binding: server {}, device {}, score {}", h.host, dev.device.short_id, dev.score)
+            self.debug("  score: {}", ", ".join(list(map(lambda w: "{}: {}".format(w.device.short_id, w.score), wraps))))
 
             if dev.score == 0:
                 # nothing can be assigned, on any device

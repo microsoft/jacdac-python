@@ -1223,6 +1223,7 @@ class ServerBindings:
 class RoleManagerServer(Server):
     """A server for the role manager service
     """
+
     def __init__(self, bus: Bus) -> None:
         super().__init__(bus, JD_SERVICE_CLASS_ROLE_MANAGER)
 
@@ -1270,8 +1271,11 @@ class RoleManagerServer(Server):
 
     def handle_list_stored_roles(self, pkt: JDPacket):
         pipe = OutPipe(self.bus, pkt)
-        for role, payload in self.settings.list():
-            pipe.write(payload)
+        for key, payload in self.settings.list():
+            device_id, service_index = key.split(":")
+            role = jdunpack(payload, "s")[0]
+            pipe.write(bytearray(
+                jdpack("b[8] u8 s", bytearray.fromhex(device_id), service_index, role)))
         pipe.close()
 
     def handle_get_role(self, pkt: JDPacket):
@@ -1309,16 +1313,19 @@ class RoleManagerServer(Server):
             self.bus.clear_attach_cache()
             self.bind_roles()
 
-    def set_role(self, role: str, device: Optional['Device'], service_idx: Optional[int]):
-        if not device or service_idx is None:
-            self.settings.delete(role)
+    def set_role(self, role: str, device: 'Device', service_idx: int):
+        key = "{}:{}".format(device.device_id, service_idx)
+        if device:
+            self.settings.write(key, bytearray(jdpack("s", role)))
         else:
-            self.settings.write(role, bytearray(
-                jdpack("b[8] u8 s", bytearray.fromhex(device.device_id), service_idx, role)))
+            self.settings.delete(key)
+        self.bus.clear_attach_cache()
 
     def is_match_role(self, role: str, device: 'Device', service_idx: int):
-        current = self.settings.read(role)
-        return current == jdpack("b[8] u8 s", bytearray.fromhex(device.device_id), service_idx, role)
+        key = "{}:{}".format(device.device_id, service_idx)
+        current = self.settings.read(key)
+        stored_role = jdunpack(current, "s")[0] if current else None
+        return role == stored_role
 
     def _binding_hash(self):
         r = ""
@@ -1371,7 +1378,7 @@ class RoleManagerServer(Server):
             h.bindings.append(b)
 
         # exclude hosts that have already everything bound
-        servers = list(filter(lambda h: not h.fully_bound, servers))        
+        servers = list(filter(lambda h: not h.fully_bound, servers))
         self.debug("servers not fully bound: {}", len(servers))
 
         while len(servers) > 0:
@@ -1395,11 +1402,14 @@ class RoleManagerServer(Server):
                 if cscore < 0 or (cscore == 0 and b.device.device_id < a.device.device_id):
                     dev = b
 
-            self.debug("binding: server {}, device {}, score {}", h.host, dev.device.short_id, dev.score)
-            self.debug("  score: {}", ", ".join(list(map(lambda w: "{}: {}".format(w.device.short_id, w.score), wraps))))
+            self.debug("binding: server {}, device {}, score {}",
+                       h.host, dev.device.short_id, dev.score)
+            self.debug("  score: {}", ", ".join(
+                list(map(lambda w: "{}: {}".format(w.device.short_id, w.score), wraps))))
 
             if dev.score == 0:
                 # nothing can be assigned, on any device
+                self.debug("  server not bound")
                 servers.remove(h)
                 continue
 
@@ -1412,12 +1422,14 @@ class RoleManagerServer(Server):
 
             # if everything bound on this host, remove it from further consideration
             if h.fully_bound:
+                self.debug("  server bound")
                 servers.remove(h)
             else:
                 # otherwise, remove bindings on the current device, to update sort order
                 # it's unclear we need this
                 h.bindings = list(
                     filter(lambda b: b.bound_to_dev != dev.device, h.bindings))
+                self.debug("  server {} bindings", len(h.bindings))
 
         # trigger event as needed
         self._check_changes()

@@ -28,6 +28,11 @@ sudo apt upgrade
 sudo apt install python3 python3-pip ipython3 python3-venv
 ```
 
+### RPi Setup
+
+You'll need a Jacdac hat for RPi and you will need to build bridge executable,
+see https://github.com/microsoft/jacdac-stm32x0/tree/main/spibridge
+
 ### Codespaces
 
 You can develop this package from a GitHub codespace container. 

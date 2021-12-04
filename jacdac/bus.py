@@ -209,6 +209,7 @@ class Bus(EventEmitter):
                  disable_brain: bool = False,
                  disable_dev_tools: bool = False,
                  hf2_portname: str = None,
+                 transport_cmd: str = None,
                  default_logger_min_priority: int = None,
                  storage_dir: str = None
                  ) -> None:
@@ -229,6 +230,7 @@ class Bus(EventEmitter):
             default_logger_min_priority (int, optional): Optional mininimum logger priority. Defaults to JD_LOGGER_PRIORITY_SILENT.
             disable_dev_tools (bool, optional): Do not try to connect to developer tools server.
             hf2_portname (str, optional): port name exposing HF2 packets.
+            transport_cmd (str, optional): name of executable to run as a transport.
         """
         super().__init__(self)
 
@@ -243,7 +245,7 @@ class Bus(EventEmitter):
 
         # merge .ctor configuration with files
         config = ConfigParser()
-        config.read(["./jacdac.ini", "./.jacdac/config.ini", "./setup.cfg"])
+        config.read(["./jacdac.ini", os.path.expanduser("~") + "/.jacdac/config.ini", "./setup.cfg"])
         if not config.has_section("jacdac"):
             cfg = config.add_section("jacdac")
         cfg = config["jacdac"]
@@ -267,7 +269,8 @@ class Bus(EventEmitter):
         self.default_logger_min_priority = default_logger_min_priority or cfg.getint(
             "default_logger_min_priority", JD_LOGGER_PRIORITY_SILENT)
         self.storage_dir = storage_dir or cfg.get("storage_dir", "./.jacdac")
-        self.hr2_portname = hf2_portname or cfg.get("hf2_portname")
+        self.hf2_portname = hf2_portname or cfg.get("hf2_portname")
+        self.transport_cmd = transport_cmd or cfg.get("transport_cmd")
 
         self.self_device = Device(self, device_id, bytearray(4))
         self.process_thread = threading.Thread(target=self._process_task)
@@ -275,9 +278,12 @@ class Bus(EventEmitter):
         if not disable_dev_tools:
             from .transports.ws import WebSocketTransport
             self.transports.append(WebSocketTransport(DEVTOOLS_SOCKET_URL))
-        if hf2_portname:
+        if self.transport_cmd:
+            from .transports.exec import ExecTransport
+            self.transports.append(ExecTransport(self.transport_cmd))
+        if self.hf2_portname:
             from .transports.hf2 import HF2Transport
-            self.transports.append(HF2Transport(hf2_portname))
+            self.transports.append(HF2Transport(self.hf2_portname))
 
         self._sendq: queue.Queue[Tuple[Transport, bytes]] = queue.Queue()
         self.pending_tasks: List[asyncio.Task[None]] = []

@@ -26,7 +26,7 @@ class BarometerClient(SensorClient):
     @property
     def pressure_error(self) -> Optional[float]:
         """
-        The real pressure is between `pressure - pressure_error` and `pressure + pressure_error`., _: hPa
+        (Optional) The real pressure is between `pressure - pressure_error` and `pressure + pressure_error`., _: hPa
         """
         return self.register(JD_BAROMETER_REG_PRESSURE_ERROR).value()
 

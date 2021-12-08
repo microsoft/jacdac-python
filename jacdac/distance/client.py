@@ -24,6 +24,13 @@ class DistanceClient(SensorClient):
         return self.register(JD_DISTANCE_REG_DISTANCE).value(self.missing_distance_value)
 
     @property
+    def distance_error(self) -> Optional[float]:
+        """
+        (Optional) Absolute error on the reading value., _: m
+        """
+        return self.register(JD_DISTANCE_REG_DISTANCE_ERROR).value()
+
+    @property
     def min_range(self) -> Optional[float]:
         """
         (Optional) Minimum measurable distance, _: m

@@ -18,7 +18,7 @@ class DmxClient(Client):
     @property
     def enabled(self) -> Optional[bool]:
         """
-        Determines if the DMX bridge is active, 
+        Determines if the DMX bridge is active., 
         """
         return self.register(JD_DMX_REG_ENABLED).bool_value()
 

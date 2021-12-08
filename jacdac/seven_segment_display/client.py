@@ -18,10 +18,10 @@ class SevenSegmentDisplayClient(Client):
     @property
     def digits(self) -> Optional[bytes]:
         """
-        Each byte encodes the display status of a digit using, 
+        Each byte encodes the display status of a digit using,
         where bit 0 encodes segment `A`, bit 1 encodes segments `B`, ..., bit 6 encodes segments `G`, and bit 7 encodes the decimal point (if present).
-        If incoming ``digits`` data is smaller than `digit_count`, the remaining digits will be cleared.
-        Thus, sending an empty ``digits`` payload clears the screen.
+        If incoming `digits` data is smaller than `digit_count`, the remaining digits will be cleared.
+        Thus, sending an empty `digits` payload clears the screen.
         
         ```text
          - A -
@@ -43,7 +43,7 @@ class SevenSegmentDisplayClient(Client):
     @property
     def brightness(self) -> Optional[float]:
         """
-        Controls the brightness of the LEDs. ``0`` means off., _: /
+        Controls the brightness of the LEDs. `0` means off., _: /
         """
         return self.register(JD_SEVEN_SEGMENT_DISPLAY_REG_BRIGHTNESS).float_value(100)
 

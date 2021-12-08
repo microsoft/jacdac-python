@@ -6,7 +6,7 @@ from typing import Optional
 
 class MotorClient(Client):
     """
-    A bi-directional DC motor.
+    A DC motor.
     Implements a client for the `Motor <https://microsoft.github.io/jacdac-docs/services/motor>`_ service.
 
     """
@@ -55,5 +55,12 @@ class MotorClient(Client):
         (Optional) Revolutions per minute of the motor under full load., _: rpm
         """
         return self.register(JD_MOTOR_REG_LOAD_SPEED).value()
+
+    @property
+    def reversible(self) -> Optional[bool]:
+        """
+        (Optional) Indicates if the motor can run backwards., 
+        """
+        return self.register(JD_MOTOR_REG_REVERSIBLE).bool_value()
 
     

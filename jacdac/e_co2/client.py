@@ -26,7 +26,7 @@ class ECO2Client(SensorClient):
     @property
     def e_CO2_error(self) -> Optional[float]:
         """
-        Error on the reading value., _: ppm
+        (Optional) Error on the reading value., _: ppm
         """
         return self.register(JD_E_CO2_REG_E_CO2_ERROR).value()
 

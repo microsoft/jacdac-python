@@ -33,4 +33,10 @@ class SoundPlayerClient(Client):
         Starts playing a sound.
         """
         self.send_cmd_packed(JD_SOUND_PLAYER_CMD_PLAY, name)
+
+    def cancel(self, ) -> None:
+        """
+        Cancel any sound playing.
+        """
+        self.send_cmd_packed(JD_SOUND_PLAYER_CMD_CANCEL, )
     

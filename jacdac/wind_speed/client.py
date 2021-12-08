@@ -26,7 +26,7 @@ class WindSpeedClient(SensorClient):
     @property
     def wind_speed_error(self) -> Optional[float]:
         """
-        Error on the reading, _: m/s
+        (Optional) Error on the reading, _: m/s
         """
         return self.register(JD_WIND_SPEED_REG_WIND_SPEED_ERROR).value()
 

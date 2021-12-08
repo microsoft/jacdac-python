@@ -6,7 +6,7 @@ from typing import Optional
 
 class CharacterScreenClient(Client):
     """
-    A screen that displays characters.
+    A screen that displays characters, typically a LCD/OLED character screen.
     Implements a client for the `Character Screen <https://microsoft.github.io/jacdac-docs/services/characterscreen>`_ service.
 
     """
@@ -72,16 +72,4 @@ class CharacterScreenClient(Client):
         """
         return self.register(JD_CHARACTER_SCREEN_REG_COLUMNS).value()
 
-
-    def set_line(self, index: int, message: str) -> None:
-        """
-        Overrides the content of a single line at a 0-based index.
-        """
-        self.send_cmd_packed(JD_CHARACTER_SCREEN_CMD_SET_LINE, index, message)
-
-    def clear(self, ) -> None:
-        """
-        Clears all text from the display.
-        """
-        self.send_cmd_packed(JD_CHARACTER_SCREEN_CMD_CLEAR, )
     

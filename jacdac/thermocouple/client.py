@@ -40,7 +40,7 @@ class ThermocoupleClient(SensorClient):
     @property
     def temperature_error(self) -> Optional[float]:
         """
-        The real temperature is between `temperature - temperature_error` and `temperature + temperature_error`., _: °C
+        (Optional) The real temperature is between `temperature - temperature_error` and `temperature + temperature_error`., _: °C
         """
         return self.register(JD_THERMOCOUPLE_REG_TEMPERATURE_ERROR).value()
 

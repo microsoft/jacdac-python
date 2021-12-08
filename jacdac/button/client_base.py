@@ -18,7 +18,7 @@ class ButtonClientBase(SensorClient):
     @property
     def pressure(self) -> Optional[float]:
         """
-        Indicates the pressure state of the button, where ``0`` is open., _: /
+        Indicates the pressure state of the button, where `0` is open., _: /
         """
         self.refresh_reading()
         return self.register(JD_BUTTON_REG_PRESSURE).float_value(self.missing_pressure_value, 100)
@@ -26,7 +26,7 @@ class ButtonClientBase(SensorClient):
     @property
     def analog(self) -> Optional[bool]:
         """
-        (Optional) Indicates if the button provides analog ``pressure`` readings., 
+        (Optional) Indicates if the button provides analog `pressure` readings., 
         """
         return self.register(JD_BUTTON_REG_ANALOG).bool_value()
 
@@ -38,14 +38,14 @@ class ButtonClientBase(SensorClient):
 
     def on_up(self, handler: EventHandlerFn) -> UnsubscribeFn:
         """
-        Emitted when button goes from active to inactive. The 'time' parameter 
+        Emitted when button goes from active to inactive. The 'time' parameter
         records the amount of time between the down and up events.
         """
         return self.on_event(JD_BUTTON_EV_UP, handler)
 
     def on_hold(self, handler: EventHandlerFn) -> UnsubscribeFn:
         """
-        Emitted when the press time is greater than 500ms, and then at least every 500ms 
+        Emitted when the press time is greater than 500ms, and then at least every 500ms
         as long as the button remains pressed. The 'time' parameter records the the amount of time
         that the button has been held (since the down event).
         """

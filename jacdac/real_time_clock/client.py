@@ -18,10 +18,10 @@ class RealTimeClockClient(SensorClient):
     @property
     def local_time(self) -> Optional[Tuple[int, int, int, int, int, int, int]]:
         """
-        Current time in 24h representation. 
-        * ``day_of_month`` is day of the month, starting at ``1``
-        * ``day_of_week`` is day of the week, starting at ``1`` as monday
-        Default streaming period is 1 second., 
+        Current time in 24h representation.
+        
+        -   `day_of_month` is day of the month, starting at `1`
+        -   `day_of_week` is day of the week, starting at `1` as monday. Default streaming period is 1 second., 
         """
         self.refresh_reading()
         return self.register(JD_REAL_TIME_CLOCK_REG_LOCAL_TIME).value(self.missing_local_time_value)
@@ -29,7 +29,7 @@ class RealTimeClockClient(SensorClient):
     @property
     def drift(self) -> Optional[float]:
         """
-        (Optional) Time drift since the last call to the ``set_time`` command., _: s
+        (Optional) Time drift since the last call to the `set_time` command., _: s
         """
         return self.register(JD_REAL_TIME_CLOCK_REG_DRIFT).value()
 

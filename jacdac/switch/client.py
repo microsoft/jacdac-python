@@ -40,13 +40,13 @@ class SwitchClient(SensorClient):
 
     def on_on(self, handler: EventHandlerFn) -> UnsubscribeFn:
         """
-        Emitted when switch goes from ``off`` to ``on``.
+        Emitted when switch goes from `off` to `on`.
         """
         return self.on_event(JD_SWITCH_EV_ON, handler)
 
     def on_off(self, handler: EventHandlerFn) -> UnsubscribeFn:
         """
-        Emitted when switch goes from ``on`` to ``off``.
+        Emitted when switch goes from `on` to `off`.
         """
         return self.on_event(JD_SWITCH_EV_OFF, handler)
 

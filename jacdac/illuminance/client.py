@@ -8,28 +8,28 @@ class IlluminanceClient(SensorClient):
     """
     Detects the amount of light falling onto a given surface area.
      * 
-     * Note that this is different from *luminance*, the amount of light that passes through, emits from, or reflects off an object.
+     * Note that this is different from _luminance_, the amount of light that passes through, emits from, or reflects off an object.
     Implements a client for the `Illuminance <https://microsoft.github.io/jacdac-docs/services/illuminance>`_ service.
 
     """
 
-    def __init__(self, bus: Bus, role: str, *, missing_light_value: float = None) -> None:
+    def __init__(self, bus: Bus, role: str, *, missing_illuminance_value: float = None) -> None:
         super().__init__(bus, JD_SERVICE_CLASS_ILLUMINANCE, JD_ILLUMINANCE_PACK_FORMATS, role)
-        self.missing_light_value = missing_light_value
+        self.missing_illuminance_value = missing_illuminance_value
 
     @property
-    def light(self) -> Optional[float]:
+    def illuminance(self) -> Optional[float]:
         """
         The amount of illuminance, as lumens per square metre., _: lux
         """
         self.refresh_reading()
-        return self.register(JD_ILLUMINANCE_REG_LIGHT).value(self.missing_light_value)
+        return self.register(JD_ILLUMINANCE_REG_ILLUMINANCE).value(self.missing_illuminance_value)
 
     @property
-    def light_error(self) -> Optional[float]:
+    def illuminance_error(self) -> Optional[float]:
         """
         (Optional) Error on the reported sensor value., _: lux
         """
-        return self.register(JD_ILLUMINANCE_REG_LIGHT_ERROR).value()
+        return self.register(JD_ILLUMINANCE_REG_ILLUMINANCE_ERROR).value()
 
     

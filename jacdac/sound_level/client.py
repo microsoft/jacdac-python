@@ -36,36 +36,6 @@ class SoundLevelClient(SensorClient):
 
 
     @property
-    def min_decibels(self) -> Optional[int]:
-        """
-        (Optional) The minimum power value considered by the sensor.
-        If both ``min_decibels`` and ``max_decibels`` are supported,
-        the volume in deciment can be linearly interpolated between
-        ``[min_decibels, max_decibels]``., _: dB
-        """
-        return self.register(JD_SOUND_LEVEL_REG_MIN_DECIBELS).value()
-
-    @min_decibels.setter
-    def min_decibels(self, value: int) -> None:
-        self.register(JD_SOUND_LEVEL_REG_MIN_DECIBELS).set_values(value)
-
-
-    @property
-    def max_decibels(self) -> Optional[int]:
-        """
-        (Optional) The maximum power value considered by the sensor.
-        If both ``min_decibels`` and ``max_decibels`` are supported,
-        the volume in deciment can be linearly interpolated between
-        ``[min_decibels, max_decibels]``., _: dB
-        """
-        return self.register(JD_SOUND_LEVEL_REG_MAX_DECIBELS).value()
-
-    @max_decibels.setter
-    def max_decibels(self, value: int) -> None:
-        self.register(JD_SOUND_LEVEL_REG_MAX_DECIBELS).set_values(value)
-
-
-    @property
     def loud_threshold(self) -> Optional[float]:
         """
         The sound level to trigger a loud event., _: /

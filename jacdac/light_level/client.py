@@ -24,6 +24,13 @@ class LightLevelClient(SensorClient):
         return self.register(JD_LIGHT_LEVEL_REG_LIGHT_LEVEL).float_value(self.missing_light_level_value, 100)
 
     @property
+    def light_level_error(self) -> Optional[float]:
+        """
+        (Optional) Absolute estimated error of the reading value, _: /
+        """
+        return self.register(JD_LIGHT_LEVEL_REG_LIGHT_LEVEL_ERROR).float_value(100)
+
+    @property
     def variant(self) -> Optional[LightLevelVariant]:
         """
         (Optional) The type of physical sensor., 

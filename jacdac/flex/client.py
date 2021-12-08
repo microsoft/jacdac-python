@@ -24,10 +24,17 @@ class FlexClient(SensorClient):
         return self.register(JD_FLEX_REG_BENDING).float_value(self.missing_bending_value, 100)
 
     @property
-    def variant(self) -> Optional[FlexVariant]:
+    def bending_error(self) -> Optional[float]:
         """
-        (Optional) Specifies the physical layout of the flex sensor., 
+        (Optional) Absolute error on the reading value., _: /
         """
-        return self.register(JD_FLEX_REG_VARIANT).value()
+        return self.register(JD_FLEX_REG_BENDING_ERROR).float_value(100)
+
+    @property
+    def length(self) -> Optional[int]:
+        """
+        (Optional) Length of the flex sensor, _: mm
+        """
+        return self.register(JD_FLEX_REG_LENGTH).value()
 
     

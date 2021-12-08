@@ -6,7 +6,7 @@ from .constants import *
 
 class HidKeyboardClient(Client):
     """
-    Control a HID keyboard. 
+    Control a HID keyboard.
      * 
      * The codes for the key (selectors) is defined in the [HID Keyboard
      * specification](https://usb.org/sites/default/files/hut1_21.pdf), chapter 10 Keyboard/Keypad Page, page 81.

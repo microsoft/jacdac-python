@@ -24,6 +24,13 @@ class WaterLevelClient(SensorClient):
         return self.register(JD_WATER_LEVEL_REG_LEVEL).float_value(self.missing_level_value, 100)
 
     @property
+    def level_error(self) -> Optional[float]:
+        """
+        (Optional) The error rage on the current reading, _: /
+        """
+        return self.register(JD_WATER_LEVEL_REG_LEVEL_ERROR).float_value(100)
+
+    @property
     def variant(self) -> Optional[WaterLevelVariant]:
         """
         (Optional) The type of physical sensor., 

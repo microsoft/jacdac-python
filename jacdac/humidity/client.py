@@ -26,7 +26,7 @@ class HumidityClient(SensorClient):
     @property
     def humidity_error(self) -> Optional[float]:
         """
-        The real humidity is between `humidity - humidity_error` and `humidity + humidity_error`., _: %RH
+        (Optional) The real humidity is between `humidity - humidity_error` and `humidity + humidity_error`., _: %RH
         """
         return self.register(JD_HUMIDITY_REG_HUMIDITY_ERROR).value()
 

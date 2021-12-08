@@ -18,7 +18,7 @@ class SoilMoistureClient(SensorClient):
     @property
     def moisture(self) -> Optional[float]:
         """
-        Indicates the wetness of the soil, from ``dry`` to ``wet``., _: /
+        Indicates the wetness of the soil, from `dry` to `wet`., _: /
         """
         self.refresh_reading()
         return self.register(JD_SOIL_MOISTURE_REG_MOISTURE).float_value(self.missing_moisture_value, 100)

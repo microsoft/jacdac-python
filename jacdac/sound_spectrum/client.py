@@ -74,8 +74,8 @@ class SoundSpectrumClient(SensorClient):
     @property
     def smoothing_time_constant(self) -> Optional[float]:
         """
-        The averaging constant with the last analysis frame. 
-        If ``0`` is set, there is no averaging done, whereas a value of ``1`` means "overlap the previous and current buffer quite a lot while computing the value"., _: /
+        The averaging constant with the last analysis frame.
+        If `0` is set, there is no averaging done, whereas a value of `1` means "overlap the previous and current buffer quite a lot while computing the value"., _: /
         """
         return self.register(JD_SOUND_SPECTRUM_REG_SMOOTHING_TIME_CONSTANT).float_value(100)
 

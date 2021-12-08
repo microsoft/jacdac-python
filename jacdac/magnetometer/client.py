@@ -27,7 +27,7 @@ class MagnetometerClient(SensorClient):
     @property
     def forces_error(self) -> Optional[int]:
         """
-        (Optional) Error on the readings., _: nT
+        (Optional) Absolute estimated error on the readings., _: nT
         """
         return self.register(JD_MAGNETOMETER_REG_FORCES_ERROR).value()
 

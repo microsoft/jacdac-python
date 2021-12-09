@@ -2,6 +2,11 @@
 
 <!--next-version-placeholder-->
 
+## v0.0.26 (2021-12-09)
+### Fix
+* Fix build ([`3dcf401`](https://github.com/microsoft/jacdac-python/commit/3dcf4012d547c051e2a4740dc4f807e036f50f2e))
+* Updated constants ([`8f8fe6d`](https://github.com/microsoft/jacdac-python/commit/8f8fe6d157a012bb58b4962102ea0299ad90b614))
+
 ## v0.0.25 (2021-11-29)
 ### Fix
 * Update storage of roles ([`04f1455`](https://github.com/microsoft/jacdac-python/commit/04f145520a706c0231b25965405008ad8d1fdb97))

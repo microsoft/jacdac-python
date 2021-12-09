@@ -13,8 +13,6 @@ if __name__ == '__main__':
         print("inactive")
 
     rel = RelayClient(bus, "relay")
-    rel.on_active(active)
-    rel.on_inactive(inactive)
 
     while True:
         rel.closed = False

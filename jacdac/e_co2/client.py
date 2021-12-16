@@ -33,23 +33,16 @@ class ECO2Client(SensorClient):
     @property
     def min_e_CO2(self) -> Optional[float]:
         """
-        (Optional) Minimum measurable value, _: ppm
+        Minimum measurable value, _: ppm
         """
         return self.register(JD_E_CO2_REG_MIN_E_CO2).value()
 
     @property
     def max_e_CO2(self) -> Optional[float]:
         """
-        (Optional) Minimum measurable value, _: ppm
+        Minimum measurable value, _: ppm
         """
         return self.register(JD_E_CO2_REG_MAX_E_CO2).value()
-
-    @property
-    def conditioning_period(self) -> Optional[int]:
-        """
-        (Optional) Time required to achieve good sensor stability before measuring after long idle period., _: s
-        """
-        return self.register(JD_E_CO2_REG_CONDITIONING_PERIOD).value()
 
     @property
     def variant(self) -> Optional[ECO2Variant]:

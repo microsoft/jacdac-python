@@ -7,8 +7,7 @@ JD_SERVICE_CLASS_LIGHT_LEVEL = const(0x17dc9a1c)
 
 class LightLevelVariant(IntEnum):
     PHOTO_RESISTOR = const(0x1)
-    LEDMATRIX = const(0x2)
-    AMBIENT = const(0x3)
+    REVERSE_BIASED_LED = const(0x2)
 
 
 JD_LIGHT_LEVEL_REG_LIGHT_LEVEL = const(JD_REG_READING)

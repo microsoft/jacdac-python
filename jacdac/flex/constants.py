@@ -3,10 +3,8 @@ from jacdac.constants import *
 from jacdac.system.constants import *
 JD_SERVICE_CLASS_FLEX = const(0x1f47c6c6)
 JD_FLEX_REG_BENDING = const(JD_REG_READING)
-JD_FLEX_REG_BENDING_ERROR = const(JD_REG_READING_ERROR)
 JD_FLEX_REG_LENGTH = const(0x180)
 JD_FLEX_PACK_FORMATS = {
-    JD_FLEX_REG_BENDING: "u0.16",
-    JD_FLEX_REG_BENDING_ERROR: "u0.16",
+    JD_FLEX_REG_BENDING: "i1.15",
     JD_FLEX_REG_LENGTH: "u16"
 }

@@ -1,6 +1,6 @@
 # Jacdac Python
 
-A Python client and server SDK for Jacdac.
+A Python client and server SDK for Jacdac. This SDK is not compatible with micropython or circuit python.
 
 **Jacdac** is a plug-and-play hardware/software stack
 for **microcontrollers** and their peripherals (sensors/actuators),

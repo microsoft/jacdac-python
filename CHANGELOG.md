@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v0.1.0 (2021-12-16)
+### Feature
+* Service renames ([`65f707f`](https://github.com/microsoft/jacdac-python/commit/65f707f13b386d55a7310bb9a06f67531ddc05d0))
+
 ## v0.0.26 (2021-12-09)
 ### Fix
 * Fix build ([`3dcf401`](https://github.com/microsoft/jacdac-python/commit/3dcf4012d547c051e2a4740dc4f807e036f50f2e))

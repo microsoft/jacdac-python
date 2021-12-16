@@ -18,17 +18,10 @@ class FlexClient(SensorClient):
     @property
     def bending(self) -> Optional[float]:
         """
-        The relative position of the slider., _: /
+        A measure of the bending., _: /
         """
         self.refresh_reading()
         return self.register(JD_FLEX_REG_BENDING).float_value(self.missing_bending_value, 100)
-
-    @property
-    def bending_error(self) -> Optional[float]:
-        """
-        (Optional) Absolute error on the reading value., _: /
-        """
-        return self.register(JD_FLEX_REG_BENDING_ERROR).float_value(100)
 
     @property
     def length(self) -> Optional[int]:

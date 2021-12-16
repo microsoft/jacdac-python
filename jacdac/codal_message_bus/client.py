@@ -20,7 +20,7 @@ class CodalMessageBusClient(Client):
 
     def on_message(self, handler: EventHandlerFn) -> UnsubscribeFn:
         """
-        Raised by the server is triggered by the server. The filtering logic of which event to send over JACDAC is up to the server implementation.
+        Raised by the server is triggered by the server. The filtering logic of which event to send over Jacdac is up to the server implementation.
         """
         return self.on_event(JD_CODAL_MESSAGE_BUS_EV_MESSAGE, handler)
 

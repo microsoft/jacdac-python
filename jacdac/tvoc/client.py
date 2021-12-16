@@ -33,22 +33,15 @@ class TvocClient(SensorClient):
     @property
     def min_TVOC(self) -> Optional[float]:
         """
-        (Optional) Minimum measurable value, _: ppb
+        Minimum measurable value, _: ppb
         """
         return self.register(JD_TVOC_REG_MIN_TVOC).value()
 
     @property
     def max_TVOC(self) -> Optional[float]:
         """
-        (Optional) Minimum measurable value, _: ppb
+        Minimum measurable value., _: ppb
         """
         return self.register(JD_TVOC_REG_MAX_TVOC).value()
-
-    @property
-    def conditioning_period(self) -> Optional[int]:
-        """
-        (Optional) Time required to achieve good sensor stability before measuring after long idle period., _: s
-        """
-        return self.register(JD_TVOC_REG_CONDITIONING_PERIOD).value()
 
     

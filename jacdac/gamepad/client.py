@@ -4,19 +4,19 @@ from .constants import *
 from typing import Optional, Tuple
 
 
-class JoystickClient(SensorClient):
+class GamepadClient(SensorClient):
     """
-    A two axis directional joystick
-    Implements a client for the `Joystick <https://microsoft.github.io/jacdac-docs/services/joystick>`_ service.
+    A two axis directional joystick with optional buttons.
+    Implements a client for the `Gamepad <https://microsoft.github.io/jacdac-docs/services/gamepad>`_ service.
 
     """
 
-    def __init__(self, bus: Bus, role: str, *, missing_direction_value: Tuple[JoystickButtons, float, float] = None) -> None:
-        super().__init__(bus, JD_SERVICE_CLASS_JOYSTICK, JD_JOYSTICK_PACK_FORMATS, role)
+    def __init__(self, bus: Bus, role: str, *, missing_direction_value: Tuple[GamepadButtons, float, float] = None) -> None:
+        super().__init__(bus, JD_SERVICE_CLASS_GAMEPAD, JD_GAMEPAD_PACK_FORMATS, role)
         self.missing_direction_value = missing_direction_value
 
     @property
-    def direction(self) -> Optional[Tuple[JoystickButtons, float, float]]:
+    def direction(self) -> Optional[Tuple[GamepadButtons, float, float]]:
         """
         If the joystick is analog, the directional buttons should be "simulated", based on joystick position
         (`Left` is `{ x = -1, y = 0 }`, `Up` is `{ x = 0, y = -1}`).
@@ -24,28 +24,28 @@ class JoystickClient(SensorClient):
         The primary button on the joystick is `A`., x: /,y: /
         """
         self.refresh_reading()
-        return self.register(JD_JOYSTICK_REG_DIRECTION).value(self.missing_direction_value)
+        return self.register(JD_GAMEPAD_REG_DIRECTION).value(self.missing_direction_value)
 
     @property
-    def variant(self) -> Optional[JoystickVariant]:
+    def variant(self) -> Optional[GamepadVariant]:
         """
         (Optional) The type of physical joystick., 
         """
-        return self.register(JD_JOYSTICK_REG_VARIANT).value()
+        return self.register(JD_GAMEPAD_REG_VARIANT).value()
 
     @property
-    def buttons_available(self) -> Optional[JoystickButtons]:
+    def buttons_available(self) -> Optional[GamepadButtons]:
         """
         Indicates a bitmask of the buttons that are mounted on the joystick.
         If the `Left`/`Up`/`Right`/`Down` buttons are marked as available here, the joystick is digital.
         Even when marked as not available, they will still be simulated based on the analog joystick., 
         """
-        return self.register(JD_JOYSTICK_REG_BUTTONS_AVAILABLE).value()
+        return self.register(JD_GAMEPAD_REG_BUTTONS_AVAILABLE).value()
 
     def on_buttons_changed(self, handler: EventHandlerFn) -> UnsubscribeFn:
         """
         Emitted whenever the state of buttons changes.
         """
-        return self.on_event(JD_JOYSTICK_EV_BUTTONS_CHANGED, handler)
+        return self.on_event(JD_GAMEPAD_EV_BUTTONS_CHANGED, handler)
 
     

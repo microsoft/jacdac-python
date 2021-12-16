@@ -27,8 +27,16 @@ class RotaryEncoderClient(SensorClient):
     @property
     def clicks_per_turn(self) -> Optional[int]:
         """
-        (Optional) This specifies by how much `position` changes when the crank does 360 degree turn. Typically 12 or 24., _: #
+        This specifies by how much `position` changes when the crank does 360 degree turn. Typically 12 or 24., _: #
         """
         return self.register(JD_ROTARY_ENCODER_REG_CLICKS_PER_TURN).value()
+
+    @property
+    def clicker(self) -> Optional[bool]:
+        """
+        (Optional) The encoder is combined with a clicker. If this is the case, the clicker button service
+        should follow this service in the service list of the device., 
+        """
+        return self.register(JD_ROTARY_ENCODER_REG_CLICKER).bool_value()
 
     

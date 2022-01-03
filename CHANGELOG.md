@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v0.1.3 (2022-01-03)
+### Fix
+* Add transport package ([`a1f819e`](https://github.com/microsoft/jacdac-python/commit/a1f819e37260121035100472d177d9fcad33c822))
+
 ## v0.1.2 (2022-01-03)
 ### Fix
 * Regenerated constants to fix packaging ([`a1cc22d`](https://github.com/microsoft/jacdac-python/commit/a1cc22d25b7f4c54b498e383f452c4054a349d2f))

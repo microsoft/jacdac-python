@@ -157,16 +157,16 @@ class EventEmitter:
             logger.report(priority, msg, *args)
 
     def log(self, text: str, *args: object):
-        self._add_log_report(JD_LOGGER_PRIORITY_LOG, text, *args)
+        self._add_log_report(LoggerPriority.LOG, text, *args)
 
     def warn(self, text: str, *args: object):
-        self._add_log_report(JD_LOGGER_PRIORITY_WARNING, text, *args)
+        self._add_log_report(LoggerPriority.WARNING, text, *args)
 
     def debug(self, text: str, *args: object):
-        self._add_log_report(JD_LOGGER_PRIORITY_DEBUG, text, *args)
+        self._add_log_report(LoggerPriority.DEBUG, text, *args)
 
     def error(self, text: str, *args: object):
-        self._add_log_report(JD_LOGGER_PRIORITY_ERROR, text, *args)
+        self._add_log_report(LoggerPriority.ERROR, text, *args)
 
 
 def _service_matches(dev: 'Device', serv: bytearray):
@@ -267,7 +267,7 @@ class Bus(EventEmitter):
         self.disable_role_manager = disable_role_manager or cfg.getboolean(
             "disable_role_manager", False)
         self.default_logger_min_priority = default_logger_min_priority or cfg.getint(
-            "default_logger_min_priority", JD_LOGGER_PRIORITY_SILENT)
+            "default_logger_min_priority", LoggerPriority.SILENT)
         self.storage_dir = storage_dir or cfg.get("storage_dir", "./.jacdac")
         self.hf2_portname = hf2_portname or cfg.get("hf2_portname")
         self.transport_cmd = transport_cmd or cfg.get("transport_cmd")
@@ -1010,10 +1010,10 @@ class ControlServer(Server):
             rest = 0xf
         ids[0] = (
             rest |
-            JD_CONTROL_ANNOUNCE_FLAGS_IS_CLIENT |
-            JD_CONTROL_ANNOUNCE_FLAGS_SUPPORTS_ACK |
-            JD_CONTROL_ANNOUNCE_FLAGS_SUPPORTS_BROADCAST |
-            JD_CONTROL_ANNOUNCE_FLAGS_SUPPORTS_FRAMES
+            ControlAnnounceFlags.IS_CLIENT |
+            ControlAnnounceFlags.SUPPORTS_ACK |
+            ControlAnnounceFlags.SUPPORTS_BROADCAST |
+            ControlAnnounceFlags.SUPPORTS_FRAMES
         )
         buf = jdpack("u32[]", *ids)
         self.send_report(JDPacket(cmd=0, data=buf))
@@ -1102,11 +1102,11 @@ class LoggerServer(Server):
     def report(self, priority: int, msg: str, *args: object):
         log(msg, *args)
         cmd: int = -1
-        if priority == JD_LOGGER_PRIORITY_DEBUG:
+        if priority == LoggerPriority.DEBUG:
             cmd = JD_LOGGER_CMD_DEBUG
-        elif priority == JD_LOGGER_PRIORITY_LOG:
+        elif priority == LoggerPriority.LOG:
             cmd = JD_LOGGER_CMD_LOG
-        elif priority == JD_LOGGER_PRIORITY_WARNING:
+        elif priority == LoggerPriority.WARNING:
             cmd = JD_LOGGER_CMD_WARN
         elif priority == JD_LOGGER_CMD_ERROR:
             cmd = JD_LOGGER_CMD_ERROR
@@ -1700,7 +1700,7 @@ class Device(EventEmitter):
 
     @ property
     def reset_count(self):
-        return self.announce_flags & JD_CONTROL_ANNOUNCE_FLAGS_RESTART_COUNTER_STEADY
+        return self.announce_flags & ControlAnnounceFlags.RESTART_COUNTER_STEADY
 
     @ property
     def packet_count(self):

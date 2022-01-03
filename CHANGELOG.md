@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v0.1.1 (2022-01-03)
+### Fix
+* Add missing __init__ files ([`bde9054`](https://github.com/microsoft/jacdac-python/commit/bde9054b7a2a2a6285492e4bf202a551acabe6a9))
+
 ## v0.1.0 (2021-12-16)
 ### Feature
 * Service renames ([`65f707f`](https://github.com/microsoft/jacdac-python/commit/65f707f13b386d55a7310bb9a06f67531ddc05d0))

@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v0.1.2 (2022-01-03)
+### Fix
+* Regenerated constants to fix packaging ([`a1cc22d`](https://github.com/microsoft/jacdac-python/commit/a1cc22d25b7f4c54b498e383f452c4054a349d2f))
+
 ## v0.1.1 (2022-01-03)
 ### Fix
 * Add missing __init__ files ([`bde9054`](https://github.com/microsoft/jacdac-python/commit/bde9054b7a2a2a6285492e4bf202a551acabe6a9))

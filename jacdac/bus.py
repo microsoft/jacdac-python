@@ -1250,8 +1250,6 @@ class RoleManagerServer(Server):
             self.handle_list_roles(pkt)
         elif cmd == JD_ROLE_MANAGER_CMD_CLEAR_ALL_ROLES:
             self.handle_clear_all_roles(pkt)
-        elif cmd == JD_ROLE_MANAGER_CMD_GET_ROLE:
-            self.handle_get_role(pkt)
         elif cmd == JD_ROLE_MANAGER_CMD_SET_ROLE:
             self.handle_set_role(pkt)
         elif cmd == JD_GET(JD_ROLE_MANAGER_REG_ALL_ROLES_ALLOCATED):
@@ -1272,20 +1270,6 @@ class RoleManagerServer(Server):
                              service_class, service_index, role)
             pipe.write(bytearray(payload))
         pipe.close()
-
-    def handle_get_role(self, pkt: JDPacket):
-        payload = pkt.unpack("b[8] u8")
-        device_id_b = cast(bytearray, payload[0])
-        device_id = device_id_b.hex()
-        service_index = cast(int, payload[1])
-
-        role = ""
-        for client in self.bus.all_clients:
-            if client.device and client.device.device_id == device_id and client.service_index == service_index:
-                role = client.role
-                break
-        self.send_report(JDPacket.packed(
-            JD_ROLE_MANAGER_CMD_GET_ROLE, "u[8] u8 s", device_id_b, service_index, role))
 
     def handle_all_roles_allocated(self, pkt: JDPacket):
         res = 1

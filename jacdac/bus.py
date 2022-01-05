@@ -1246,10 +1246,8 @@ class RoleManagerServer(Server):
 
         cmd = pkt.service_command
 
-        if cmd == JD_ROLE_MANAGER_CMD_LIST_REQUIRED_ROLES:
-            self.handle_list_required_roles(pkt)
-        elif cmd == JD_ROLE_MANAGER_CMD_LIST_STORED_ROLES:
-            self.handle_list_stored_roles(pkt)
+        if cmd == JD_ROLE_MANAGER_CMD_LIST_ROLES:
+            self.handle_list_roles(pkt)
         elif cmd == JD_ROLE_MANAGER_CMD_CLEAR_ALL_ROLES:
             self.handle_clear_all_roles(pkt)
         elif cmd == JD_ROLE_MANAGER_CMD_GET_ROLE:
@@ -1261,7 +1259,7 @@ class RoleManagerServer(Server):
         else:
             super().handle_packet(pkt)
 
-    def handle_list_required_roles(self, pkt: JDPacket):
+    def handle_list_roles(self, pkt: JDPacket):
         pipe = OutPipe(self.bus, pkt)
         for client in self.bus.all_clients:
             device_id = bytearray(0)
@@ -1273,15 +1271,6 @@ class RoleManagerServer(Server):
             payload = jdpack("b[8] u32 u8 s", device_id,
                              service_class, service_index, role)
             pipe.write(bytearray(payload))
-        pipe.close()
-
-    def handle_list_stored_roles(self, pkt: JDPacket):
-        pipe = OutPipe(self.bus, pkt)
-        for key, payload in self.settings.list():
-            device_id, service_index = key.split(":")
-            role = jdunpack(payload, "s")[0]
-            pipe.write(bytearray(
-                jdpack("b[8] u8 s", bytearray.fromhex(device_id), service_index, role)))
         pipe.close()
 
     def handle_get_role(self, pkt: JDPacket):

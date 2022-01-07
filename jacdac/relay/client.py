@@ -7,6 +7,12 @@ from typing import Optional
 class RelayClient(Client):
     """
     A switching relay.
+     * 
+     * The contacts should be labelled `NO` (normally open), `COM` (common), and `NC` (normally closed).
+     * When relay is energized it connects `NO` and `COM`.
+     * When relay is not energized it connects `NC` and `COM`.
+     * Some relays may be missing `NO` or `NC` contacts.
+     * When relay module is not powered, or is in bootloader mode, it is not energized (connects `NC` and `COM`).
     Implements a client for the `Relay <https://microsoft.github.io/jacdac-docs/services/relay>`_ service.
 
     """
@@ -16,15 +22,15 @@ class RelayClient(Client):
 
 
     @property
-    def closed(self) -> Optional[bool]:
+    def active(self) -> Optional[bool]:
         """
-        Indicates whether the relay circuit is currently energized (closed) or not., 
+        Indicates whether the relay circuit is currently energized or not., 
         """
-        return self.register(JD_RELAY_REG_CLOSED).bool_value()
+        return self.register(JD_RELAY_REG_ACTIVE).bool_value()
 
-    @closed.setter
-    def closed(self, value: bool) -> None:
-        self.register(JD_RELAY_REG_CLOSED).set_values(value)
+    @active.setter
+    def active(self, value: bool) -> None:
+        self.register(JD_RELAY_REG_ACTIVE).set_values(value)
 
 
     @property

@@ -15,9 +15,9 @@ if __name__ == '__main__':
     rel = RelayClient(bus, "relay")
 
     while True:
-        rel.closed = False
+        rel.active = False
         sleep(1)
-        print("open: ", rel.closed)
-        rel.closed = True
+        print("open: ", rel.active)
+        rel.active = True
         sleep(1)
-        print("closed: ", rel.closed)
+        print("closed: ", rel.active)

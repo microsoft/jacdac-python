@@ -2,6 +2,11 @@
 
 <!--next-version-placeholder-->
 
+## v0.1.4 (2022-01-07)
+### Fix
+* Relay test ([`f48aae1`](https://github.com/microsoft/jacdac-python/commit/f48aae11ce23319a0fe21bca2ff11fea8e936f3f))
+* Updated relay conventions ([`4330cc5`](https://github.com/microsoft/jacdac-python/commit/4330cc5a11990f3080509701d584c22801f0dd28))
+
 ## v0.1.3 (2022-01-03)
 ### Fix
 * Add transport package ([`a1f819e`](https://github.com/microsoft/jacdac-python/commit/a1f819e37260121035100472d177d9fcad33c822))

@@ -192,11 +192,11 @@ class ProtoTestClient(Client):
         return self.on_event(JD_PROTO_TEST_EV_E_U8_STRING, handler)
 
 
-    def c_bool(self, bool: bool) -> None:
+    def c_bool(self, bo: bool) -> None:
         """
         A command to set rw_bool.
         """
-        self.send_cmd_packed(JD_PROTO_TEST_CMD_C_BOOL, bool)
+        self.send_cmd_packed(JD_PROTO_TEST_CMD_C_BOOL, bo)
 
     def c_u32(self, u32: int) -> None:
         """
@@ -210,11 +210,11 @@ class ProtoTestClient(Client):
         """
         self.send_cmd_packed(JD_PROTO_TEST_CMD_C_I32, i32)
 
-    def c_string(self, string: str) -> None:
+    def c_string(self, str: str) -> None:
         """
         A command to set rw_string.
         """
-        self.send_cmd_packed(JD_PROTO_TEST_CMD_C_STRING, string)
+        self.send_cmd_packed(JD_PROTO_TEST_CMD_C_STRING, str)
 
     def c_bytes(self, bytes: bytes) -> None:
         """
@@ -228,9 +228,9 @@ class ProtoTestClient(Client):
         """
         self.send_cmd_packed(JD_PROTO_TEST_CMD_C_I8_U8_U16_I32, i8, u8, u16, i32)
 
-    def c_u8_string(self, u8: int, string: str) -> None:
+    def c_u8_string(self, u8: int, str: str) -> None:
         """
         A command to set rw_u8_string.
         """
-        self.send_cmd_packed(JD_PROTO_TEST_CMD_C_U8_STRING, u8, string)
+        self.send_cmd_packed(JD_PROTO_TEST_CMD_C_U8_STRING, u8, str)
     

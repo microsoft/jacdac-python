@@ -7,6 +7,4 @@ azure-iot-device
 pygame
 playsound
 websockets
-http.server
 requests
-asyncio

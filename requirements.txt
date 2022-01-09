@@ -6,3 +6,4 @@ typing
 azure-iot-device
 pygame
 playsound
+websockets

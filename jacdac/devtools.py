@@ -2,14 +2,13 @@ from asyncio import get_event_loop
 from websockets import serve
 from http.server import BaseHTTPRequestHandler, HTTPServer
 from requests import get
-from typing import Any, Callable, Coroutine, Optional, Tuple, TypeVar, Union, cast, List, Dict
 from threading import Thread
 
 HOST = 'localhost'
 WS_PORT = 8081
 HTTP_PORT = 8082
 clients = []
-proxy_source: str
+proxy_source: bytes
 
 class Handler(BaseHTTPRequestHandler) :
         def do_HEAD(self):
@@ -47,7 +46,7 @@ async def proxy(websocket, path):
 # get proxy source
 resp = get('https://microsoft.github.io/jacdac-docs/devtools/proxy')
 if not resp.ok:
-    raise "proxy download failed"
+    raise RuntimeError("proxy download failed")
 
 print("proxy downloaded")
 proxy_source = resp.text.encode('utf-8')

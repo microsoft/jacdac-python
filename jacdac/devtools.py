@@ -1,35 +1,72 @@
 from asyncio import get_event_loop
-from websockets import websocket, serve
+from websockets import serve
 from http.server import BaseHTTPRequestHandler, HTTPServer
+from requests import get
+from typing import Any, Callable, Coroutine, Optional, Tuple, TypeVar, Union, cast, List, Dict
+from threading import Thread
 
-PORT = 8081
-clients: List[Web] = []
+HOST = 'localhost'
+WS_PORT = 8081
+HTTP_PORT = 8082
+clients = []
+proxy_source: str
 
 class Handler(BaseHTTPRequestHandler) :
-        def do_GET(s) :
-
-                print('-----------------------')
-                print('GET %s (from client %s)' % (s.path, s.client_address))
-                print(s.headers)
-                super(Handler, s).do_GET() #inherited do_GET serves dirs&files.
-
+        def do_HEAD(self):
+            self.send_response(200)    
+        def do_GET(self) :
+            if self.path == "/":
+                self.send_response(200)
+                self.send_header('Content-Type', 'text/html')
+                self.send_header('Cache-Control', 'no-cache')
+                self.send_header("Content-Length", str(len(proxy_source)))
+                self.end_headers()
+                self.wfile.write(proxy_source)
+            else:
+                self.send_error(404)
 
 async def proxy(websocket, path):
-    clients.push(websocket)
+    print("client conected")
+    clients.append(websocket)
     ## listen to websocket client until it closesw
-    while True:
-        frame: bytes = await websocket.recv()
-        if (len(frame) == 0) continue
-        # dispatch to other clients
-        cs = clients.copy() # avoid races
-        for client in cs:
-            if client != websocket:
-                await websocket.send(now)
+    try:
+        while websocket.open:
+            frame: bytes = await websocket.recv()
+            if len(frame) == 0:
+                continue
+            # dispatch to other clients
+            cs = clients.copy() # avoid races
+            for client in cs:
+                if client != websocket:
+                    await websocket.send(frame)
+    finally:
+        # remove from clients
+        print("client disconnected")
+        clients.remove(websocket)
         
-# start web socket server
-ws_server = serve(proxy, 'localhost', PORT)
-get_event_loop().run_until_complete(ws_server)
+# get proxy source
+resp = get('https://microsoft.github.io/jacdac-docs/devtools/proxy')
+if not resp.ok:
+    raise "proxy download failed"
+
+print("proxy downloaded")
+proxy_source = resp.text.encode('utf-8')
+
+def web():
+    print("local web: http://localhost:8082")
+    http_server = HTTPServer( (HOST, HTTP_PORT), Handler )
+    http_server.serve_forever()
+
+def ws():
+    # start web socket server
+    print("websockets: ws://localhost:8081")
+    ws_server = serve(proxy, HOST, WS_PORT)
+    get_event_loop().run_until_complete(ws_server)
+    get_event_loop().run_forever()
 
 # start http server
-http_server = HTTPServer( ('', PORT), Handler )
-s.serve_forever()
+thread = Thread(target = web)
+thread.start()
+
+# start http server
+ws()

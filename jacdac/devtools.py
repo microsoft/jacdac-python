@@ -25,7 +25,7 @@ class Handler(BaseHTTPRequestHandler) :
                 self.send_error(404)
 
 async def proxy(websocket, path):
-    print("client conected")
+    print("client connected")
     clients.append(websocket)
     ## listen to websocket client until it closesw
     try:

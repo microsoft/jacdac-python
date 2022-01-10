@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v0.2.0 (2022-01-10)
+### Feature
+* Add devtools ([`7ace992`](https://github.com/microsoft/jacdac-python/commit/7ace99286a7f695adec441ac607a1120fb6ad0b2))
+
 ## v0.1.4 (2022-01-07)
 ### Fix
 * Relay test ([`f48aae1`](https://github.com/microsoft/jacdac-python/commit/f48aae11ce23319a0fe21bca2ff11fea8e936f3f))

@@ -20,7 +20,6 @@ strictParameterNoneValue = false
 
 reportFunctionMemberAccess = "warning"
 reportImportCycles = "warning"
-reportGeneralTypeIssues = "warning"
 reportUnusedImport = "warning"
 reportUnusedClass = "warning"
 reportUnusedFunction = "warning"

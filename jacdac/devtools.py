@@ -1,3 +1,4 @@
+# pyright: reportGeneralTypeIssues=false
 from asyncio import get_event_loop
 from websockets import serve
 from http.server import BaseHTTPRequestHandler, HTTPServer
@@ -24,7 +25,7 @@ class Handler(BaseHTTPRequestHandler) :
             else:
                 self.send_error(404)
 
-async def proxy(websocket, path):
+async def proxy(websocket, path: str):
     print("client connected")
     clients.append(websocket)
     ## listen to websocket client until it closesw

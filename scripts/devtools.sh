@@ -1,1 +1,1 @@
-jacdac devtools
+python -m jacdac.devtools

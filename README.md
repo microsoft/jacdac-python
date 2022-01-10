@@ -30,7 +30,7 @@ sudo apt install python3 python3-pip ipython3 python3-venv
 
 ### RPi Setup
 
-You'll need a Jacdac hat for RPi and you will need to build bridge executable,
+You'll need a JacHAT for RPi and you will need to build bridge executable,
 see https://github.com/microsoft/jacdac-stm32x0/tree/main/spibridge
 
 ### Codespaces
@@ -59,12 +59,6 @@ python3 -m build
 
 The devtools script allows to run a Jacdac dashboard connected through a websocket. This allows
 to pipe packets from the python library into the web developer tools and diagnose issues over there
-
-To install/updates the tools
-
-```
-sh scripts/devsetup.sh
-```
 
 To launch the developer tools server (once per session)
 

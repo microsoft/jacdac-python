@@ -4,12 +4,21 @@ from websockets import serve
 from http.server import BaseHTTPRequestHandler, HTTPServer
 from requests import get
 from threading import Thread
+from sys import argv
 
-HOST = 'localhost'
+print("Jacdac DevTools (Python)")
+
+internet = "--internet" in argv
+HOST = '0.0.0.0' if internet else 'localhost'
 WS_PORT = 8081
 HTTP_PORT = 8082
 clients = []
 proxy_source: bytes
+
+if internet:
+    print("WARNING: server bound to all network interfaces")
+else:
+    print("use --internet to bind server to all network interfaces")
 
 class Handler(BaseHTTPRequestHandler) :
         def do_HEAD(self):
@@ -49,17 +58,16 @@ resp = get('https://microsoft.github.io/jacdac-docs/devtools/proxy')
 if not resp.ok:
     raise RuntimeError("proxy download failed")
 
-print("proxy downloaded")
 proxy_source = resp.text.encode('utf-8')
 
 def web():
-    print("local web: http://localhost:8082")
+    print("local web: http://" + HOST + ":" + str(HTTP_PORT))
     http_server = HTTPServer( (HOST, HTTP_PORT), Handler )
     http_server.serve_forever()
 
 def ws():
     # start web socket server
-    print("websockets: ws://localhost:8081")
+    print("websockets: ws://" + HOST + ":" + str(WS_PORT))
     ws_server = serve(proxy, HOST, WS_PORT)
     get_event_loop().run_until_complete(ws_server)
     get_event_loop().run_forever()

@@ -2,7 +2,7 @@ import threading
 from time import sleep
 from jacdac.bus import Transport
 from jacdac.util import buf2hex, hex2buf
-from gpiod import Chip, Line, LineBulk, LINE_REQ_EV_RISING_EDGE, LINE_REQ_FLAG_ACTIVE_LOW, LINE_REQ_DIR_OUT, LINE_REQ_DIR_IN, 
+from gpiod import Chip, Line, LineBulk, LINE_REQ_EV_RISING_EDGE, LINE_REQ_FLAG_ACTIVE_LOW, LINE_REQ_DIR_OUT, LINE_REQ_DIR_IN
 
 # https://git.kernel.org/pub/scm/libs/libgpiod/libgpiod.git/tree/bindings/python/gpiodmodule.c?h=v1.6.x&id=27cacfe377114f6acf67cd943d1ca01bb30e0f2b
 RPI_CHIP = 'pinctrl-bcm2835'
@@ -11,7 +11,7 @@ RPI_PIN_RX_READY = 25
 RPI_PIN_RST = 22
 CONSUMER = "jacdac"
 
-class SpiZeroTransport(Transport):
+class SpiTransport(Transport):
     def __init__(self):
         self.chip: Chip = None
         self.rxtx: LineBulk = None

@@ -211,7 +211,7 @@ class Bus(EventEmitter):
                  hf2_portname: str = None,
                  transport_cmd: str = None,
                  default_logger_min_priority: int = None,
-                 storage_dir: str = None
+                 storage_dir: str = None,
                  ) -> None:
         """Creates a new Jacdac bus.
 
@@ -284,6 +284,10 @@ class Bus(EventEmitter):
         if self.hf2_portname:
             from .transports.hf2 import HF2Transport
             self.transports.append(HF2Transport(self.hf2_portname))
+        
+        # todo: option
+        from .transports.spi import SpiTransport
+        self.transports.append(SpiTransport())
 
         self._sendq: queue.Queue[Tuple[Transport, bytes]] = queue.Queue()
         self.pending_tasks: List[asyncio.Task[None]] = []

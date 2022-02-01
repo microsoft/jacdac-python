@@ -48,15 +48,21 @@ class SpiTransport(Transport):
     
     def close(self):
         print("spi: close")
-        if not self.rxtx is None:
-            self.rxtx.release()
-            self.rxtx = None
         if not self.chip is None:
-            self.chip.close()
-            self.chip = None
+            try:
+                self.chip.close()
+                self.chip = None
+                print("spi: chip closed")
+            except:
+                print("error: chip failed to close")
+
         if not self.spi is None:
-            self.spi.close()
-            self.spi = None
+            try:
+                self.spi.close()
+                self.spi = None
+                print("spi: device closed")
+            except:
+                print("error: device failed to close")
         
     def _flip_reset(self) -> None:
         print("spi: flip reset")
@@ -71,7 +77,7 @@ class SpiTransport(Transport):
             rst.release()
 
     def send(self, pkt: bytes) -> None:
-        print("send")
+        print("spi: send " + buf2hex(pkt))
         self.sendQueue.append(pkt)
         self._transfer()
 
@@ -98,6 +104,8 @@ class SpiTransport(Transport):
         txReady = tx != 0
         sendtx = txReady and len(self.sendQueue) > 0
 
+        print("spi: transfer rx:" + str(rx) + ", tx: " + str(tx) + ", queue: " + len(self.sendQueue))
+
         if not sendtx and not rxReady:
             return False
 
@@ -119,7 +127,7 @@ class SpiTransport(Transport):
         if txq_ptr == 0 and not rxReady:
             return False
 
-        print("send " + buf2hex(txqueue))
+        print("spi: send frame " + buf2hex(txqueue))
         rxqueue = self.spi.xfer(txqueue)
         if rxReady:
             if rxqueue is None:

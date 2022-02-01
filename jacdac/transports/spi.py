@@ -1,9 +1,14 @@
 import threading
+from typing import List, Optional
 from time import sleep
+from tokenize import Number
 from jacdac.bus import Transport
 from jacdac.util import buf2hex, hex2buf
-from gpiod import Chip, Line, LineBulk, LINE_REQ_EV_RISING_EDGE, LINE_REQ_FLAG_ACTIVE_LOW, LINE_REQ_DIR_OUT, LINE_REQ_DIR_IN
+from gpiod import Chip, Line, LineBulk, LINE_REQ_EV_RISING_EDGE, LINE_REQ_FLAG_ACTIVE_LOW, LINE_REQ_DIR_OUT
+from spidev import SpiDev
+from jacdac.util import buf2hex, hex2buf
 
+XFER_SIZE = 256
 # https://git.kernel.org/pub/scm/libs/libgpiod/libgpiod.git/tree/bindings/python/gpiodmodule.c?h=v1.6.x&id=27cacfe377114f6acf67cd943d1ca01bb30e0f2b
 RPI_CHIP = 'pinctrl-bcm2835'
 RPI_PIN_TX_READY = 24
@@ -16,30 +21,43 @@ class SpiTransport(Transport):
         self.chip: Chip = None
         self.rxtx: LineBulk = None
         self.rst: Line = None
+        self.spi: SpiDev = None
+        self.sendQueue: List[bytes] = []
         self.open()
 
     def open(self) -> None:
+        self.sendQueue: List[bytes] = []
         print("spi: select chip")
         self.chip = Chip(RPI_CHIP)
         # monitor rx,tx in bulk
         print("spi: request rx,tx")
         self.rxtx = self.chip.get_lines([RPI_PIN_RX_READY, RPI_PIN_TX_READY])
         self.rxtx.request(consumer = CONSUMER, type = LINE_REQ_EV_RISING_EDGE, flags = LINE_REQ_FLAG_ACTIVE_LOW)
-
         self._flip_reset()
-
-        t = threading.Thread(target=self.read_loop)
+        print("spi: open device")
+        self.spi = SpiDev()
+        self.spi.open(0, 0)
+        self.spi.max_speed_hz = 15600000
+        self.spi.bits_per_word = 8
+        print("spi: start read loop")
+        t = threading.Thread(target=self._read_loop)
         t.start()
 
-    def __exit__(self, type, value, traceback):
+    def __del__(self):
+        self.close()
+    
+    def close(self):
+        print("spi: close")
         if not self.rxtx is None:
             self.rxtx.release()
             self.rxtx = None
         if not self.chip is None:
             self.chip.close()
             self.chip = None
+        if not self.spi is None:
+            self.spi.close()
+            self.spi = None
         
-
     def _flip_reset(self) -> None:
         print("spi: flip reset")
         rst = self.chip.get_line(RPI_PIN_RST)
@@ -54,9 +72,79 @@ class SpiTransport(Transport):
 
     def send(self, pkt: bytes) -> None:
         print("send")
+        self.sendQueue.append(pkt)
+        self._transfer()
 
-    def read_loop(self) -> None:
+    def _read_loop(self) -> None:
         while True:
             ev_lines = self.rxtx.event_wait(nsec = 1) # List[Line]
             if ev_lines:
-                print("read")
+                self._transfer()
+
+    def _read_ready_pins(self) -> List[int]:
+        rxtxv = self.rxtx.get_values() 
+        if rxtxv is None:
+            return [0, 0]
+        else:
+            return rxtxv
+
+    def _transfer(self) -> None:
+        while self._transfer_frame():
+            pass
+
+    def _transfer_frame(self) -> bool:
+        [rx, tx] = self._read_ready_pins()
+        rxReady = rx != 0
+        txReady = tx != 0
+        sendtx = txReady and len(self.sendQueue) > 0
+
+        if not sendtx and not rxReady:
+            return False
+
+
+        # allocate transfer buffers
+        txqueue = bytearray(XFER_SIZE)
+
+        # assemble packets into send buffer
+        txq_ptr = 0
+        while len(self.sendQueue) > 0:
+            pkt = self.sendQueue[0]
+            npkt = len(pkt)
+            if txq_ptr + npkt > XFER_SIZE:
+                break
+            self.sendQueue.pop(0)
+            txqueue[txq_ptr:txq_ptr+npkt] = pkt
+            txq_ptr += (npkt + 3) & ~3
+
+        if txq_ptr == 0 and not rxReady:
+            return False
+
+        print("send " + buf2hex(txqueue))
+        rxqueue = self.spi.xfer(txqueue)
+        if rxReady:
+            if rxqueue is None:
+                print("recv failed")
+                return False
+            
+            print("recv " + buf2hex(rxqueue))
+            framep = 0
+            while framep + 4 < XFER_SIZE :
+                frame2 = rxqueue[framep + 2]
+                if frame2 == 0:
+                    break
+                sz = frame2 + 12
+                if framep + sz > XFER_SIZE:
+                    break
+                frame0 = rxqueue[framep]
+                frame1 = rxqueue[framep + 1]
+                frame3 = rxqueue[framep + 3]
+                if frame0 == 0xff and frame1 == 0xff and frame3 == 0xff :
+                    # skip bogus packet
+                    pass
+                else:
+                    buf = rxqueue.slice(framep, sz)
+                    if buf and self.on_receive:
+                        self.on_receive(buf)
+                sz = (sz + 3) & ~3
+                framep += sz
+        return True

@@ -2,3 +2,4 @@
 from .exec import *
 from .hf2 import *
 from .ws import *
+from .spizero import *

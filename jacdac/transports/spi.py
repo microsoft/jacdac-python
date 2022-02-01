@@ -70,7 +70,7 @@ class SpiTransport(Transport):
         try:
             rst.request(consumer = CONSUMER, type = LINE_REQ_DIR_OUT, flags = LINE_REQ_FLAG_ACTIVE_LOW)
             rst.set_value(0)
-            sleep(0.001)
+            sleep(0.01)
             rst.set_value(1)
             rst.set_direction_input()
         finally:
@@ -92,11 +92,16 @@ class SpiTransport(Transport):
         if rxtxv is None:
             return [0, 0]
         else:
+            print(rxtxv)
             return rxtxv
 
     def _transfer(self) -> None:
-        while self._transfer_frame():
-            pass
+        try:
+            while self._transfer_frame():
+                pass
+        except:
+            self.close()
+            raise
 
     def _transfer_frame(self) -> bool:
         [rx, tx] = self._read_ready_pins()
@@ -104,7 +109,7 @@ class SpiTransport(Transport):
         txReady = tx != 0
         sendtx = txReady and len(self.sendQueue) > 0
 
-        print("spi: transfer rx:" + str(rx) + ", tx: " + str(tx) + ", queue: " + len(self.sendQueue))
+        print("spi: transfer rx:" + str(rx) + ", tx: " + str(tx) + ", queue: " + str(len(self.sendQueue)))
 
         if not sendtx and not rxReady:
             return False
@@ -128,13 +133,13 @@ class SpiTransport(Transport):
             return False
 
         print("spi: send frame " + buf2hex(txqueue))
-        rxqueue = self.spi.xfer(txqueue)
+        rxqueue = bytearray(self.spi.xfer(txqueue))
+        print("recv " + buf2hex(rxqueue))
         if rxReady:
             if rxqueue is None:
                 print("recv failed")
                 return False
             
-            print("recv " + buf2hex(rxqueue))
             framep = 0
             while framep + 4 < XFER_SIZE :
                 frame2 = rxqueue[framep + 2]
@@ -150,7 +155,7 @@ class SpiTransport(Transport):
                     # skip bogus packet
                     pass
                 else:
-                    buf = rxqueue.slice(framep, sz)
+                    buf = bytearray(rxqueue[framep:framep+sz])
                     if buf and self.on_receive:
                         self.on_receive(buf)
                 sz = (sz + 3) & ~3

@@ -31,14 +31,26 @@ class SpiTransport(Transport):
         t = threading.Thread(target=self.read_loop)
         t.start()
 
+    def __exit__(self, type, value, traceback):
+        if not self.rxtx is None:
+            self.rxtx.release()
+            self.rxtx = None
+        if not self.chip is None:
+            self.chip.close()
+            self.chip = None
+        
+
     def _flip_reset(self) -> None:
-        # flip reset pin
+        print("spi: flip reset")
         rst = self.chip.get_line(RPI_PIN_RST)
-        rst.request(consumer = CONSUMER, type = LINE_REQ_DIR_OUT, flags = LINE_REQ_FLAG_ACTIVE_LOW)
-        rst.set_value(0)
-        sleep(0.001)
-        rst.set_value(1)
-        rst.set_direction_input(LINE_REQ_DIR_IN)
+        try:
+            rst.request(consumer = CONSUMER, type = LINE_REQ_DIR_OUT, flags = LINE_REQ_FLAG_ACTIVE_LOW)
+            rst.set_value(0)
+            sleep(0.001)
+            rst.set_value(1)
+            rst.set_direction_input()
+        finally:
+            rst.release()
 
     def send(self, pkt: bytes) -> None:
         print("send")

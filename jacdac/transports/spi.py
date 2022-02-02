@@ -6,6 +6,7 @@ from jacdac.bus import Transport
 from jacdac.util import buf2hex, hex2buf, now
 from gpiod import Chip, Line, LineBulk, LINE_REQ_EV_RISING_EDGE, LINE_REQ_FLAG_ACTIVE_LOW, LINE_REQ_DIR_OUT
 from spidev import SpiDev
+from weakref import finalize
 
 XFER_SIZE = 256
 # https://git.kernel.org/pub/scm/libs/libgpiod/libgpiod.git/tree/bindings/python/gpiodmodule.c?h=v1.6.x&id=27cacfe377114f6acf67cd943d1ca01bb30e0f2b
@@ -20,12 +21,15 @@ class SpiTransport(Transport):
     def __init__(self):
         self.chip: Chip = None
         self.rxtx: LineBulk = None
-        self.rst: Line = None
         self.spi: SpiDev = None
         self.sendQueue: List[bytes] = []
-        self.open()
 
-    def open(self) -> None:
+        try:
+            self._open()
+        finally:
+            self._finalizer = finalize(self, self._cleanup, self.chip, self.spi)
+
+    def _open(self) -> None:
         self.sendQueue: List[bytes] = []
         print("spi: select chip")
         self.chip = Chip(RPI_CHIP)
@@ -43,26 +47,33 @@ class SpiTransport(Transport):
         t = threading.Thread(target=self._read_loop)
         t.start()
 
-    def __del__(self):
-        self.close()
-    
-    def close(self):
-        print("spi: close")
-        if not self.chip is None:
+    @classmethod
+    def _cleanup(cls, chip: Chip, spi: SpiDev):
+        if not chip is None:
             try:
-                self.chip.close()
-                self.chip = None
+                chip.close()
                 print("spi: chip closed")
             except:
                 print("error: chip failed to close")
 
-        if not self.spi is None:
+        if not spi is None:
             try:
-                self.spi.close()
-                self.spi = None
+                spi.close()
                 print("spi: device closed")
             except:
                 print("error: device failed to close")
+    
+    def close(self):
+        print("spi: close")
+        chip = self.chip
+        spi = self.spi
+        if not chip is None or not spi is None:
+            self.chip = None
+            self.spi = None
+            self.rxtx = None
+            self.sendQueue = []
+            self._cleanup(chip, spi)
+            self._finalizer.detach()
         
     def _flip_reset(self) -> None:
         print("spi: reset bridge")

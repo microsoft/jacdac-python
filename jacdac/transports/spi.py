@@ -124,7 +124,7 @@ class SpiTransport(Transport):
 
         # assemble packets into send buffer
         txq_ptr = 0
-        while len(self.sendQueue) > 0:
+        while txReady and len(self.sendQueue) > 0:
             pkt = self.sendQueue[0]
             npkt = len(pkt)
             if txq_ptr + npkt > len(txqueue):
@@ -140,7 +140,7 @@ class SpiTransport(Transport):
         if txq_ptr > 0:
             txqueue = bytearray(txqueue[0::txq_ptr])
             print(str(now()) + " " + buf2hex(txqueue) + " send frame")
-            rxqueue = bytearray(self.spi.xfer(txqueue))
+            rxqueue = bytearray(self.spi.xfer2(txqueue))
         elif rxReady:
             rxqueue = bytearray(self.spi.readbytes(XFER_SIZE))
         if rxReady:
@@ -153,7 +153,7 @@ class SpiTransport(Transport):
             while framep + 4 < len(rxqueue) :
                 frame2 = rxqueue[framep + 2]
                 if frame2 == 0:
-                    print("spi: empty frame")
+                    # print("spi: empty frame")
                     break
                 sz = frame2 + 12
                 if framep + sz > len(rxqueue):

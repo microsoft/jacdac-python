@@ -7,6 +7,9 @@ from typing import Optional
 class LedDisplayClient(Client):
     """
     A controller for small displays of individually controlled RGB LEDs.
+     * 
+     * This service handles displays with 64 or less LEDs.
+     * Use the [LED strip service](/services/ledstrip) for longer light strips.
     Implements a client for the `LED Display <https://microsoft.github.io/jacdac-docs/services/leddisplay>`_ service.
 
     """
@@ -18,7 +21,7 @@ class LedDisplayClient(Client):
     @property
     def pixels(self) -> Optional[bytes]:
         """
-        For short LED strips, less than `max_pixels_length`, a buffer of 24bit RGB color entries for each LED., 
+        A buffer of 24bit RGB color entries for each LED, in R, G, B order., 
         """
         return self.register(JD_LED_DISPLAY_REG_PIXELS).value()
 
@@ -52,26 +55,21 @@ class LedDisplayClient(Client):
     @property
     def light_type(self) -> Optional[LedDisplayLightType]:
         """
-        Specifies the type of light strip connected to controller.
-        Controllers which are sold with lights should default to the correct type
-        and could not allow change., 
+        Specifies the type of light strip connected to controller., 
         """
         return self.register(JD_LED_DISPLAY_REG_LIGHT_TYPE).value()
 
     @property
     def num_pixels(self) -> Optional[int]:
         """
-        Specifies the number of pixels in the strip.
-        Controllers which are sold with lights should default to the correct length
-        and could not allow change. Increasing length at runtime leads to ineffective use of memory and may lead to controller reboot., _: #
+        Specifies the number of pixels in the strip., _: #
         """
         return self.register(JD_LED_DISPLAY_REG_NUM_PIXELS).value()
 
     @property
     def num_columns(self) -> Optional[int]:
         """
-        (Optional) If the LED pixel strip is a matrix, specifies the number of columns. Otherwise, a square shape is assumed. Controllers which are sold with lights should default to the correct length
-        and could not allow change. Increasing length at runtime leads to ineffective use of memory and may lead to controller reboot., _: #
+        (Optional) If the LED pixel strip is a matrix, specifies the number of columns., _: #
         """
         return self.register(JD_LED_DISPLAY_REG_NUM_COLUMNS).value()
 

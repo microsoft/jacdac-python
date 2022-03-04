@@ -6,7 +6,7 @@ from typing import Optional, Tuple
 
 class GamepadClient(SensorClient):
     """
-    A two axis directional joystick with optional buttons.
+    A two axis directional gamepad with optional buttons.
     Implements a client for the `Gamepad <https://microsoft.github.io/jacdac-docs/services/gamepad>`_ service.
 
     """
@@ -18,10 +18,10 @@ class GamepadClient(SensorClient):
     @property
     def direction(self) -> Optional[Tuple[GamepadButtons, float, float]]:
         """
-        If the joystick is analog, the directional buttons should be "simulated", based on joystick position
+        If the gamepad is analog, the directional buttons should be "simulated", based on gamepad position
         (`Left` is `{ x = -1, y = 0 }`, `Up` is `{ x = 0, y = -1}`).
-        If the joystick is digital, then each direction will read as either `-1`, `0`, or `1` (in fixed representation).
-        The primary button on the joystick is `A`., x: /,y: /
+        If the gamepad is digital, then each direction will read as either `-1`, `0`, or `1` (in fixed representation).
+        The primary button on the gamepad is `A`., x: /,y: /
         """
         self.refresh_reading()
         return self.register(JD_GAMEPAD_REG_DIRECTION).value(self.missing_direction_value)
@@ -29,16 +29,16 @@ class GamepadClient(SensorClient):
     @property
     def variant(self) -> Optional[GamepadVariant]:
         """
-        (Optional) The type of physical joystick., 
+        (Optional) The type of physical gamepad., 
         """
         return self.register(JD_GAMEPAD_REG_VARIANT).value()
 
     @property
     def buttons_available(self) -> Optional[GamepadButtons]:
         """
-        Indicates a bitmask of the buttons that are mounted on the joystick.
-        If the `Left`/`Up`/`Right`/`Down` buttons are marked as available here, the joystick is digital.
-        Even when marked as not available, they will still be simulated based on the analog joystick., 
+        Indicates a bitmask of the buttons that are mounted on the gamepad.
+        If the `Left`/`Up`/`Right`/`Down` buttons are marked as available here, the gamepad is digital.
+        Even when marked as not available, they will still be simulated based on the analog gamepad., 
         """
         return self.register(JD_GAMEPAD_REG_BUTTONS_AVAILABLE).value()
 

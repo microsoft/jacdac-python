@@ -47,7 +47,12 @@ async def proxy(websocket, path: str):
             cs = clients.copy() # avoid races
             for client in cs:
                 if client != websocket:
-                    await websocket.send(frame)
+                    try:
+                        await websocket.send(frame)
+                    except:
+                        print("client receive error")
+    except:
+        print("client receive error")
     finally:
         # remove from clients
         clients.remove(websocket)

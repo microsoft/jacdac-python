@@ -36,5 +36,5 @@ class WebSocketTransport(Transport):
         self.opened = False
 
     def on_open(self, ws: WebSocketApp):
-        print("devtools server connected")
+        print("devtools server connected at " + self.url)
         self.opened = True

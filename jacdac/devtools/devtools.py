@@ -35,8 +35,8 @@ class Handler(BaseHTTPRequestHandler) :
                 self.send_error(404)
 
 async def proxy(websocket, path: str):
-    print("client connected (%d clients)", len(clients))
     clients.append(websocket)
+    print("client connected (%d clients)" % len(clients))
     ## listen to websocket client until it closesw
     try:
         while websocket.open:
@@ -51,7 +51,7 @@ async def proxy(websocket, path: str):
     finally:
         # remove from clients
         clients.remove(websocket)
-        print("client disconnected (%d clients)", len(clients)")
+        print("client disconnected (%d clients)" % len(clients))
         
 # get proxy source
 resp = get('https://microsoft.github.io/jacdac-docs/devtools/proxy')

@@ -94,7 +94,7 @@ class HF2Transport(Transport):
         print("HF2: %s" % msg)
 
     def _error(self, msg: str):
-        self.log("Error: %s" % msg)
+        self.log("error: %s" % msg)
         raise HF2Error("HF2: %s" % msg)
 
     def _talk(self, cmd: int, data: bytes = b'') -> bytes:

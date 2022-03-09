@@ -28,11 +28,6 @@ sudo apt upgrade
 sudo apt install python3 python3-pip ipython3 python3-venv
 ```
 
-### RPi Setup
-
-You'll need a JacHAT for RPi and you will need to build bridge executable,
-see https://github.com/microsoft/jacdac-stm32x0/tree/main/spibridge
-
 ### Codespaces
 
 You can develop this package from a GitHub codespace container. 
@@ -40,6 +35,11 @@ No configuration changes is needed, follow the regular installation steps.
 
 The devtools web site will be forwarded by GitHub and you will be able to connect to physical hardware
 from the browser while testing the Python running on the codespace container. 
+
+### RPi Setup
+
+You'll need a JacHAT for RPi and you will need to build bridge executable,
+see https://github.com/microsoft/jacdac-stm32x0/tree/main/spibridge
 
 ### Build package
 
@@ -62,8 +62,16 @@ to pipe packets from the python library into the web developer tools and diagnos
 
 To launch the developer tools server (once per session)
 
+```bash
+python3 -m jacdac.devtools
 ```
-sh scripts/devtools.sh
+
+### Examples
+
+With the devtools running, you can run snippets from the `examples` folder:
+
+```bash
+python3 -m examples.blinky
 ```
 
 ## Contributing

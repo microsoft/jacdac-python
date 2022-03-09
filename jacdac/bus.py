@@ -1100,7 +1100,8 @@ class LoggerServer(Server):
         return super().handle_packet(pkt)
 
     def report(self, priority: int, msg: str, *args: object):
-        log(msg, *args)
+        if priority >= self.min_priority:
+            log(msg, *args)
         cmd: int = -1
         if priority == LoggerPriority.DEBUG:
             cmd = JD_LOGGER_CMD_DEBUG

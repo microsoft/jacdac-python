@@ -79,6 +79,7 @@ def ws():
 
 # start http server
 thread = Thread(target = web)
+thread.daemon = True
 thread.start()
 
 # start http server

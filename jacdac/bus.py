@@ -274,6 +274,7 @@ class Bus(EventEmitter):
 
         self.self_device = Device(self, device_id, bytearray(4))
         self.process_thread = threading.Thread(target=self._process_task)
+        self.process_thread.daemon = True
         self.transports: List[Transport] = transports or []
         if not disable_dev_tools:
             from .transports.ws import WebSocketTransport
@@ -296,6 +297,7 @@ class Bus(EventEmitter):
         self.loop.set_exception_handler(handler)  # type: ignore
 
         self.sender_thread = threading.Thread(target=self._sender)
+        self.sender_thread.daemon = True
         self.sender_thread.start()
 
         # self.taskq.recurring(2000, self.debug_dump)

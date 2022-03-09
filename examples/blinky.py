@@ -1,10 +1,11 @@
 from jacdac import Bus
 from jacdac.led import LedClient
+from jacdac import LoggerPriority
 from time import sleep
 
 if __name__ == '__main__':
     def main():
-        bus = Bus()
+        bus = Bus(default_logger_min_priority = LoggerPriority.DEBUG)
         led = LedClient(bus, "led")
         speed = 0
         brightness = 128

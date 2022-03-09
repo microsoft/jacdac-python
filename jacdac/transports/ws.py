@@ -18,6 +18,7 @@ class WebSocketTransport(Transport):
                                on_error=self.on_error,
                                on_close=self.on_close)
         t = threading.Thread(target=self.ws.run_forever)  # type: ignore
+        t.daemon = True
         t.start()
 
     def send(self, pkt: bytes) -> None:

@@ -1691,7 +1691,7 @@ class Device(EventEmitter):
         return util.short_id(self.device_id)
 
     def __str__(self) -> str:
-        return "<JDDevice {}>".format(self.short_id)
+        return self.short_id
 
     def debug_info(self):
         r = "Device: " + self.short_id + "; "

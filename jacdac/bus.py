@@ -6,6 +6,7 @@ import asyncio
 import queue
 import os
 import time
+import sys
 
 from functools import reduce
 from random import getrandbits, randrange
@@ -304,7 +305,7 @@ class Bus(EventEmitter):
 
         self.process_thread.start()
 
-        self.log("starting bus, self={}", self.self_device)
+        print("starting jacdac, self device {}".format(self.self_device))
 
     def run(self, cb: Callable[..., None], *args: Any):
         if self.process_thread is threading.current_thread():
@@ -1062,10 +1063,9 @@ class ControlServer(Server):
                 self.send_report(JDPacket.packed(
                     JD_GET(JD_CONTROL_REG_PRODUCT_IDENTIFIER), "s", self.bus.firmware_version))
             elif reg_code == JD_CONTROL_REG_DEVICE_DESCRIPTION:
-                uname = os.uname()
-                descr = "{}, {}, {}, {}, jacdac {}".format(
+                descr = "{}, {}, {}, jacdac {}".format(
                     self.bus.device_description or "",
-                    uname.nodename, uname.sysname, uname.release, JD_VERSION)
+                    os.name, sys.platform, JD_VERSION)
                 self.send_report(JDPacket.packed(
                     JD_GET(JD_CONTROL_REG_DEVICE_DESCRIPTION), "s", descr))
             else:

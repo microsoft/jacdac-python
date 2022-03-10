@@ -48,7 +48,7 @@ async def proxy(websocket, path: str):
             for client in cs:
                 if client != websocket:
                     try:
-                        await websocket.send(frame)
+                        await client.send(frame)
                     except:
                         print("client receive error")
     except:

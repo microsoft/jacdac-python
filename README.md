@@ -46,13 +46,13 @@ see https://github.com/microsoft/jacdac-stm32x0/tree/main/spibridge
 Install the build tools
 
 ```
-pip3 install --upgrade -r requirements.txt
+python -m pip install --upgrade -r requirements.txt
 ```
 
 Create the library bundle
 
 ```
-python3 -m build
+python -m build
 ```
 
 ### Devtools
@@ -63,7 +63,7 @@ to pipe packets from the python library into the web developer tools and diagnos
 To launch the developer tools server (once per session)
 
 ```bash
-python3 -m jacdac.devtools
+python -m jacdac.devtools
 ```
 
 ### Examples
@@ -71,7 +71,7 @@ python3 -m jacdac.devtools
 With the devtools running, you can run snippets from the `examples` folder:
 
 ```bash
-python3 -m examples.blinky
+python -m examples.blinky
 ```
 
 ## Contributing

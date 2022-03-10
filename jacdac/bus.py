@@ -387,7 +387,7 @@ class Bus(EventEmitter):
                 # log("PKT: {}-{} / {}", ptr, len(frame), pktbytes.hex())
                 pkt = JDPacket(frombytes=pktbytes, sender=sender)
                 if ptr > 12:
-                    pkt.requires_ack = False
+                    pkt.requires_ack = False # only ack once
                 self.process_packet(pkt)
                 # dispatch to other transports
                 self._queue_core(pkt)

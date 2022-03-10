@@ -1,5 +1,6 @@
 from jacdac import Bus
 from jacdac.led import LedClient
+from jacdac import LoggerPriority
 from time import sleep
 
 if __name__ == '__main__':

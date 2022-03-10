@@ -15,6 +15,7 @@ class ExecTransport(Transport):
                                      stdout=subprocess.PIPE,
                                      stdin=subprocess.PIPE)
         t = threading.Thread(target=self.read_loop)
+        t.daemon = True
         t.start()
 
     def send(self, pkt: bytes) -> None:

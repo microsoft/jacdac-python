@@ -5,7 +5,7 @@ from time import sleep
 
 if __name__ == '__main__':
     def main():
-        bus = Bus(default_logger_min_priority = LoggerPriority.DEBUG)
+        bus = Bus()
         led = LedClient(bus, "led")
         speed = 0
         brightness = 128

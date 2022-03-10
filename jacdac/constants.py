@@ -1,7 +1,7 @@
 def const(v: int): return v
 # A shim for the micropython const keyword
 
-JD_VERSION = "0.2.0"
+JD_VERSION = "0.2.1"
 
 JD_SERIAL_HEADER_SIZE = const(16)
 JD_SERIAL_MAX_PAYLOAD_SIZE = const(236)

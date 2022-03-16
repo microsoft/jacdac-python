@@ -6,7 +6,7 @@ from .constants import *
 
 class ArcadeGamepadClient(Client):
     """
-    This service is deprecated in favor or `gamepad`; it is currently used by the micro:bit Arcade smart shield though.
+    This service is deprecated in favor of `gamepad` (although it is currently used by the micro:bit Arcade smart shield).
      * A gamepad with direction and action buttons for one player.
      * If a device has multiple controllers, it should have multiple gamepad services, using consecutive service identifiers.
     Implements a client for the `Arcade Gamepad <https://microsoft.github.io/jacdac-docs/services/arcadegamepad>`_ service.

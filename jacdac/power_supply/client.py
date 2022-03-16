@@ -6,7 +6,7 @@ from typing import Optional
 
 class PowerSupplyClient(Client):
     """
-    A power supply with a static or variable voltage range
+    A power supply with a fixed or variable voltage range
     Implements a client for the `Power supply <https://microsoft.github.io/jacdac-docs/services/powersupply>`_ service.
 
     """
@@ -43,14 +43,14 @@ class PowerSupplyClient(Client):
     @property
     def minimum_voltage(self) -> Optional[float]:
         """
-        The minimum output voltage of the power supply. For static power supplies, `minimum_voltage` should be equal to `maximum_voltage`., _: mV
+        The minimum output voltage of the power supply. For fixed power supplies, `minimum_voltage` should be equal to `maximum_voltage`., _: mV
         """
         return self.register(JD_POWER_SUPPLY_REG_MINIMUM_VOLTAGE).value()
 
     @property
     def maximum_voltage(self) -> Optional[float]:
         """
-        The maximum output voltage of the power supply. For static power supplies, `minimum_voltage` should be equal to `maximum_voltage`., _: mV
+        The maximum output voltage of the power supply. For fixed power supplies, `minimum_voltage` should be equal to `maximum_voltage`., _: mV
         """
         return self.register(JD_POWER_SUPPLY_REG_MAXIMUM_VOLTAGE).value()
 

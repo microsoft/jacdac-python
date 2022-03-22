@@ -4,30 +4,30 @@ from .constants import *
 from typing import Optional
 
 
-class VoltageMeasurementClient(SensorClient):
+class DCVoltageMeasurementClient(SensorClient):
     """
     A service that reports a voltage measurement.
-    Implements a client for the `Voltage Measurement <https://microsoft.github.io/jacdac-docs/services/voltagemeasurement>`_ service.
+    Implements a client for the `DC Voltage Measurement <https://microsoft.github.io/jacdac-docs/services/dcvoltagemeasurement>`_ service.
 
     """
 
     def __init__(self, bus: Bus, role: str, *, missing_measurement_value: float = None) -> None:
-        super().__init__(bus, JD_SERVICE_CLASS_VOLTAGE_MEASUREMENT, JD_VOLTAGE_MEASUREMENT_PACK_FORMATS, role)
+        super().__init__(bus, JD_SERVICE_CLASS_D_CVOLTAGE_MEASUREMENT, JD_D_CVOLTAGE_MEASUREMENT_PACK_FORMATS, role)
         self.missing_measurement_value = missing_measurement_value
 
     @property
-    def measurement_type(self) -> Optional[VoltageMeasurementVoltageMeasurementType]:
+    def measurement_type(self) -> Optional[DCVoltageMeasurementVoltageMeasurementType]:
         """
         The type of measurement that is taking place. Absolute results are measured with respect to ground, whereas differential results are measured against another signal that is not ground., 
         """
-        return self.register(JD_VOLTAGE_MEASUREMENT_REG_MEASUREMENT_TYPE).value()
+        return self.register(JD_D_CVOLTAGE_MEASUREMENT_REG_MEASUREMENT_TYPE).value()
 
     @property
     def measurement_name(self) -> Optional[str]:
         """
         A string containing the net name that is being measured e.g. `POWER_DUT` or a reference e.g. `DIFF_DEV1_DEV2`. These constants can be used to identify a measurement from client code., 
         """
-        return self.register(JD_VOLTAGE_MEASUREMENT_REG_MEASUREMENT_NAME).value()
+        return self.register(JD_D_CVOLTAGE_MEASUREMENT_REG_MEASUREMENT_NAME).value()
 
     @property
     def measurement(self) -> Optional[float]:
@@ -35,6 +35,6 @@ class VoltageMeasurementClient(SensorClient):
         The voltage measurement., _: V
         """
         self.refresh_reading()
-        return self.register(JD_VOLTAGE_MEASUREMENT_REG_MEASUREMENT).value(self.missing_measurement_value)
+        return self.register(JD_D_CVOLTAGE_MEASUREMENT_REG_MEASUREMENT).value(self.missing_measurement_value)
 
     

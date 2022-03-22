@@ -30,7 +30,7 @@ class PowerSupplyClient(Client):
     @property
     def output_voltage(self) -> Optional[float]:
         """
-        The current output voltage of the power supply. Values provided must be in the range `minimum_voltage` to `maximum_voltage`, _: mV
+        The current output voltage of the power supply. Values provided must be in the range `minimum_voltage` to `maximum_voltage`, _: V
         """
         return self.register(JD_POWER_SUPPLY_REG_OUTPUT_VOLTAGE).value()
 
@@ -43,14 +43,14 @@ class PowerSupplyClient(Client):
     @property
     def minimum_voltage(self) -> Optional[float]:
         """
-        The minimum output voltage of the power supply. For fixed power supplies, `minimum_voltage` should be equal to `maximum_voltage`., _: mV
+        The minimum output voltage of the power supply. For fixed power supplies, `minimum_voltage` should be equal to `maximum_voltage`., _: V
         """
         return self.register(JD_POWER_SUPPLY_REG_MINIMUM_VOLTAGE).value()
 
     @property
     def maximum_voltage(self) -> Optional[float]:
         """
-        The maximum output voltage of the power supply. For fixed power supplies, `minimum_voltage` should be equal to `maximum_voltage`., _: mV
+        The maximum output voltage of the power supply. For fixed power supplies, `minimum_voltage` should be equal to `maximum_voltage`., _: V
         """
         return self.register(JD_POWER_SUPPLY_REG_MAXIMUM_VOLTAGE).value()
 

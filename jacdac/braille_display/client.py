@@ -18,7 +18,7 @@ class BrailleDisplayClient(Client):
     @property
     def enabled(self) -> Optional[bool]:
         """
-        Determins if the braille display is active., 
+        Determines if the braille display is active., 
         """
         return self.register(JD_BRAILLE_DISPLAY_REG_ENABLED).bool_value()
 

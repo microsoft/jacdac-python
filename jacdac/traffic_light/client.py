@@ -28,21 +28,21 @@ class TrafficLightClient(Client):
 
 
     @property
-    def orange(self) -> Optional[bool]:
+    def yellow(self) -> Optional[bool]:
         """
-        The on/off state of the red light., 
+        The on/off state of the yellow light., 
         """
-        return self.register(JD_TRAFFIC_LIGHT_REG_ORANGE).bool_value()
+        return self.register(JD_TRAFFIC_LIGHT_REG_YELLOW).bool_value()
 
-    @orange.setter
-    def orange(self, value: bool) -> None:
-        self.register(JD_TRAFFIC_LIGHT_REG_ORANGE).set_values(value)
+    @yellow.setter
+    def yellow(self, value: bool) -> None:
+        self.register(JD_TRAFFIC_LIGHT_REG_YELLOW).set_values(value)
 
 
     @property
     def green(self) -> Optional[bool]:
         """
-        The on/off state of the red light., 
+        The on/off state of the green light., 
         """
         return self.register(JD_TRAFFIC_LIGHT_REG_GREEN).bool_value()
 

@@ -86,11 +86,4 @@ class SevenSegmentDisplayClient(Client):
         """
         # TODO: implement client command
         raise RuntimeError("client command not implemented")
-
-    def set_text(self, text: str) -> None:
-        """
-        Shows the text on the screen. The client may decide to scroll the text if too long.
-        """
-        # TODO: implement client command
-        raise RuntimeError("client command not implemented")
     

@@ -45,7 +45,7 @@ class SevenSegmentDisplayClient(Client):
     @property
     def brightness(self) -> Optional[float]:
         """
-        Controls the brightness of the LEDs. `0` means off., _: /
+        (Optional) Controls the brightness of the LEDs. `0` means off., _: /
         """
         return self.register(JD_SEVEN_SEGMENT_DISPLAY_REG_BRIGHTNESS).float_value(100)
 
@@ -77,7 +77,7 @@ class SevenSegmentDisplayClient(Client):
     @property
     def decimal_point(self) -> Optional[bool]:
         """
-        True if decimal points are available (on all digits)., 
+        (Optional) True if decimal points are available (on all digits)., 
         """
         return self.register(JD_SEVEN_SEGMENT_DISPLAY_REG_DECIMAL_POINT).bool_value()
 

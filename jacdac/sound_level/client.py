@@ -38,7 +38,7 @@ class SoundLevelClient(SensorClient):
     @property
     def loud_threshold(self) -> Optional[float]:
         """
-        The sound level to trigger a loud event., _: /
+        (Optional) The sound level to trigger a loud event., _: /
         """
         return self.register(JD_SOUND_LEVEL_REG_LOUD_THRESHOLD).float_value(100)
 
@@ -47,28 +47,10 @@ class SoundLevelClient(SensorClient):
         self.register(JD_SOUND_LEVEL_REG_LOUD_THRESHOLD).set_values(value / 100)
 
 
-    @property
-    def quiet_threshold(self) -> Optional[float]:
-        """
-        The sound level to trigger a quiet event., _: /
-        """
-        return self.register(JD_SOUND_LEVEL_REG_QUIET_THRESHOLD).float_value(100)
-
-    @quiet_threshold.setter
-    def quiet_threshold(self, value: float) -> None:
-        self.register(JD_SOUND_LEVEL_REG_QUIET_THRESHOLD).set_values(value / 100)
-
-
     def on_loud(self, handler: EventHandlerFn) -> UnsubscribeFn:
         """
         Raised when a loud sound is detected
         """
         return self.on_event(JD_SOUND_LEVEL_EV_LOUD, handler)
-
-    def on_quiet(self, handler: EventHandlerFn) -> UnsubscribeFn:
-        """
-        Raised when a period of quietness is detected
-        """
-        return self.on_event(JD_SOUND_LEVEL_EV_QUIET, handler)
 
     

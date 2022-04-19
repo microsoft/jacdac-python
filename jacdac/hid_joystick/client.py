@@ -18,21 +18,21 @@ class HidJoystickClient(Client):
     @property
     def button_count(self) -> Optional[int]:
         """
-        (Optional) Number of button report supported, 
+        Number of button report supported, 
         """
         return self.register(JD_HID_JOYSTICK_REG_BUTTON_COUNT).value()
 
     @property
     def buttons_analog(self) -> Optional[int]:
         """
-        (Optional) A bitset that indicates which button is analog., 
+        A bitset that indicates which button is analog., 
         """
         return self.register(JD_HID_JOYSTICK_REG_BUTTONS_ANALOG).value()
 
     @property
     def axis_count(self) -> Optional[int]:
         """
-        (Optional) Number of analog input supported, 
+        Number of analog input supported, 
         """
         return self.register(JD_HID_JOYSTICK_REG_AXIS_COUNT).value()
 

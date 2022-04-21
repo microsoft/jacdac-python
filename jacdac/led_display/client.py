@@ -55,7 +55,7 @@ class LedDisplayClient(Client):
     @property
     def light_type(self) -> Optional[LedDisplayLightType]:
         """
-        Specifies the type of light strip connected to controller., 
+        (Optional) Specifies the type of light strip connected to controller., 
         """
         return self.register(JD_LED_DISPLAY_REG_LIGHT_TYPE).value()
 

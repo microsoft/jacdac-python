@@ -48,16 +48,4 @@ class AzureIotHubHealthClient(Client):
         """
         return self.on_event(JD_AZURE_IOT_HUB_HEALTH_EV_MESSAGE_SENT, handler)
 
-
-    def connect(self, ) -> None:
-        """
-        Starts a connection to the IoT hub service
-        """
-        self.send_cmd_packed(JD_AZURE_IOT_HUB_HEALTH_CMD_CONNECT, )
-
-    def disconnect(self, ) -> None:
-        """
-        Starts disconnecting from the IoT hub service
-        """
-        self.send_cmd_packed(JD_AZURE_IOT_HUB_HEALTH_CMD_DISCONNECT, )
     

@@ -22,9 +22,47 @@ class TimeseriesAggregatorClient(Client):
     @property
     def now(self) -> Optional[int]:
         """
-        This register is automatically broadcast and can be also queried to establish local time on the device., _: ms
+        This register is automatically broadcast and can be also queried to establish local time on the device., _: us
         """
         return self.register(JD_TIMESERIES_AGGREGATOR_REG_NOW).value()
+
+    @property
+    def fast_start(self) -> Optional[bool]:
+        """
+        When `true`, the windows will be shorter after service reset and gradually extend to requested length.
+        This makes the sensor look more responsive., 
+        """
+        return self.register(JD_TIMESERIES_AGGREGATOR_REG_FAST_START).bool_value()
+
+    @fast_start.setter
+    def fast_start(self, value: bool) -> None:
+        self.register(JD_TIMESERIES_AGGREGATOR_REG_FAST_START).set_values(value)
+
+
+    @property
+    def continuous_window(self) -> Optional[int]:
+        """
+        Window applied to automatically created continuous timeseries.
+        Note that windows returned initially may be shorter., _: ms
+        """
+        return self.register(JD_TIMESERIES_AGGREGATOR_REG_CONTINUOUS_WINDOW).value()
+
+    @continuous_window.setter
+    def continuous_window(self, value: int) -> None:
+        self.register(JD_TIMESERIES_AGGREGATOR_REG_CONTINUOUS_WINDOW).set_values(value)
+
+
+    @property
+    def discrete_window(self) -> Optional[int]:
+        """
+        Window applied to automatically created discrete timeseries., _: ms
+        """
+        return self.register(JD_TIMESERIES_AGGREGATOR_REG_DISCRETE_WINDOW).value()
+
+    @discrete_window.setter
+    def discrete_window(self, value: int) -> None:
+        self.register(JD_TIMESERIES_AGGREGATOR_REG_DISCRETE_WINDOW).set_values(value)
+
 
 
     def clear(self, ) -> None:
@@ -33,19 +71,15 @@ class TimeseriesAggregatorClient(Client):
         """
         self.send_cmd_packed(JD_TIMESERIES_AGGREGATOR_CMD_CLEAR, )
 
-    def start_timeseries(self, id: int, service_class: int, sensor_id: bytes, service_number: int, mode: TimeseriesAggregatorDataMode, label: str) -> None:
+    def start_timeseries(self, id: int, mode: TimeseriesAggregatorDataMode, label: str) -> None:
         """
         Starts a new timeseries.
-        `service_number` is the number of services with the same `service_class`
-        and lower service index on `sensor_id`.
-        If `sensor_id` or `service_class` are unknown they can be `0`.
-        If label is missing, it can be empty string.
         As for `mode`,
         `Continuous` has default aggregation window of 60s,
         and `Discrete` only stores the data if it has changed since last store,
         and has default window of 1s.
         """
-        self.send_cmd_packed(JD_TIMESERIES_AGGREGATOR_CMD_START_TIMESERIES, id, service_class, sensor_id, service_number, mode, label)
+        self.send_cmd_packed(JD_TIMESERIES_AGGREGATOR_CMD_START_TIMESERIES, id, mode, label)
 
     def update(self, value: float, id: int) -> None:
         """

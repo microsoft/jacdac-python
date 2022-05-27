@@ -10,7 +10,7 @@ class TimeseriesAggregatorClient(Client):
      * and sending them to a cloud/storage service.
      * Used in Jacscript.
      * 
-     * Note that `f64` values following a label are not necessarily aligned.
+     * Note that `f64` values are not necessarily aligned.
     Implements a client for the `Timeseries Aggregator <https://microsoft.github.io/jacdac-docs/services/timeseriesaggregator>`_ service.
 
     """
@@ -22,7 +22,7 @@ class TimeseriesAggregatorClient(Client):
     @property
     def now(self) -> Optional[int]:
         """
-        This register is automatically broadcast and can be also queried to establish local time on the device., _: us
+        This can queried to establish local time on the device., _: us
         """
         return self.register(JD_TIMESERIES_AGGREGATOR_REG_NOW).value()
 
@@ -30,7 +30,7 @@ class TimeseriesAggregatorClient(Client):
     def fast_start(self) -> Optional[bool]:
         """
         When `true`, the windows will be shorter after service reset and gradually extend to requested length.
-        This makes the sensor look more responsive., 
+        This is ensure valid data is being streamed in program development., 
         """
         return self.register(JD_TIMESERIES_AGGREGATOR_REG_FAST_START).bool_value()
 
@@ -40,28 +40,54 @@ class TimeseriesAggregatorClient(Client):
 
 
     @property
-    def continuous_window(self) -> Optional[int]:
+    def default_window(self) -> Optional[int]:
         """
-        Window applied to automatically created continuous timeseries.
-        Note that windows returned initially may be shorter., _: ms
+        Window for timeseries for which `set_window` was never called.
+        Note that windows returned initially may be shorter if `fast_start` is enabled., _: ms
         """
-        return self.register(JD_TIMESERIES_AGGREGATOR_REG_CONTINUOUS_WINDOW).value()
+        return self.register(JD_TIMESERIES_AGGREGATOR_REG_DEFAULT_WINDOW).value()
 
-    @continuous_window.setter
-    def continuous_window(self, value: int) -> None:
-        self.register(JD_TIMESERIES_AGGREGATOR_REG_CONTINUOUS_WINDOW).set_values(value)
+    @default_window.setter
+    def default_window(self, value: int) -> None:
+        self.register(JD_TIMESERIES_AGGREGATOR_REG_DEFAULT_WINDOW).set_values(value)
 
 
     @property
-    def discrete_window(self) -> Optional[int]:
+    def default_upload(self) -> Optional[bool]:
         """
-        Window applied to automatically created discrete timeseries., _: ms
+        Whether labelled timeseries for which `set_upload` was never called should be automatically uploaded., 
         """
-        return self.register(JD_TIMESERIES_AGGREGATOR_REG_DISCRETE_WINDOW).value()
+        return self.register(JD_TIMESERIES_AGGREGATOR_REG_DEFAULT_UPLOAD).bool_value()
 
-    @discrete_window.setter
-    def discrete_window(self, value: int) -> None:
-        self.register(JD_TIMESERIES_AGGREGATOR_REG_DISCRETE_WINDOW).set_values(value)
+    @default_upload.setter
+    def default_upload(self, value: bool) -> None:
+        self.register(JD_TIMESERIES_AGGREGATOR_REG_DEFAULT_UPLOAD).set_values(value)
+
+
+    @property
+    def upload_unlabelled(self) -> Optional[bool]:
+        """
+        Whether automatically created timeseries not bound in role manager should be uploaded., 
+        """
+        return self.register(JD_TIMESERIES_AGGREGATOR_REG_UPLOAD_UNLABELLED).bool_value()
+
+    @upload_unlabelled.setter
+    def upload_unlabelled(self, value: bool) -> None:
+        self.register(JD_TIMESERIES_AGGREGATOR_REG_UPLOAD_UNLABELLED).set_values(value)
+
+
+    @property
+    def sensor_watchdog_period(self) -> Optional[int]:
+        """
+        If no data is received from any sensor within given period, the device is rebooted.
+        Set to `0` to disable (default).
+        Updating user-provided timeseries does not reset the watchdog., _: ms
+        """
+        return self.register(JD_TIMESERIES_AGGREGATOR_REG_SENSOR_WATCHDOG_PERIOD).value()
+
+    @sensor_watchdog_period.setter
+    def sensor_watchdog_period(self, value: int) -> None:
+        self.register(JD_TIMESERIES_AGGREGATOR_REG_SENSOR_WATCHDOG_PERIOD).set_values(value)
 
 
 
@@ -71,25 +97,23 @@ class TimeseriesAggregatorClient(Client):
         """
         self.send_cmd_packed(JD_TIMESERIES_AGGREGATOR_CMD_CLEAR, )
 
-    def start_timeseries(self, id: int, mode: TimeseriesAggregatorDataMode, label: str) -> None:
-        """
-        Starts a new timeseries.
-        As for `mode`,
-        `Continuous` has default aggregation window of 60s,
-        and `Discrete` only stores the data if it has changed since last store,
-        and has default window of 1s.
-        """
-        self.send_cmd_packed(JD_TIMESERIES_AGGREGATOR_CMD_START_TIMESERIES, id, mode, label)
-
-    def update(self, value: float, id: int) -> None:
+    def update(self, value: float, label: str) -> None:
         """
         Add a data point to a timeseries.
         """
-        self.send_cmd_packed(JD_TIMESERIES_AGGREGATOR_CMD_UPDATE, value, id)
+        self.send_cmd_packed(JD_TIMESERIES_AGGREGATOR_CMD_UPDATE, value, label)
 
-    def set_window(self, id: int, duration: int) -> None:
+    def set_window(self, duration: int, label: str) -> None:
         """
         Set aggregation window.
+        Setting to `0` will restore default.
         """
-        self.send_cmd_packed(JD_TIMESERIES_AGGREGATOR_CMD_SET_WINDOW, id, duration)
+        self.send_cmd_packed(JD_TIMESERIES_AGGREGATOR_CMD_SET_WINDOW, duration, label)
+
+    def set_upload(self, upload: bool, label: str) -> None:
+        """
+        Set whether or not the timeseries will be uploaded to the cloud.
+        The `stored` reports are generated regardless.
+        """
+        self.send_cmd_packed(JD_TIMESERIES_AGGREGATOR_CMD_SET_UPLOAD, upload, label)
     

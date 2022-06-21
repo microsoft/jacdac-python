@@ -1,18 +1,18 @@
 import threading
 from typing import Optional
-from websocket import WebSocketApp # pyright: ignore
+import websocket
 from jacdac.bus import Transport
 
 
 class WebSocketTransport(Transport):
     def __init__(self, url: str):
         self.url = url
-        self.ws: Optional[WebSocketApp] = None
+        self.ws: Optional[websocket.WebSocketApp] = None
         self.opened = False
         self.open()
 
     def open(self) -> None:
-        self.ws = WebSocketApp(self.url,
+        self.ws = websocket.WebSocketApp(self.url,
                                on_open=self.on_open,
                                on_message=self.on_message,
                                on_error=self.on_error,

@@ -17,7 +17,6 @@ class LedClient(BufferClient):
     def __init__(self, bus: Bus, role: str) -> None:
         super().__init__(bus, JD_SERVICE_CLASS_LED, JD_LED_PACK_FORMATS, role)
 
-
     @property
     def pixels(self) -> Optional[bytes]:
         """
@@ -29,7 +28,10 @@ class LedClient(BufferClient):
 
     @pixels.setter
     def pixels(self, value: bytes) -> None:
-        self.value
+        if value is None:
+            self.value = bytearray(0)
+        else:
+            self.value = bytearray(value)
 
     @property
     def brightness(self) -> Optional[float]:
@@ -42,7 +44,6 @@ class LedClient(BufferClient):
     @brightness.setter
     def brightness(self, value: float) -> None:
         self.register(JD_LED_REG_BRIGHTNESS).set_values(value / 100)
-
 
     @property
     def actual_brightness(self) -> Optional[float]:
@@ -77,7 +78,6 @@ class LedClient(BufferClient):
     @max_power.setter
     def max_power(self, value: int) -> None:
         self.register(JD_LED_REG_MAX_POWER).set_values(value)
-
 
     @property
     def leds_per_pixel(self) -> Optional[int]:
@@ -122,18 +122,17 @@ class LedClient(BufferClient):
         self._sync()
         self.refresh_value()
 
-
     def set_all(self, rgb: int):
         """
         Sets all the colors to particular color
         """
         self._sync()
-        r= (rgb >> 16) & 0xff
+        r = (rgb >> 16) & 0xff
         g = (rgb >> 8) & 0xff
         b = (rgb >> 0) & 0xff
         buf = self.value
         dirty = self.dirty
-        for i in range(0,len(buf),3):
+        for i in range(0, len(buf), 3):
             dirty = dirty or buf[i] != r or buf[i + 1] != g or buf[i + 2] != b
             buf[i] = r
             buf[i + 1] = g
@@ -141,5 +140,3 @@ class LedClient(BufferClient):
         if dirty:
             self.set_dirty()
         self.show()
-
-    

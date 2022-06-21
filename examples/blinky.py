@@ -9,7 +9,6 @@ if __name__ == '__main__':
         led.brightness = 0.5
         # fade between colors
         while True:
-            print("blink")
             # blue
             led.set_all(0xff0000)
             sleep(1)

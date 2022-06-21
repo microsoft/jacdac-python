@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v0.2.3 (2022-06-21)
+### Fix
+* Use pyright action ([`3096cfb`](https://github.com/microsoft/jacdac-python/commit/3096cfb01ad713cac8b1a1cfe161256f3d3a90a2))
+
 ## v0.2.2 (2022-03-26)
 ### Fix
 * Rename barometer to air-pressure ([`396be28`](https://github.com/microsoft/jacdac-python/commit/396be289aa22c9ef94810e0b679293a347554a6c))

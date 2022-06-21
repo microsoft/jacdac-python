@@ -16,7 +16,7 @@ def create_playsound() -> Callable[[str], None]:
 
 
 def create_pygame_mixer() -> Callable[[str], None]:
-    from pygame import mixer
+    from pygame import mixer # pyright: ignore
     mixer.init()
 
     def play(f: str):

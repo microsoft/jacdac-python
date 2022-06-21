@@ -1784,3 +1784,53 @@ class Device(EventEmitter):
                 # log(`handle pkt at ${client.role} rep=${pkt.serviceCommand}`)
                 c.device = self
                 c.handle_packet_outer(pkt)
+
+class BufferClient(Client):
+    _value: bytes
+    _dirty: bool
+
+    """
+    A client that handles a double-buffer bytes buffer
+    """
+    def __init__(self, bus: Bus, service_class: int, pack_formats: Dict[int, str], role: str) -> None:
+        super().__init__(bus, service_class, pack_formats, role)
+
+        self._value = bytearray(0)
+        self._dirty = False
+    
+    @property
+    def value(self) -> bytes:
+        """
+        Cached reading value
+        """
+        return self._value
+
+    @value.setter
+    def value(self, v: bytes) -> None:
+        # TODO: check for equality
+        self._value = v or bytearray(0)
+        self._dirty = True
+        # TODO: debounce
+        self.refresh_value()
+
+    @property
+    def dirty(self) -> bool:
+        return self._dirty
+    
+    @dirty.setter
+    def set_dirty(self) -> None:
+        self._dirty = True
+    
+    def refresh_value(self) -> None:
+        self.register(JD_REG_VALUE).set_values(self._value)
+        self._dirty = False
+
+    def update_value_length(self, length: Optional[int]) -> None:
+        l = len(self._value)
+        if (not length is None) and l != length:
+            # harmonize lengths
+            if length > l:
+                v = self._value + bytearray(length - l)
+            else:
+                v = self._value[0:length -1]
+

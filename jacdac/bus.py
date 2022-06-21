@@ -1679,7 +1679,7 @@ class Device(EventEmitter):
 
     @ property
     def is_connected(self):
-        return len(self.clients) == 0
+        return len(self.clients) != 0
 
     @ property
     def short_id(self):

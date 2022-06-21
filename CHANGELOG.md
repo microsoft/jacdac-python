@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v0.2.4 (2022-06-21)
+### Fix
+* Use cfg for spi settings ([`f29fd4b`](https://github.com/microsoft/jacdac-python/commit/f29fd4b5405951dc5a36fe8ce7515b535b31a6b4))
+
 ## v0.2.3 (2022-06-21)
 ### Fix
 * Use pyright action ([`3096cfb`](https://github.com/microsoft/jacdac-python/commit/3096cfb01ad713cac8b1a1cfe161256f3d3a90a2))

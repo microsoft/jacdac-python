@@ -55,6 +55,8 @@ Create the library bundle
 python -m build
 ```
 
+The build system uses [Angular commit syntax](https://github.com/angular/angular.js/blob/master/DEVELOPERS.md#commits) to automatically generate releases.
+
 ### Devtools
 
 The devtools script allows to run a Jacdac dashboard connected through a websocket. This allows

@@ -1,7 +1,6 @@
 {
     "python.analysis.diagnosticMode": "workspace",
     "python.analysis.typeCheckingMode": "basic",
-    "restructuredtext.confPath": "${workspaceFolder}/docs",
     "python.linting.enabled": false,
     "python.linting.pylintEnabled": false,
     "python.linting.pycodestyleEnabled": true

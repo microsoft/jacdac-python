@@ -30,14 +30,6 @@ class SwitchClient(SensorClient):
         """
         return self.register(JD_SWITCH_REG_VARIANT).value()
 
-    @property
-    def auto_off_delay(self) -> Optional[float]:
-        """
-        (Optional) Specifies the delay without activity to automatically turn off after turning on.
-        For example, some light switches in staircases have such a capability., _: s
-        """
-        return self.register(JD_SWITCH_REG_AUTO_OFF_DELAY).value()
-
     def on_on(self, handler: EventHandlerFn) -> UnsubscribeFn:
         """
         Emitted when switch goes from `off` to `on`.

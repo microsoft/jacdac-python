@@ -2,6 +2,14 @@
 
 <!--next-version-placeholder-->
 
+## v0.2.2 (2022-03-26)
+### Fix
+* Rename barometer to air-pressure ([`396be28`](https://github.com/microsoft/jacdac-python/commit/396be289aa22c9ef94810e0b679293a347554a6c))
+
+## v0.2.1 (2022-03-10)
+### Fix
+* Devtools broadcasting ([`8ccbb15`](https://github.com/microsoft/jacdac-python/commit/8ccbb15fd654fa36bff6ae69a9cbd45e0e7f9427))
+
 ## v0.2.0 (2022-01-10)
 ### Feature
 * Add devtools ([`7ace992`](https://github.com/microsoft/jacdac-python/commit/7ace99286a7f695adec441ac607a1120fb6ad0b2))

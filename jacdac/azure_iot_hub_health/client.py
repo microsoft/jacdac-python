@@ -36,6 +36,33 @@ class AzureIotHubHealthClient(Client):
         """
         return self.register(JD_AZURE_IOT_HUB_HEALTH_REG_CONNECTION_STATUS).value()
 
+    @property
+    def push_period(self) -> Optional[int]:
+        """
+        How often to push data to the cloud., _: ms
+        """
+        return self.register(JD_AZURE_IOT_HUB_HEALTH_REG_PUSH_PERIOD).value()
+
+    @push_period.setter
+    def push_period(self, value: int) -> None:
+        self.register(JD_AZURE_IOT_HUB_HEALTH_REG_PUSH_PERIOD).set_values(value)
+
+
+    @property
+    def push_watchdog_period(self) -> Optional[int]:
+        """
+        If no message is published within given period, the device resets.
+        This can be due to connectivity problems or due to the device having nothing to publish.
+        Forced to be at least `2 * flush_period`.
+        Set to `0` to disable (default)., _: ms
+        """
+        return self.register(JD_AZURE_IOT_HUB_HEALTH_REG_PUSH_WATCHDOG_PERIOD).value()
+
+    @push_watchdog_period.setter
+    def push_watchdog_period(self, value: int) -> None:
+        self.register(JD_AZURE_IOT_HUB_HEALTH_REG_PUSH_WATCHDOG_PERIOD).set_values(value)
+
+
     def on_connection_status_change(self, handler: EventHandlerFn) -> UnsubscribeFn:
         """
         Raised when the connection status changes
@@ -48,16 +75,4 @@ class AzureIotHubHealthClient(Client):
         """
         return self.on_event(JD_AZURE_IOT_HUB_HEALTH_EV_MESSAGE_SENT, handler)
 
-
-    def connect(self, ) -> None:
-        """
-        Starts a connection to the IoT hub service
-        """
-        self.send_cmd_packed(JD_AZURE_IOT_HUB_HEALTH_CMD_CONNECT, )
-
-    def disconnect(self, ) -> None:
-        """
-        Starts disconnecting from the IoT hub service
-        """
-        self.send_cmd_packed(JD_AZURE_IOT_HUB_HEALTH_CMD_DISCONNECT, )
     

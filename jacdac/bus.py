@@ -6,6 +6,7 @@ import asyncio
 import queue
 import os
 import time
+import sys
 
 from functools import reduce
 from random import getrandbits, randrange
@@ -274,6 +275,7 @@ class Bus(EventEmitter):
 
         self.self_device = Device(self, device_id, bytearray(4))
         self.process_thread = threading.Thread(target=self._process_task)
+        self.process_thread.daemon = True
         self.transports: List[Transport] = transports or []
         if not disable_dev_tools:
             from .transports.ws import WebSocketTransport
@@ -300,13 +302,14 @@ class Bus(EventEmitter):
         self.loop.set_exception_handler(handler)  # type: ignore
 
         self.sender_thread = threading.Thread(target=self._sender)
+        self.sender_thread.daemon = True
         self.sender_thread.start()
 
         # self.taskq.recurring(2000, self.debug_dump)
 
         self.process_thread.start()
 
-        self.log("starting bus, self={}", self.self_device)
+        print("starting jacdac, self device {}".format(self.self_device))
 
     def run(self, cb: Callable[..., None], *args: Any):
         if self.process_thread is threading.current_thread():
@@ -388,7 +391,7 @@ class Bus(EventEmitter):
                 # log("PKT: {}-{} / {}", ptr, len(frame), pktbytes.hex())
                 pkt = JDPacket(frombytes=pktbytes, sender=sender)
                 if ptr > 12:
-                    pkt.requires_ack = False
+                    pkt.requires_ack = False # only ack once
                 self.process_packet(pkt)
                 # dispatch to other transports
                 self._queue_core(pkt)
@@ -1064,10 +1067,9 @@ class ControlServer(Server):
                 self.send_report(JDPacket.packed(
                     JD_GET(JD_CONTROL_REG_PRODUCT_IDENTIFIER), "s", self.bus.firmware_version))
             elif reg_code == JD_CONTROL_REG_DEVICE_DESCRIPTION:
-                uname = os.uname()
-                descr = "{}, {}, {}, {}, jacdac {}".format(
+                descr = "{}, {}, {}, jacdac {}".format(
                     self.bus.device_description or "",
-                    uname.nodename, uname.sysname, uname.release, JD_VERSION)
+                    os.name, sys.platform, JD_VERSION)
                 self.send_report(JDPacket.packed(
                     JD_GET(JD_CONTROL_REG_DEVICE_DESCRIPTION), "s", descr))
             else:
@@ -1104,7 +1106,8 @@ class LoggerServer(Server):
         return super().handle_packet(pkt)
 
     def report(self, priority: int, msg: str, *args: object):
-        log(msg, *args)
+        if priority >= self.min_priority:
+            log(msg, *args)
         cmd: int = -1
         if priority == LoggerPriority.DEBUG:
             cmd = JD_LOGGER_CMD_DEBUG
@@ -1692,7 +1695,7 @@ class Device(EventEmitter):
         return util.short_id(self.device_id)
 
     def __str__(self) -> str:
-        return "<JDDevice {}>".format(self.short_id)
+        return self.short_id
 
     def debug_info(self):
         r = "Device: " + self.short_id + "; "

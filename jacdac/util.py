@@ -15,14 +15,14 @@ def log(msg: str, *args: object):
     if logging:
         if len(args):
             msg = msg.format(*args)
-        print("JD: " + msg)
+        print(msg)
 
 
 def logv(msg: str, *args: object):
     if loggingv:
         if len(args):
             msg = msg.format(*args)
-        print("JD: " + msg)
+        print(msg)
 
 
 def hex_num(n: int, len: int = 8):

@@ -2,28 +2,37 @@
 from enum import IntEnum
 from jacdac.constants import *
 from jacdac.system.constants import *
-JD_SERVICE_CLASS_LED = const(0x1e3048f8)
+JD_SERVICE_CLASS_LED = const(0x1609d4f0)
+JD_MAX_PIXELS_LENGTH = const(0x40)
+
 
 
 class LedVariant(IntEnum):
-    THROUGH_HOLE = const(0x1)
-    SMD = const(0x2)
-    POWER = const(0x3)
-    BEAD = const(0x4)
+    STRIP = const(0x1)
+    RING = const(0x2)
+    STICK = const(0x3)
+    JEWEL = const(0x4)
+    MATRIX = const(0x5)
 
 
-JD_LED_CMD_ANIMATE = const(0x80)
-JD_LED_REG_COLOR = const(0x180)
+JD_LED_REG_PIXELS = const(JD_REG_VALUE)
+JD_LED_REG_BRIGHTNESS = const(JD_REG_INTENSITY)
+JD_LED_REG_ACTUAL_BRIGHTNESS = const(0x180)
+JD_LED_REG_NUM_PIXELS = const(0x182)
+JD_LED_REG_NUM_COLUMNS = const(0x183)
 JD_LED_REG_MAX_POWER = const(JD_REG_MAX_POWER)
-JD_LED_REG_LED_COUNT = const(0x183)
-JD_LED_REG_WAVE_LENGTH = const(0x181)
-JD_LED_REG_LUMINOUS_INTENSITY = const(0x182)
+JD_LED_REG_LEDS_PER_PIXEL = const(0x184)
+JD_LED_REG_WAVE_LENGTH = const(0x185)
+JD_LED_REG_LUMINOUS_INTENSITY = const(0x186)
 JD_LED_REG_VARIANT = const(JD_REG_VARIANT)
 JD_LED_PACK_FORMATS = {
-    JD_LED_CMD_ANIMATE: "u8 u8 u8 u8",
-    JD_LED_REG_COLOR: "u8 u8 u8",
+    JD_LED_REG_PIXELS: "b",
+    JD_LED_REG_BRIGHTNESS: "u0.8",
+    JD_LED_REG_ACTUAL_BRIGHTNESS: "u0.8",
+    JD_LED_REG_NUM_PIXELS: "u16",
+    JD_LED_REG_NUM_COLUMNS: "u16",
     JD_LED_REG_MAX_POWER: "u16",
-    JD_LED_REG_LED_COUNT: "u16",
+    JD_LED_REG_LEDS_PER_PIXEL: "u16",
     JD_LED_REG_WAVE_LENGTH: "u16",
     JD_LED_REG_LUMINOUS_INTENSITY: "u16",
     JD_LED_REG_VARIANT: "u8"

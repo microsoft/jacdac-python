@@ -19,17 +19,19 @@ class SevenSegmentDisplayClient(Client):
     def digits(self) -> Optional[bytes]:
         """
         Each byte encodes the display status of a digit using,
-        where bit 0 encodes segment `A`, bit 1 encodes segments `B`, ..., bit 6 encodes segments `G`, and bit 7 encodes the decimal point (if present).
+        where lowest bit 0 encodes segment `A`, bit 1 encodes segments `B`, ..., bit 6 encodes segments `G`, and bit 7 encodes the decimal point (if present).
         If incoming `digits` data is smaller than `digit_count`, the remaining digits will be cleared.
         Thus, sending an empty `digits` payload clears the screen.
         
         ```text
+        GFEDCBA DP
          - A -
-         G   B
+         F   B
          |   |
-         - F -
-         |   |   -
-         E   C  |DP|
+         - G -
+         |   |
+         E   C   _
+         |   |  |DP|
          - D -   -
         ```, 
         """
@@ -43,7 +45,7 @@ class SevenSegmentDisplayClient(Client):
     @property
     def brightness(self) -> Optional[float]:
         """
-        Controls the brightness of the LEDs. `0` means off., _: /
+        (Optional) Controls the brightness of the LEDs. `0` means off., _: /
         """
         return self.register(JD_SEVEN_SEGMENT_DISPLAY_REG_BRIGHTNESS).float_value(100)
 
@@ -75,7 +77,7 @@ class SevenSegmentDisplayClient(Client):
     @property
     def decimal_point(self) -> Optional[bool]:
         """
-        True if decimal points are available (on all digits)., 
+        (Optional) True if decimal points are available (on all digits)., 
         """
         return self.register(JD_SEVEN_SEGMENT_DISPLAY_REG_DECIMAL_POINT).bool_value()
 
@@ -83,13 +85,6 @@ class SevenSegmentDisplayClient(Client):
     def set_number(self, value: float) -> None:
         """
         Shows the number on the screen using the decimal dot if available.
-        """
-        # TODO: implement client command
-        raise RuntimeError("client command not implemented")
-
-    def set_text(self, text: str) -> None:
-        """
-        Shows the text on the screen. The client may decide to scroll the text if too long.
         """
         # TODO: implement client command
         raise RuntimeError("client command not implemented")

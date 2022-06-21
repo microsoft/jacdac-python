@@ -7,15 +7,16 @@ from typing import Optional
 class ServoClient(SensorClient):
     """
     Servo is a small motor with arm that can be pointing at a specific direction.
+     * Typically a servo angle is between 0° and 180° where 90° is the middle resting position.
      * 
-     * The `min/max_angle/pulse` may be read-only if the servo is permanently affixed to its Jacdac controller.
+     * The `min_pulse/max_pulse` may be read-only if the servo is permanently affixed to its Jacdac controller.
     Implements a client for the `Servo <https://microsoft.github.io/jacdac-docs/services/servo>`_ service.
 
     """
 
-    def __init__(self, bus: Bus, role: str, *, missing_current_angle_value: float = None) -> None:
+    def __init__(self, bus: Bus, role: str, *, missing_actual_angle_value: float = None) -> None:
         super().__init__(bus, JD_SERVICE_CLASS_SERVO, JD_SERVO_PACK_FORMATS, role)
-        self.missing_current_angle_value = missing_current_angle_value
+        self.missing_actual_angle_value = missing_actual_angle_value
 
     @property
     def angle(self) -> Optional[float]:
@@ -57,14 +58,14 @@ class ServoClient(SensorClient):
     @property
     def min_angle(self) -> Optional[float]:
         """
-        Lowest angle that can be set., _: °
+        Lowest angle that can be set, typiclly 0 °., _: °
         """
         return self.register(JD_SERVO_REG_MIN_ANGLE).value()
 
     @property
     def min_pulse(self) -> Optional[int]:
         """
-        The length of pulse corresponding to lowest angle., _: us
+        (Optional) The length of pulse corresponding to lowest angle., _: us
         """
         return self.register(JD_SERVO_REG_MIN_PULSE).value()
 
@@ -76,14 +77,14 @@ class ServoClient(SensorClient):
     @property
     def max_angle(self) -> Optional[float]:
         """
-        Highest angle that can be set., _: °
+        Highest angle that can be set, typically 180°., _: °
         """
         return self.register(JD_SERVO_REG_MAX_ANGLE).value()
 
     @property
     def max_pulse(self) -> Optional[int]:
         """
-        The length of pulse corresponding to highest angle., _: us
+        (Optional) The length of pulse corresponding to highest angle., _: us
         """
         return self.register(JD_SERVO_REG_MAX_PULSE).value()
 
@@ -107,11 +108,11 @@ class ServoClient(SensorClient):
         return self.register(JD_SERVO_REG_RESPONSE_SPEED).value()
 
     @property
-    def current_angle(self) -> Optional[float]:
+    def actual_angle(self) -> Optional[float]:
         """
-        (Optional) The current physical position of the arm., _: °
+        (Optional) The current physical position of the arm, if the device has a way to sense the position., _: °
         """
         self.refresh_reading()
-        return self.register(JD_SERVO_REG_CURRENT_ANGLE).value(self.missing_current_angle_value)
+        return self.register(JD_SERVO_REG_ACTUAL_ANGLE).value(self.missing_actual_angle_value)
 
     

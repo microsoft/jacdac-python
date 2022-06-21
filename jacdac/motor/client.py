@@ -16,18 +16,18 @@ class MotorClient(Client):
 
 
     @property
-    def duty(self) -> Optional[float]:
+    def speed(self) -> Optional[float]:
         """
-        PWM duty cycle of the motor. Use negative/positive values to run the motor forwards and backwards.
-        Positive is recommended to be clockwise rotation and negative counterclockwise. A duty of ``0`` 
+        Relative speed of the motor. Use positive/negative values to run the motor forwards and backwards.
+        Positive is recommended to be clockwise rotation and negative counterclockwise. A speed of ``0`` 
         while ``enabled`` acts as brake., _: /
         """
-        return self.register(JD_MOTOR_REG_DUTY).float_value(100)
+        return self.register(JD_MOTOR_REG_SPEED).float_value(100)
 
-    @duty.setter
-    def duty(self, value: float) -> None:
+    @speed.setter
+    def speed(self, value: float) -> None:
         self.enabled = True
-        self.register(JD_MOTOR_REG_DUTY).set_values(value / 100)
+        self.register(JD_MOTOR_REG_SPEED).set_values(value / 100)
 
 
     @property
@@ -50,11 +50,11 @@ class MotorClient(Client):
         return self.register(JD_MOTOR_REG_LOAD_TORQUE).value()
 
     @property
-    def load_speed(self) -> Optional[float]:
+    def load_rotation_speed(self) -> Optional[float]:
         """
         (Optional) Revolutions per minute of the motor under full load., _: rpm
         """
-        return self.register(JD_MOTOR_REG_LOAD_SPEED).value()
+        return self.register(JD_MOTOR_REG_LOAD_ROTATION_SPEED).value()
 
     @property
     def reversible(self) -> Optional[bool]:

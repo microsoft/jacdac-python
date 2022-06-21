@@ -12,7 +12,7 @@ class UvIndexClient(SensorClient):
     """
 
     def __init__(self, bus: Bus, role: str, *, missing_uv_index_value: float = None) -> None:
-        super().__init__(bus, JD_SERVICE_CLASS_UV_INDEX, JD_UV_INDEX_PACK_FORMATS, role)
+        super().__init__(bus, JD_SERVICE_CLASS_UV_INDEX, JD_UV_INDEX_PACK_FORMATS, role, preferred_interval = 1000)
         self.missing_uv_index_value = missing_uv_index_value
 
     @property

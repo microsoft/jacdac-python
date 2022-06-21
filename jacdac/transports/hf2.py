@@ -94,7 +94,7 @@ class HF2Transport(Transport):
         print("HF2: %s" % msg)
 
     def _error(self, msg: str):
-        self.log("Error: %s" % msg)
+        self.log("error: %s" % msg)
         raise HF2Error("HF2: %s" % msg)
 
     def _talk(self, cmd: int, data: bytes = b'') -> bytes:
@@ -134,6 +134,7 @@ class HF2Transport(Transport):
         self._cmd_seq = random.randint(0x1000, 0xffff)
         self._talk_lock = threading.Lock()
         self._reader_thread = threading.Thread(target=self._read_loop)
+        self._reader_thread.daemon = True
         self._reader_thread.start()
         self._connect()
 

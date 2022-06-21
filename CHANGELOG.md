@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v0.2.6 (2022-06-21)
+### Fix
+* Add set_all in led client, updated exmpales ([#10](https://github.com/microsoft/jacdac-python/issues/10)) ([`301de2d`](https://github.com/microsoft/jacdac-python/commit/301de2d9ed047fffd6056e0f733c452fce1e299a))
+
 ## v0.2.5 (2022-06-21)
 ### Fix
 * Fix typing error ([`68a01bf`](https://github.com/microsoft/jacdac-python/commit/68a01bf0bd1885a909f6bb58215b1930cd331fe4))

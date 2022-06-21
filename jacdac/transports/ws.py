@@ -1,6 +1,7 @@
+# pyright: reportGeneralTypeIssues=false
 import threading
 from typing import Optional
-import websocket
+import websocket # type: ignore
 from jacdac.bus import Transport
 
 

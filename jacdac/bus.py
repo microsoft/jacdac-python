@@ -199,20 +199,21 @@ class Bus(EventEmitter):
     """A Jacdac bus that managed devices, service client, registers."""
 
     def __init__(self, *,
-                 transports: Union[List[Transport], None] = None,
-                 device_id: Union[str, None] = None,
-                 product_identifier: Union[int, None] = None,
-                 firmware_version: Union[str, None] = None,
-                 device_description: Union[str, None] = None,
+                 transports: Optional[List[Transport]] = None,
+                 device_id: Optional[str] = None,
+                 product_identifier: Optional[int] = None,
+                 firmware_version: Optional[str] = None,
+                 device_description: Optional[str] = None,
                  disable_logger: bool = False,
                  disable_role_manager: bool = False,
                  disable_settings: bool = False,
                  disable_brain: bool = False,
                  disable_dev_tools: bool = False,
-                 hf2_portname: Union[str, None] = None,
-                 transport_cmd: Union[str, None] = None,
-                 default_logger_min_priority: Union[int, None] = None,
-                 storage_dir: Union[str, None] = None
+                 spi: bool = False,
+                 hf2_portname: Optional[str] = None,
+                 transport_cmd: Optional[str] = None,
+                 default_logger_min_priority: Optional[int] = None,
+                 storage_dir: Optional[str] = None
                  ) -> None:
         """Creates a new Jacdac bus.
 
@@ -232,6 +233,7 @@ class Bus(EventEmitter):
             disable_dev_tools (bool, optional): Do not try to connect to developer tools server.
             hf2_portname (str, optional): port name exposing HF2 packets.
             transport_cmd (str, optional): name of executable to run as a transport.
+            spi (bool, optional): use SPI for transport.
         """
         super().__init__(self)
 
@@ -285,7 +287,10 @@ class Bus(EventEmitter):
             self.transports.append(ExecTransport(self.transport_cmd))
         if self.hf2_portname:
             from .transports.hf2 import HF2Transport
-            self.transports.append(HF2Transport(self.hf2_portname))
+            self.transports.append(HF2Transport(self.hf2_portname))        
+        if spi:
+            from .transports.spi import SpiTransport
+            self.transports.append(SpiTransport())
 
         self._sendq: queue.Queue[Tuple[Transport, bytes]] = queue.Queue()
         self.pending_tasks: List[asyncio.Task[None]] = []

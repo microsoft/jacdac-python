@@ -1,6 +1,7 @@
+# pyright: reportGeneralTypeIssues=false
 import threading
 from typing import Optional
-import websocket
+import websocket # type: ignore
 from jacdac.bus import Transport
 
 
@@ -25,17 +26,17 @@ class WebSocketTransport(Transport):
         if self.opened:
             self.ws.send(pkt, opcode=2)  # type: ignore
 
-    def on_message(self, ws: WebSocketApp, message: bytes):
+    def on_message(self, ws: Any, message: bytes): # type: ignore
         if self.on_receive:
             self.on_receive(message)
 
-    def on_error(self, ws: WebSocketApp, error: str):
+    def on_error(self, ws: Any, error: str): # type: ignore
         if self.opened:
             print(error)
 
-    def on_close(self, ws: WebSocketApp, close_status_code: int, close_msg: str):
+    def on_close(self, ws: Any, close_status_code: int, close_msg: str): # type: ignore
         self.opened = False
 
-    def on_open(self, ws: WebSocketApp):
+    def on_open(self, ws: Any): # type: ignore
         print("devtools server connected at " + self.url)
         self.opened = True

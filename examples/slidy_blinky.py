@@ -12,9 +12,8 @@ if __name__ == '__main__':
         # fade between colors
         while True:
             position = slider.position or 0.
-            brightness = position / 100.
             # change brightness
-            led.brightness = brightness
+            led.brightness = position
             sleep(1)
 
     main()

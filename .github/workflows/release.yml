@@ -16,8 +16,7 @@ jobs:
               name: Python 3.7 installation
             - name: install requirements
               run: pip install -r requirements.txt
-            - name: pyright
-              run: npx pyright
+            - uses: jakebailey/pyright-action@v1
             - name: Publish semantic release 📦 to PyPI
               if: ${{ github.ref == 'refs/heads/main' }}
               uses: relekang/python-semantic-release@master

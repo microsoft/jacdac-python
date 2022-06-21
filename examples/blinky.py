@@ -1,21 +1,20 @@
 from jacdac import Bus
 from jacdac.led import LedClient
-from jacdac import LoggerPriority
 from time import sleep
 
 if __name__ == '__main__':
     def main():
         bus = Bus()
         led = LedClient(bus, "led")
-        speed = 0
-        brightness = 128
+        led.brightness = 0.5
         # fade between colors
         while True:
+            print("blink")
             # blue
-            led.animate(0, 0, brightness, speed)
+            led.set_all(0xff0000)
             sleep(1)
             # off
-            led.animate(brightness, 0, 0, speed)
+            led.set_all(0x000000)
             sleep(1)
 
     main()

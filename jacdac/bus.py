@@ -1786,7 +1786,7 @@ class Device(EventEmitter):
                 c.handle_packet_outer(pkt)
 
 class BufferClient(Client):
-    _value: bytes
+    _value: bytearray
     _dirty: bool
 
     """
@@ -1799,14 +1799,14 @@ class BufferClient(Client):
         self._dirty = False
     
     @property
-    def value(self) -> bytes:
+    def value(self) -> bytearray:
         """
         Cached reading value
         """
         return self._value
 
     @value.setter
-    def value(self, v: bytes) -> None:
+    def value(self, v: bytearray) -> None:
         # TODO: check for equality
         self._value = v or bytearray(0)
         self._dirty = True
@@ -1817,20 +1817,24 @@ class BufferClient(Client):
     def dirty(self) -> bool:
         return self._dirty
     
-    @dirty.setter
     def set_dirty(self) -> None:
         self._dirty = True
     
     def refresh_value(self) -> None:
-        self.register(JD_REG_VALUE).set_values(self._value)
-        self._dirty = False
+        if self._dirty:
+            print(self._value)
+            self.register(JD_REG_VALUE).set_values(self._value)
+            self._dirty = False
 
     def update_value_length(self, length: Optional[int]) -> None:
         l = len(self._value)
         if (not length is None) and l != length:
             # harmonize lengths
             if length > l:
-                v = self._value + bytearray(length - l)
+                self._value = self._value + bytearray(length - l)
+                self._dirty = True
             else:
-                v = self._value[0:length -1]
+                self._value = self._value[0:length -1]
+                self._dirty = True
+
 

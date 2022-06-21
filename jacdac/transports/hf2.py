@@ -128,7 +128,7 @@ class HF2Transport(Transport):
         self._talk(HF2_CMD_JDS_SEND, pkt)
 
     def __init__(self, portname: str) -> None:
-        import serial
+        import serial # pyright: ignore
         self.serial: serial.Serial = serial.Serial(portname, 4_000_000)
         self._msgs: queue.Queue[bytes] = queue.Queue()
         self._cmd_seq = random.randint(0x1000, 0xffff)

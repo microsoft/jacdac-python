@@ -1,6 +1,6 @@
 import threading
 from typing import Optional
-from websocket import WebSocketApp
+from websocket import WebSocketApp # pyright: ignore
 from jacdac.bus import Transport
 
 

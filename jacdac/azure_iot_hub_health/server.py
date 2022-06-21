@@ -1,7 +1,7 @@
 import asyncio
 from typing import Optional, Union, cast
-from azure.iot.device.aio import IoTHubDeviceClient
-from azure.iot.device import Message
+from azure.iot.device.aio import IoTHubDeviceClient # pyright: ignore
+from azure.iot.device import Message # pyright: ignore
 
 from jacdac.pack import jdpack
 

@@ -199,21 +199,21 @@ class Bus(EventEmitter):
     """A Jacdac bus that managed devices, service client, registers."""
 
     def __init__(self, *,
-                 transports: Union[List[Transport], None] = None,
-                 device_id: Union[str, None] = None,
-                 product_identifier: Union[int, None] = None,
-                 firmware_version: Union[str, None] = None,
-                 device_description: Union[str, None] = None,
+                 transports: Optional[List[Transport]] = None,
+                 device_id: Optional[str] = None,
+                 product_identifier: Optional[int] = None,
+                 firmware_version: Optional[str] = None,
+                 device_description: Optional[str] = None,
                  disable_logger: bool = False,
                  disable_role_manager: bool = False,
                  disable_settings: bool = False,
                  disable_brain: bool = False,
                  disable_dev_tools: bool = False,
                  spi: bool = False,
-                 hf2_portname: Union[str, None] = None,
-                 transport_cmd: Union[str, None] = None,
-                 default_logger_min_priority: Union[int, None] = None,
-                 storage_dir: Union[str, None] = None
+                 hf2_portname: Optional[str] = None,
+                 transport_cmd: Optional[str] = None,
+                 default_logger_min_priority: Optional[int] = None,
+                 storage_dir: Optional[str] = None
                  ) -> None:
         """Creates a new Jacdac bus.
 

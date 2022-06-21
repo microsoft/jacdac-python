@@ -245,7 +245,6 @@ class Bus(EventEmitter):
         self.role_manager: Optional[RoleManagerServer] = None
         self.pipes: List['InPipe'] = []
         self._event_counter = 0
-        self.spi = spi
 
         # merge .ctor configuration with files
         config = ConfigParser()
@@ -289,7 +288,7 @@ class Bus(EventEmitter):
         if self.hf2_portname:
             from .transports.hf2 import HF2Transport
             self.transports.append(HF2Transport(self.hf2_portname))        
-        if self.spi:
+        if spi:
             from .transports.spi import SpiTransport
             self.transports.append(SpiTransport())
 

@@ -211,6 +211,7 @@ class Bus(EventEmitter):
                  disable_dev_tools: bool = False,
                  hf2_portname: str = None,
                  transport_cmd: str = None,
+                 spi: bool = False,
                  default_logger_min_priority: int = None,
                  storage_dir: str = None,
                  ) -> None:
@@ -232,6 +233,7 @@ class Bus(EventEmitter):
             disable_dev_tools (bool, optional): Do not try to connect to developer tools server.
             hf2_portname (str, optional): port name exposing HF2 packets.
             transport_cmd (str, optional): name of executable to run as a transport.
+            spi (bool, optional): use SPI for transport.
         """
         super().__init__(self)
 
@@ -285,11 +287,10 @@ class Bus(EventEmitter):
             self.transports.append(ExecTransport(self.transport_cmd))
         if self.hf2_portname:
             from .transports.hf2 import HF2Transport
-            self.transports.append(HF2Transport(self.hf2_portname))
-        
-        # todo: option
-        from .transports.spi import SpiTransport
-        self.transports.append(SpiTransport())
+            self.transports.append(HF2Transport(self.hf2_portname))        
+        if self.spi:
+            from .transports.spi import SpiTransport
+            self.transports.append(SpiTransport())
 
         self._sendq: queue.Queue[Tuple[Transport, bytes]] = queue.Queue()
         self.pending_tasks: List[asyncio.Task[None]] = []

@@ -274,12 +274,13 @@ class Bus(EventEmitter):
         self.storage_dir = storage_dir or cfg.get("storage_dir", "./.jacdac")
         self.hf2_portname = hf2_portname or cfg.get("hf2_portname")
         self.transport_cmd = transport_cmd or cfg.get("transport_cmd")
+        self.spi = spi or cfg.getboolean("spi", False)
 
         self.self_device = Device(self, device_id, bytearray(4))
         self.process_thread = threading.Thread(target=self._process_task)
         self.process_thread.daemon = True
         self.transports: List[Transport] = transports or []
-        if not disable_dev_tools:
+        if not self.disable_dev_tools:
             from .transports.ws import WebSocketTransport
             self.transports.append(WebSocketTransport(DEVTOOLS_SOCKET_URL))
         if self.transport_cmd:
@@ -288,7 +289,7 @@ class Bus(EventEmitter):
         if self.hf2_portname:
             from .transports.hf2 import HF2Transport
             self.transports.append(HF2Transport(self.hf2_portname))        
-        if spi:
+        if self.spi:
             from .transports.spi import SpiTransport
             self.transports.append(SpiTransport())
 

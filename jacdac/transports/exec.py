@@ -1,5 +1,5 @@
 import threading
-from jacdac.bus import Transport
+from jacdac.transport import Transport
 import subprocess
 
 from jacdac.util import buf2hex, hex2buf

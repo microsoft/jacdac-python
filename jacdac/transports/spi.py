@@ -2,7 +2,7 @@ import threading
 from typing import List, Optional
 from time import sleep
 from tokenize import Number
-from jacdac.bus import Transport
+from jacdac.transport import Transport
 from jacdac.util import buf2hex, hex2buf, now
 from gpiod import Chip, Line, LineBulk, LINE_REQ_EV_RISING_EDGE, LINE_REQ_FLAG_ACTIVE_LOW, LINE_REQ_DIR_OUT # type: ignore
 from spidev import SpiDev # type: ignore

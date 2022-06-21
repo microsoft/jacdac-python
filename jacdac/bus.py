@@ -22,6 +22,7 @@ from .system.constants import *
 from .role_manager.constants import *
 from .unique_brain.constants import *
 from .packet import *
+from .transport import Transport
 
 from .util import now, log, logv
 from .pack import PackTuple, PackType, jdpack, jdunpack
@@ -178,18 +179,6 @@ def _service_matches(dev: 'Device', serv: bytearray):
         if ds[i] != serv[i]:
             return False
     return True
-
-
-class Transport:
-    """A base class for packet transports"""
-
-    on_receive: Optional[Callable[[bytes], None]] = None
-    # Callback to report a received packet to the bus
-
-    def send(self, pkt: bytes) -> None:
-        # send a packet payload over the transport layer
-        pass
-
 
 def rand_u64():
     return bytearray([getrandbits(8) for _ in range(8)])
@@ -1690,7 +1679,7 @@ class Device(EventEmitter):
 
     @ property
     def is_connected(self):
-        return self.clients != None
+        return len(self.clients) != 0
 
     @ property
     def short_id(self):
@@ -1735,7 +1724,7 @@ class Device(EventEmitter):
         self.debug("destroy")
         for c in self.clients:
             c._detach()
-        self.clients = None  # type: ignore
+        self.clients = []
 
     def _log_report_prefix(self) -> str:
         return "{}>".format(self.short_id)
@@ -1784,3 +1773,57 @@ class Device(EventEmitter):
                 # log(`handle pkt at ${client.role} rep=${pkt.serviceCommand}`)
                 c.device = self
                 c.handle_packet_outer(pkt)
+
+class BufferClient(Client):
+    _value: bytearray
+    _dirty: bool
+
+    """
+    A client that handles a double-buffer bytes buffer
+    """
+    def __init__(self, bus: Bus, service_class: int, pack_formats: Dict[int, str], role: str) -> None:
+        super().__init__(bus, service_class, pack_formats, role)
+
+        self._value = bytearray(0)
+        self._dirty = False
+    
+    @property
+    def value(self) -> bytearray:
+        """
+        Cached reading value
+        """
+        return self._value
+
+    @value.setter
+    def value(self, v: bytearray) -> None:
+        # TODO: check for equality
+        self._value = v or bytearray(0)
+        self._dirty = True
+        # TODO: debounce
+        self.refresh_value()
+
+    @property
+    def dirty(self) -> bool:
+        return self._dirty
+    
+    def set_dirty(self) -> None:
+        self._dirty = True
+    
+    def refresh_value(self) -> None:
+        if self._dirty:
+            print(self._value)
+            self.register(JD_REG_VALUE).set_values(self._value)
+            self._dirty = False
+
+    def update_value_length(self, length: Optional[int]) -> None:
+        l = len(self._value)
+        if (not length is None) and l != length:
+            # harmonize lengths
+            if length > l:
+                self._value = self._value + bytearray(length - l)
+                self._dirty = True
+            else:
+                self._value = self._value[0:length -1]
+                self._dirty = True
+
+

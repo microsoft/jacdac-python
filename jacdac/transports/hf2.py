@@ -5,7 +5,7 @@ import random
 import struct
 from typing import List
 
-from jacdac.bus import Transport
+from jacdac.transport import Transport
 
 HF2_CMD_INFO = 0x0002
 HF2_CMD_DMESG = 0x0010

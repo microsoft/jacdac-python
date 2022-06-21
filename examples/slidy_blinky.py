@@ -8,17 +8,13 @@ if __name__ == '__main__':
         bus = Bus()
         led = LedClient(bus, "led")
         slider = PotentiometerClient(bus, "slider")
-        speed = 16
-        brightness = 128
+        led.set_all(0x0000ff)
         # fade between colors
         while True:
             position = slider.position or 0.
-            brightness = int(position / 100. * 255.)
-            # blue
-            led.animate(0, 0, brightness, speed)
-            sleep(1)
-            # off
-            led.animate(brightness, 0, 0, speed)
+            brightness = position / 100.
+            # change brightness
+            led.brightness = brightness
             sleep(1)
 
     main()

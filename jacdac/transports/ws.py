@@ -2,7 +2,7 @@
 import threading
 from typing import Optional
 import websocket # type: ignore
-from jacdac.bus import Transport
+from jacdac.transport import Transport
 
 
 class WebSocketTransport(Transport):

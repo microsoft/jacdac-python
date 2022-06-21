@@ -22,6 +22,7 @@ from .system.constants import *
 from .role_manager.constants import *
 from .unique_brain.constants import *
 from .packet import *
+from .transport import Transport
 
 from .util import now, log, logv
 from .pack import PackTuple, PackType, jdpack, jdunpack
@@ -178,18 +179,6 @@ def _service_matches(dev: 'Device', serv: bytearray):
         if ds[i] != serv[i]:
             return False
     return True
-
-
-class Transport:
-    """A base class for packet transports"""
-
-    on_receive: Optional[Callable[[bytes], None]] = None
-    # Callback to report a received packet to the bus
-
-    def send(self, pkt: bytes) -> None:
-        # send a packet payload over the transport layer
-        pass
-
 
 def rand_u64():
     return bytearray([getrandbits(8) for _ in range(8)])
@@ -1690,7 +1679,7 @@ class Device(EventEmitter):
 
     @ property
     def is_connected(self):
-        return self.clients != None
+        return len(self.clients) == 0
 
     @ property
     def short_id(self):
@@ -1735,7 +1724,7 @@ class Device(EventEmitter):
         self.debug("destroy")
         for c in self.clients:
             c._detach()
-        self.clients = None  # type: ignore
+        self.clients = []
 
     def _log_report_prefix(self) -> str:
         return "{}>".format(self.short_id)

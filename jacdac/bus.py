@@ -245,6 +245,7 @@ class Bus(EventEmitter):
         self.role_manager: Optional[RoleManagerServer] = None
         self.pipes: List['InPipe'] = []
         self._event_counter = 0
+        self.spi = spi
 
         # merge .ctor configuration with files
         config = ConfigParser()

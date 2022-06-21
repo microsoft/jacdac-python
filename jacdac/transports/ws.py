@@ -26,17 +26,17 @@ class WebSocketTransport(Transport):
         if self.opened:
             self.ws.send(pkt, opcode=2)  # type: ignore
 
-    def on_message(self, ws: Any, message: bytes): # type: ignore
+    def on_message(self, _, message: bytes):
         if self.on_receive:
             self.on_receive(message)
 
-    def on_error(self, ws: Any, error: str): # type: ignore
+    def on_error(self, _, error: str):
         if self.opened:
             print(error)
 
-    def on_close(self, ws: Any, close_status_code: int, close_msg: str): # type: ignore
+    def on_close(self, _, close_status_code: int, close_msg: str):
         self.opened = False
 
-    def on_open(self, ws: Any): # type: ignore
+    def on_open(self, _):
         print("devtools server connected at " + self.url)
         self.opened = True

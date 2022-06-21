@@ -21,5 +21,4 @@ jobs:
                   architecture: "x64" # optional x64 or x86. Defaults to x64 if not specified
             - name: install requirements
               run: pip install -r requirements.txt
-            - name: pyright
-              run: npx pyright
+            - uses: jakebailey/pyright-action@v1

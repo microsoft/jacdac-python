@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v0.2.5 (2022-06-21)
+### Fix
+* Fix typing error ([`68a01bf`](https://github.com/microsoft/jacdac-python/commit/68a01bf0bd1885a909f6bb58215b1930cd331fe4))
+
 ## v0.2.4 (2022-06-21)
 ### Fix
 * Use cfg for spi settings ([`f29fd4b`](https://github.com/microsoft/jacdac-python/commit/f29fd4b5405951dc5a36fe8ce7515b535b31a6b4))

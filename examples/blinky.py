@@ -1,4 +1,4 @@
-from jacdac import Bus
+from jacdac.bus import Bus
 from jacdac.led import LedClient
 from time import sleep
 
@@ -10,10 +10,10 @@ if __name__ == '__main__':
         # fade between colors
         while True:
             # blue
-            led.set_all(0xff0000)
+            led.set_all((255, 0, 0))
             sleep(1)
             # off
-            led.set_all(0x000000)
+            led.set_all((0,0,0))
             sleep(1)
 
     main()

@@ -1811,7 +1811,6 @@ class BufferClient(Client):
     
     def refresh_value(self) -> None:
         if self._dirty:
-            print(self._value)
             self.register(JD_REG_VALUE).set_values(self._value)
             self._dirty = False
 

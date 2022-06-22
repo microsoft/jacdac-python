@@ -23,5 +23,6 @@ if __name__ == '__main__':
 
     while True:
         print("pressed: ", btn1.pressed)
+        print("was pressed: ", btn1.was_pressed)
         print("pressure: ", btn1.pressure)
         sleep(1)

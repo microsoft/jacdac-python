@@ -5,6 +5,8 @@ from .client_base import ButtonClientBase
 
 
 class ButtonClient(ButtonClientBase):
+    _was_pressed = False
+
     """A push-button, which returns to inactive position when not operated anymore."""
 
     def __init__(self, bus: Bus, role: str) -> None:
@@ -22,11 +24,22 @@ class ButtonClient(ButtonClientBase):
         """
         return self._pressed
 
+    @property
+    def was_pressed(self) -> bool:
+        """
+        Determines if the button was pressed since the last time this function was called.
+        Calling this function resets the state.
+        """
+        r = self._was_pressed
+        self._was_pressed = False
+        return r
+
     def _on_event(self, pkt: JDPacket):
         code = pkt.event_code
         if (code == JD_BUTTON_EV_UP):
             self._pressed = False
         elif (code == JD_BUTTON_EV_DOWN):
             self._pressed = True
+            self._was_pressed = True
         elif code == JD_BUTTON_EV_HOLD:
             self._pressed = True

@@ -105,7 +105,11 @@ def crc16(buf: bytes, start: int = 0, end: int = None):
         crc = ((crc << 8) ^ (x << 12) ^ (x << 5) ^ x) & 0xffff
     return crc
 
+
 def color_to_rgb(rgb: Union[int, Tuple[int, int, int], List[int]], default = (0,0,0)) -> Tuple[int, int, int]:
+    """
+    Maps various format to a r,g,b tuple
+    """
     if rgb is None:
         return default
     elif type(rgb) == int:

@@ -125,7 +125,7 @@ class SpiTransport(Transport):
         txReady = tx != 0
         sendtx = txReady and len(self.sendQueue) > 0
 
-      #  print("spi: transfer rx:" + str(rx) + ", tx: " + str(tx) + ", queue: " + str(len(self.sendQueue)))
+        print("spi: transfer rx:" + str(rx) + ", tx: " + str(tx) + ", queue: " + str(len(self.sendQueue)))
 
         if not sendtx and not rxReady:
             return False
@@ -150,13 +150,13 @@ class SpiTransport(Transport):
         rxqueue = bytearray(0)
         if txq_ptr > 0:
             txqueue = bytearray(txqueue[0::txq_ptr])
-            print(str(now()) + " " + buf2hex(txqueue) + " send frame")
+            print("spi: " + str(now()) + " " + buf2hex(txqueue) + " send frame")
             rxqueue = bytearray(self.spi.xfer2(txqueue))
         elif rxReady:
             rxqueue = bytearray(self.spi.readbytes(XFER_SIZE))
         if rxReady:
             if rxqueue is None:
-                print("recv failed")
+                print("spi: recv failed")
                 return False
             #print(str(now()) + " " + buf2hex(rxqueue) + " recv frame")
             
@@ -175,7 +175,7 @@ class SpiTransport(Transport):
                 frame3 = rxqueue[framep + 3]
                 if frame0 == 0xff and frame1 == 0xff and frame3 == 0xff :
                     # skip bogus packet
-                    print("spi: skip bogus pkt")
+                    print("spi: skip bogus pkt", frame0, frame1, frame3)
                     pass
                 else:
                     buf = bytearray(rxqueue[framep:framep+sz])

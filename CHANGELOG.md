@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v0.2.7 (2022-06-22)
+### Fix
+* Support for tupples ([`e0afd4c`](https://github.com/microsoft/jacdac-python/commit/e0afd4c3737dd2545e613138ae3ceb6e337bbf27))
+
 ## v0.2.6 (2022-06-21)
 ### Fix
 * Add set_all in led client, updated exmpales ([#10](https://github.com/microsoft/jacdac-python/issues/10)) ([`301de2d`](https://github.com/microsoft/jacdac-python/commit/301de2d9ed047fffd6056e0f733c452fce1e299a))

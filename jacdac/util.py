@@ -1,6 +1,6 @@
 import binascii
 import time
-from typing import Union
+from typing import List, Tuple, Union, cast
 
 logging = True
 loggingv = False
@@ -104,3 +104,23 @@ def crc16(buf: bytes, start: int = 0, end: int = None):
         x ^= x >> 4
         crc = ((crc << 8) ^ (x << 12) ^ (x << 5) ^ x) & 0xffff
     return crc
+
+def color_to_rgb(rgb: Union[int, Tuple[int, int, int], List[int]], default = (0,0,0)) -> Tuple[int, int, int]:
+    if rgb is None:
+        return default
+    elif type(rgb) == int:
+        irgb = cast(int, rgb)
+        r = (irgb >> 16) & 0xff
+        g = (irgb >> 8) & 0xff
+        b = (irgb >> 0) & 0xff
+    elif type(rgb) == tuple:
+        trgb = cast(Tuple[int, int, int], rgb)
+        r = (trgb[0]) & 0xff
+        g = (trgb[1]) & 0xff
+        b = (trgb[2]) & 0xff
+    else:
+        lrgb = cast(List[int], rgb)
+        r = (lrgb[0]) & 0xff
+        g = (lrgb[1]) & 0xff
+        b = (lrgb[2]) & 0xff
+    return (r,g,b)

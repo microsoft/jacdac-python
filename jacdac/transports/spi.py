@@ -1,6 +1,6 @@
 import threading
 from typing import List, Optional
-from time import sleep
+from time import sleep, monotonic
 from tokenize import Number
 from jacdac.transport import Transport
 from jacdac.util import buf2hex, hex2buf, now
@@ -17,12 +17,20 @@ RPI_PIN_RST = 22
 CONSUMER = "jacdac"
 MAX_SEND_QUEUE_LEN = 10
 
+t0 = None
+def millis():
+    global t0
+    if t0 is None:
+        t0 = monotonic()
+    return round( (monotonic() - t0) * 1000 )
+
 class SpiTransport(Transport):
     def __init__(self):
         self.chip: Chip = None
         self.rxtx: LineBulk = None
         self.spi: SpiDev = None
         self.sendQueue: List[bytes] = []
+        self._poke_cond = threading.Condition()
 
         try:
             self._open()
@@ -36,7 +44,7 @@ class SpiTransport(Transport):
         # monitor rx,tx in bulk
         print("spi: request rx,tx")
         self.rxtx = self.chip.get_lines([RPI_PIN_RX_READY, RPI_PIN_TX_READY])
-        self.rxtx.request(consumer = CONSUMER, type = LINE_REQ_EV_RISING_EDGE, flags = LINE_REQ_FLAG_ACTIVE_LOW)
+        self.rxtx.request(consumer = CONSUMER, type = LINE_REQ_EV_RISING_EDGE)
         self._flip_reset()
         print("spi: open device")
         self.spi = SpiDev()
@@ -45,6 +53,8 @@ class SpiTransport(Transport):
         self.spi.bits_per_word = 8
         print("spi: start read loop")
         t = threading.Thread(target=self._read_loop)
+        t.start()
+        t = threading.Thread(target=self._io_wait_loop)
         t.start()
 
     @classmethod
@@ -88,15 +98,34 @@ class SpiTransport(Transport):
             rst.release()
 
     def send(self, pkt: bytes) -> None:
+        print("JD %d %s TX" % (millis(), buf2hex(pkt)))
         self.sendQueue.append(pkt)
-        self._transfer()
+        self._poke()
 
     def _read_loop(self) -> None:
         try:
+            self._poke_cond.acquire()
             while True:
-                ev_lines = self.rxtx.event_wait(nsec = 1) # List[Line]
+                self._poke_cond.wait()
+                self._transfer()
+        except:
+            self.close()
+            raise
+
+    def _poke(self) -> None:
+        self._poke_cond.acquire()
+        self._poke_cond.notify()
+        self._poke_cond.release()
+
+    def _io_wait_loop(self) -> None:
+        try:
+            while True:
+                ev_lines = self.rxtx.event_wait(nsec = 500 * 1000000) # List[Line]
                 if ev_lines:
-                    self._transfer()
+                    # need to read events, otherwise we get woken up again immedietly
+                    for line in ev_lines:
+                        line.event_read()
+                    self._poke()
         except:
             self.close()
             raise
@@ -109,9 +138,6 @@ class SpiTransport(Transport):
             return rxtxv
 
     def _transfer(self) -> None:
-        if len(self.sendQueue) > MAX_SEND_QUEUE_LEN:
-            self._flip_reset()
-
         try:
             while self._transfer_frame():
                 pass
@@ -125,10 +151,10 @@ class SpiTransport(Transport):
         txReady = tx != 0
         sendtx = txReady and len(self.sendQueue) > 0
 
-        print("spi: transfer rx:" + str(rx) + ", tx: " + str(tx) + ", queue: " + str(len(self.sendQueue)))
-
         if not sendtx and not rxReady:
             return False
+
+        # print("spi: transfer rx:" + str(rx) + ", tx: " + str(tx) + ", queue: " + str(len(self.sendQueue)))
 
         # allocate transfer buffers
         txqueue = bytearray(XFER_SIZE)
@@ -147,42 +173,34 @@ class SpiTransport(Transport):
         if txq_ptr == 0 and not rxReady:
             return False
 
-        rxqueue = bytearray(0)
-        if txq_ptr > 0:
-            txqueue = bytearray(txqueue[0::txq_ptr])
-            print("spi: " + str(now()) + " " + buf2hex(txqueue) + " send frame")
-            rxqueue = bytearray(self.spi.xfer2(txqueue))
-        elif rxReady:
-            rxqueue = bytearray(self.spi.readbytes(XFER_SIZE))
-        if rxReady:
-            if rxqueue is None:
-                print("spi: recv failed")
-                return False
-            #print(str(now()) + " " + buf2hex(rxqueue) + " recv frame")
-            
-            framep = 0
-            while framep + 4 < len(rxqueue) :
-                frame2 = rxqueue[framep + 2]
-                if frame2 == 0:
-                    # print("spi: empty frame")
-                    break
-                sz = frame2 + 12
-                if framep + sz > len(rxqueue):
-                    print("spi: frame size out of range")
-                    break
-                frame0 = rxqueue[framep]
-                frame1 = rxqueue[framep + 1]
-                frame3 = rxqueue[framep + 3]
-                if frame0 == 0xff and frame1 == 0xff and frame3 == 0xff :
-                    # skip bogus packet
-                    print("spi: skip bogus pkt", frame0, frame1, frame3)
-                    pass
-                else:
-                    buf = bytearray(rxqueue[framep:framep+sz])
-                    print("spi: recv pkt " + buf2hex(buf))
-                    if buf and self.on_receive:
-                        self.on_receive(buf)
-                sz = (sz + 3) & ~3
-                framep += sz
+        rxqueue = bytearray(self.spi.xfer2(txqueue))
+
+        if rxqueue is None:
+            print("spi: recv failed")
+            return False
+        
+        framep = 0
+        while framep + 4 < len(rxqueue):
+            frame2 = rxqueue[framep + 2]
+            if frame2 == 0:
+                # print("spi: empty frame")
+                break
+            sz = frame2 + 12
+            if framep + sz > len(rxqueue):
+                print("spi: frame size out of range")
+                break
+            frame0 = rxqueue[framep]
+            frame1 = rxqueue[framep + 1]
+            frame3 = rxqueue[framep + 3]
+            if frame0 == 0xff and frame1 == 0xff and frame3 == 0xff :
+                # skip bogus packet
+                pass
+            else:
+                buf = bytearray(rxqueue[framep:framep+sz])
+                print("JD %d %s RX" % (millis(), buf2hex(buf)))
+                if buf and self.on_receive:
+                    self.on_receive(buf)
+            sz = (sz + 3) & ~3
+            framep += sz
         # and we're done
         return True

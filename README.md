@@ -34,9 +34,9 @@ No configuration changes is needed, follow the regular installation steps.
 The devtools web site will be forwarded by GitHub and you will be able to connect to physical hardware
 from the browser while testing the Python running on the codespace container. 
 
-### RPi Setup
+### Raspberry Pi Setup
 
-You'll need a JacHAT for RPi and you will need to build bridge executable,
+You'll need a JacHAT for Raspberry Pi and you will need to build bridge executable,
 see https://github.com/microsoft/jacdac-stm32x0/tree/main/spibridge
 
 ### Build package

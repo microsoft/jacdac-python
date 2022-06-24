@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v0.2.8 (2022-06-24)
+### Fix
+* Remove partner preview ([`71ec26c`](https://github.com/microsoft/jacdac-python/commit/71ec26cd865125f518947ac8e068e7c7ad8e9c86))
+
 ## v0.2.7 (2022-06-22)
 ### Fix
 * Support for tupples ([`e0afd4c`](https://github.com/microsoft/jacdac-python/commit/e0afd4c3737dd2545e613138ae3ceb6e337bbf27))

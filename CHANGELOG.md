@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v0.2.10 (2022-06-25)
+### Fix
+* Enable spi automatically on pi ([`e25aba7`](https://github.com/microsoft/jacdac-python/commit/e25aba7e96fc1ee9242eeae2325910ace5840405))
+
 ## v0.2.9 (2022-06-24)
 ### Fix
 * Removed partner preview ([`994c680`](https://github.com/microsoft/jacdac-python/commit/994c680e58c11b2e06853ab6865f6c6afec9ed04))

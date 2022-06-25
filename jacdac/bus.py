@@ -183,6 +183,14 @@ def _service_matches(dev: 'Device', serv: bytearray):
 def rand_u64():
     return bytearray([getrandbits(8) for _ in range(8)])
 
+def is_raspberrypi():
+    # https://raspberrypi.stackexchange.com/questions/5100/detect-that-a-python-program-is-running-on-the-pi
+    try:
+        import io
+        with io.open('/sys/firmware/devicetree/base/model', 'r') as m:
+            if 'raspberry pi' in m.read().lower(): return True
+    except Exception: pass
+    return False
 
 class Bus(EventEmitter):
     """A Jacdac bus that managed devices, service client, registers."""
@@ -198,7 +206,7 @@ class Bus(EventEmitter):
                  disable_settings: bool = False,
                  disable_brain: bool = False,
                  disable_dev_tools: bool = False,
-                 spi: bool = False,
+                 spi: Optional[bool] = None,
                  hf2_portname: Optional[str] = None,
                  transport_cmd: Optional[str] = None,
                  default_logger_min_priority: Optional[int] = None,
@@ -222,7 +230,7 @@ class Bus(EventEmitter):
             disable_dev_tools (bool, optional): Do not try to connect to developer tools server.
             hf2_portname (str, optional): port name exposing HF2 packets.
             transport_cmd (str, optional): name of executable to run as a transport.
-            spi (bool, optional): use SPI for transport.
+            spi (bool, optional): use SPI for transport. Enabled by default if Raspberry Pi and spi is None.
         """
         super().__init__(self)
 
@@ -263,7 +271,10 @@ class Bus(EventEmitter):
         self.storage_dir = storage_dir or cfg.get("storage_dir", "./.jacdac")
         self.hf2_portname = hf2_portname or cfg.get("hf2_portname")
         self.transport_cmd = transport_cmd or cfg.get("transport_cmd")
-        self.spi = spi or cfg.getboolean("spi", False)
+        # automatically turn on SPI transport on the Pi
+        if spi is None:
+            spi = is_raspberrypi()
+        self.spi = spi or cfg.getboolean("spi", None)
 
         self.self_device = Device(self, device_id, bytearray(4))
         self.process_thread = threading.Thread(target=self._process_task)

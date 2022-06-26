@@ -186,8 +186,8 @@ def rand_u64():
 def is_raspberrypi():
     # https://raspberrypi.stackexchange.com/questions/5100/detect-that-a-python-program-is-running-on-the-pi
     try:
-        import io
-        with io.open('/sys/firmware/devicetree/base/model', 'r') as m:
+        from io import open
+        with open('/sys/firmware/devicetree/base/model', 'r') as m:
             if 'raspberry pi' in m.read().lower(): return True
     except Exception: pass
     return False

@@ -1,3 +1,4 @@
+from logging import getLogger
 import threading
 from typing import List, Optional
 from time import sleep, monotonic
@@ -26,6 +27,7 @@ def millis():
 
 class SpiTransport(Transport):
     def __init__(self):
+        self.logger = getLogger(__name__)
         self.chip: Chip = None
         self.rxtx: LineBulk = None
         self.spi: SpiDev = None
@@ -38,20 +40,21 @@ class SpiTransport(Transport):
             self._finalizer = finalize(self, self._cleanup, self.chip, self.spi)
 
     def _open(self) -> None:
+        self.logger.debug("spi: open")
         self.sendQueue: List[bytes] = []
-        print("spi: select chip")
+        self.logger.debug("spi: select chip")
         self.chip = Chip(RPI_CHIP)
         # monitor rx,tx in bulk
         print("spi: request rx,tx")
         self.rxtx = self.chip.get_lines([RPI_PIN_RX_READY, RPI_PIN_TX_READY])
         self.rxtx.request(consumer = CONSUMER, type = LINE_REQ_EV_RISING_EDGE)
         self._flip_reset()
-        print("spi: open device")
+        self.logger.debug("spi: open device")
         self.spi = SpiDev()
         self.spi.open(0, 0)
         self.spi.max_speed_hz = 15600000
         self.spi.bits_per_word = 8
-        print("spi: start read loop")
+        self.logger.debug("spi: start read loop")
         t = threading.Thread(target=self._read_loop)
         t.start()
         t = threading.Thread(target=self._io_wait_loop)
@@ -62,7 +65,7 @@ class SpiTransport(Transport):
         if not chip is None:
             try:
                 chip.close()
-                print("spi: chip closed")
+                #print("spi: chip closed")
             except:
                 print("error: chip failed to close")
 
@@ -74,7 +77,7 @@ class SpiTransport(Transport):
                 print("error: device failed to close")
     
     def close(self):
-        print("spi: close")
+        self.logger.debug("spi: close")
         chip = self.chip
         spi = self.spi
         if not chip is None or not spi is None:
@@ -86,7 +89,7 @@ class SpiTransport(Transport):
             self._finalizer.detach()
         
     def _flip_reset(self) -> None:
-        print("spi: reset bridge")
+        self.logger.debug("spi: reset bridge")
         self.sendQueue = []
         rst = self.chip.get_line(RPI_PIN_RST)
         try:
@@ -98,7 +101,7 @@ class SpiTransport(Transport):
             rst.release()
 
     def send(self, pkt: bytes) -> None:
-        print("JD %d %s TX" % (millis(), buf2hex(pkt)))
+        #print("JD %d %s TX" % (millis(), buf2hex(pkt)))
         self.sendQueue.append(pkt)
         self._poke()
 
@@ -187,7 +190,7 @@ class SpiTransport(Transport):
                 break
             sz = frame2 + 12
             if framep + sz > len(rxqueue):
-                print("spi: frame size out of range")
+                self.logger.debug("spi: frame size out of range")
                 break
             frame0 = rxqueue[framep]
             frame1 = rxqueue[framep + 1]
@@ -197,7 +200,7 @@ class SpiTransport(Transport):
                 pass
             else:
                 buf = bytearray(rxqueue[framep:framep+sz])
-                print("JD %d %s RX" % (millis(), buf2hex(buf)))
+                #print("JD %d %s RX" % (millis(), buf2hex(buf)))
                 if buf and self.on_receive:
                     self.on_receive(buf)
             sz = (sz + 3) & ~3

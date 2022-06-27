@@ -1,6 +1,7 @@
 from abc import abstractmethod
 from asyncio.tasks import Task
 from configparser import ConfigParser
+from logging import getLogger, DEBUG, INFO, WARNING, ERROR, NOTSET
 import threading
 import asyncio
 import queue
@@ -24,7 +25,7 @@ from .unique_brain.constants import *
 from .packet import *
 from .transport import Transport
 
-from .util import now, log, logv
+from .util import now, info, debug
 from .pack import PackTuple, PackType, jdpack, jdunpack
 
 EV_CHANGE = "change"
@@ -158,7 +159,7 @@ class EventEmitter:
         if logger:
             logger.report(priority, msg, *args)
 
-    def log(self, text: str, *args: object):
+    def info(self, text: str, *args: object):
         self._add_log_report(LoggerPriority.LOG, text, *args)
 
     def warn(self, text: str, *args: object):
@@ -180,17 +181,22 @@ def _service_matches(dev: 'Device', serv: bytearray):
             return False
     return True
 
+
 def rand_u64():
     return bytearray([getrandbits(8) for _ in range(8)])
+
 
 def is_raspberrypi():
     # https://raspberrypi.stackexchange.com/questions/5100/detect-that-a-python-program-is-running-on-the-pi
     try:
         from io import open
         with open('/sys/firmware/devicetree/base/model', 'r') as m:
-            if 'raspberry pi' in m.read().lower(): return True
-    except Exception: pass
+            if 'raspberry pi' in m.read().lower():
+                return True
+    except Exception:
+        pass
     return False
+
 
 class Bus(EventEmitter):
     """A Jacdac bus that managed devices, service client, registers."""
@@ -245,7 +251,8 @@ class Bus(EventEmitter):
 
         # merge .ctor configuration with files
         config = ConfigParser()
-        config.read(["./jacdac.ini", os.path.expanduser("~") + "/.jacdac/config.ini", "./setup.cfg"])
+        config.read(["./jacdac.ini", os.path.expanduser("~") +
+                    "/.jacdac/config.ini", "./setup.cfg"])
         if not config.has_section("jacdac"):
             cfg = config.add_section("jacdac")
         cfg = config["jacdac"]
@@ -288,7 +295,7 @@ class Bus(EventEmitter):
             self.transports.append(ExecTransport(self.transport_cmd))
         if self.hf2_portname:
             from .transports.hf2 import HF2Transport
-            self.transports.append(HF2Transport(self.hf2_portname))        
+            self.transports.append(HF2Transport(self.hf2_portname))
         if self.spi:
             from .transports.spi import SpiTransport
             self.transports.append(SpiTransport())
@@ -311,7 +318,7 @@ class Bus(EventEmitter):
 
         self.process_thread.start()
 
-        print("starting jacdac, self device {}".format(self.self_device))
+        info("starting jacdac, self device {}".format(self.self_device))
 
     def run(self, cb: Callable[..., None], *args: Any):
         if self.process_thread is threading.current_thread():
@@ -390,10 +397,10 @@ class Bus(EventEmitter):
             while ptr < 12 + frame[2]:
                 sz = frame[ptr] + 4
                 pktbytes = frame[0:12] + frame[ptr:ptr+sz]
-                # log("PKT: {}-{} / {}", ptr, len(frame), pktbytes.hex())
+                # info("PKT: {}-{} / {}", ptr, len(frame), pktbytes.hex())
                 pkt = JDPacket(frombytes=pktbytes, sender=sender)
                 if ptr > 12:
-                    pkt.requires_ack = False # only ack once
+                    pkt.requires_ack = False  # only ack once
                 self.process_packet(pkt)
                 # dispatch to other transports
                 self._queue_core(pkt)
@@ -504,7 +511,7 @@ class Bus(EventEmitter):
                         break
 
     def process_packet(self, pkt: JDPacket):
-        logv("route: {}", pkt)
+        debug("route: {}", pkt)
         dev_id = pkt.device_id
         multi_command_class = pkt.multicommand_class
         service_index = pkt.service_index
@@ -540,7 +547,7 @@ class Bus(EventEmitter):
         elif dev_id == self.self_device.device_id and pkt.is_command:
             h = self.servers[pkt.service_index]
             if h:
-                # log(`handle pkt at ${h.name} cmd=${pkt.service_command}`)
+                # info(`handle pkt at ${h.name} cmd=${pkt.service_command}`)
                 h.handle_packet_outer(pkt)
         else:
             if pkt.is_command:
@@ -1011,7 +1018,7 @@ class ControlServer(Server):
         self.auto_bind_cnt = 0
 
     def queue_announce(self):
-        logv("announce: %d " % self.restart_counter)
+        debug("announce: %d " % self.restart_counter)
         self.restart_counter += 1
         ids = [s.service_class for s in self.bus. servers]
         rest = self.restart_counter
@@ -1109,7 +1116,8 @@ class LoggerServer(Server):
 
     def report(self, priority: int, msg: str, *args: object):
         if priority >= self.min_priority:
-            log(msg, *args)
+            info(msg, *args)
+
         cmd: int = -1
         if priority == LoggerPriority.DEBUG:
             cmd = JD_LOGGER_CMD_DEBUG
@@ -1117,7 +1125,7 @@ class LoggerServer(Server):
             cmd = JD_LOGGER_CMD_LOG
         elif priority == LoggerPriority.WARNING:
             cmd = JD_LOGGER_CMD_WARN
-        elif priority == JD_LOGGER_CMD_ERROR:
+        elif priority == JD_LOGGER_CMD_ERROR:            
             cmd = JD_LOGGER_CMD_ERROR
         else:
             return
@@ -1781,9 +1789,10 @@ class Device(EventEmitter):
         for c in self.clients:
             if (c.broadcast and c.service_class == service_class) or \
                (not c.broadcast and c.service_index == pkt.service_index):
-                # log(`handle pkt at ${client.role} rep=${pkt.serviceCommand}`)
+                # info(`handle pkt at ${client.role} rep=${pkt.serviceCommand}`)
                 c.device = self
                 c.handle_packet_outer(pkt)
+
 
 class BufferClient(Client):
     _value: bytearray
@@ -1792,12 +1801,13 @@ class BufferClient(Client):
     """
     A client that handles a double-buffer bytes buffer
     """
+
     def __init__(self, bus: Bus, service_class: int, pack_formats: Dict[int, str], role: str) -> None:
         super().__init__(bus, service_class, pack_formats, role)
 
         self._value = bytearray(0)
         self._dirty = False
-    
+
     @property
     def value(self) -> bytearray:
         """
@@ -1816,10 +1826,10 @@ class BufferClient(Client):
     @property
     def dirty(self) -> bool:
         return self._dirty
-    
+
     def set_dirty(self) -> None:
         self._dirty = True
-    
+
     def refresh_value(self) -> None:
         if self._dirty:
             self.register(JD_REG_VALUE).set_values(self._value)
@@ -1833,7 +1843,5 @@ class BufferClient(Client):
                 self._value = self._value + bytearray(length - l)
                 self._dirty = True
             else:
-                self._value = self._value[0:length -1]
+                self._value = self._value[0:length - 1]
                 self._dirty = True
-
-

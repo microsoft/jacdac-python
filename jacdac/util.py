@@ -1,9 +1,8 @@
 import binascii
+from logging import getLogger
 import time
 from typing import List, Tuple, Union, cast
 
-logging = True
-loggingv = False
 _hex = "0123456789abcdef"
 
 
@@ -11,18 +10,19 @@ def now():
     return int(time.monotonic() * 1000)
 
 
-def log(msg: str, *args: object):
-    if logging:
-        if len(args):
-            msg = msg.format(*args)
-        print(msg)
+logger = getLogger(__name__)
 
 
-def logv(msg: str, *args: object):
-    if loggingv:
-        if len(args):
-            msg = msg.format(*args)
-        print(msg)
+def info(msg: str, *args: object):
+    if len(args):
+        msg = msg.format(*args)
+    logger.info(msg)
+
+
+def debug(msg: str, *args: object):
+    if len(args):
+        msg = msg.format(*args)
+    logger.debug(msg)
 
 
 def hex_num(n: int, len: int = 8):
@@ -106,7 +106,7 @@ def crc16(buf: bytes, start: int = 0, end: int = None):
     return crc
 
 
-def color_to_rgb(rgb: Union[int, Tuple[int, int, int], List[int]], default = (0,0,0)) -> Tuple[int, int, int]:
+def color_to_rgb(rgb: Union[int, Tuple[int, int, int], List[int]], default=(0, 0, 0)) -> Tuple[int, int, int]:
     """
     Maps various format to a r,g,b tuple
     """
@@ -127,4 +127,4 @@ def color_to_rgb(rgb: Union[int, Tuple[int, int, int], List[int]], default = (0,
         r = (lrgb[0]) & 0xff
         g = (lrgb[1]) & 0xff
         b = (lrgb[2]) & 0xff
-    return (r,g,b)
+    return (r, g, b)

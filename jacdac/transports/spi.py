@@ -4,7 +4,7 @@ from typing import List, Optional
 from time import sleep, monotonic
 from tokenize import Number
 from jacdac.transport import Transport
-from jacdac.util import buf2hex, hex2buf, now
+from jacdac.util import buf2hex, hex2buf, debug, now
 from gpiod import Chip, Line, LineBulk, LINE_REQ_EV_RISING_EDGE, LINE_REQ_FLAG_ACTIVE_LOW, LINE_REQ_DIR_OUT # type: ignore
 from spidev import SpiDev # type: ignore
 from weakref import finalize
@@ -45,7 +45,7 @@ class SpiTransport(Transport):
         self.logger.debug("spi: select chip")
         self.chip = Chip(RPI_CHIP)
         # monitor rx,tx in bulk
-        print("spi: request rx,tx")
+        debug("spi: request rx,tx")
         self.rxtx = self.chip.get_lines([RPI_PIN_RX_READY, RPI_PIN_TX_READY])
         self.rxtx.request(consumer = CONSUMER, type = LINE_REQ_EV_RISING_EDGE)
         self._flip_reset()
@@ -67,14 +67,14 @@ class SpiTransport(Transport):
                 chip.close()
                 #print("spi: chip closed")
             except:
-                print("error: chip failed to close")
+                debug("error: chip failed to close")
 
         if not spi is None:
             try:
                 spi.close()
-                print("spi: device closed")
+                debug("spi: device closed")
             except:
-                print("error: device failed to close")
+                debug("error: device failed to close")
     
     def close(self):
         self.logger.debug("spi: close")
@@ -101,7 +101,7 @@ class SpiTransport(Transport):
             rst.release()
 
     def send(self, pkt: bytes) -> None:
-        #print("JD %d %s TX" % (millis(), buf2hex(pkt)))
+        #debug("JD %d %s TX" % (millis(), buf2hex(pkt)))
         self.sendQueue.append(pkt)
         self._poke()
 
@@ -157,7 +157,7 @@ class SpiTransport(Transport):
         if not sendtx and not rxReady:
             return False
 
-        # print("spi: transfer rx:" + str(rx) + ", tx: " + str(tx) + ", queue: " + str(len(self.sendQueue)))
+        # debug("spi: transfer rx:" + str(rx) + ", tx: " + str(tx) + ", queue: " + str(len(self.sendQueue)))
 
         # allocate transfer buffers
         txqueue = bytearray(XFER_SIZE)
@@ -179,18 +179,18 @@ class SpiTransport(Transport):
         rxqueue = bytearray(self.spi.xfer2(txqueue))
 
         if rxqueue is None:
-            print("spi: recv failed")
+            debug("spi: recv failed")
             return False
         
         framep = 0
         while framep + 4 < len(rxqueue):
             frame2 = rxqueue[framep + 2]
             if frame2 == 0:
-                # print("spi: empty frame")
+                # debug("spi: empty frame")
                 break
             sz = frame2 + 12
             if framep + sz > len(rxqueue):
-                self.logger.debug("spi: frame size out of range")
+                debug("spi: frame size out of range")
                 break
             frame0 = rxqueue[framep]
             frame1 = rxqueue[framep + 1]
@@ -200,7 +200,7 @@ class SpiTransport(Transport):
                 pass
             else:
                 buf = bytearray(rxqueue[framep:framep+sz])
-                #print("JD %d %s RX" % (millis(), buf2hex(buf)))
+                #debug("JD %d %s RX" % (millis(), buf2hex(buf)))
                 if buf and self.on_receive:
                     self.on_receive(buf)
             sz = (sz + 3) & ~3

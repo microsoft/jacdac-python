@@ -1,4 +1,4 @@
-from jacdac import Bus
+from jacdac.bus import Bus
 from jacdac.humidity import HumidityClient
 from jacdac.temperature import TemperatureClient
 import csv

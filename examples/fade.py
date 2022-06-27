@@ -1,4 +1,4 @@
-from jacdac import Bus
+from jacdac.bus import Bus
 from jacdac.led import LedClient
 from time import sleep
 

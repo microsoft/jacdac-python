@@ -2,7 +2,7 @@
 from jacdac.bus import Bus, BufferClient
 from jacdac.util import color_to_rgb
 from .constants import *
-from typing import List, Optional, Tuple, Union, cast
+from typing import List, Optional, Tuple, Union
 
 
 class LedClient(BufferClient):

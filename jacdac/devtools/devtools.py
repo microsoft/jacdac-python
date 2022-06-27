@@ -1,4 +1,9 @@
 # pyright: reportGeneralTypeIssues=false
+# pyright: reportUnknownVariableType=false
+# pyright: reportUnknownParameterType=false
+# pyright: reportUnknownArgumentType=false
+# pyright: reportUnknownMemberType=false
+# pyright: reportMissingParameterType=false
 from asyncio import get_event_loop
 from websockets import serve
 from http.server import BaseHTTPRequestHandler, HTTPServer

@@ -1,4 +1,10 @@
 # pyright: reportGeneralTypeIssues=false
+# pyright: reportGeneralTypeIssues=false
+# pyright: reportUnknownVariableType=false
+# pyright: reportUnknownParameterType=false
+# pyright: reportUnknownArgumentType=false
+# pyright: reportUnknownMemberType=false
+# pyright: reportMissingParameterType=false
 import threading
 from typing import Optional
 import websocket # type: ignore

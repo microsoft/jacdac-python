@@ -1,5 +1,4 @@
 import binascii
-from logging import getLogger
 import time
 from typing import List, Tuple, Union, cast
 
@@ -90,7 +89,7 @@ def crc16(buf: bytes, start: int = 0, end: int = None):
     return crc
 
 
-def color_to_rgb(rgb: Union[int, Tuple[int, int, int], List[int]], default=(0, 0, 0)) -> Tuple[int, int, int]:
+def color_to_rgb(rgb: Union[int, Tuple[int, int, int], List[int]], default: Tuple[int, int, int]=(0, 0, 0)) -> Tuple[int, int, int]:
     """
     Maps various format to a r,g,b tuple
     """

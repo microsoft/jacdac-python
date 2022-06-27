@@ -1,7 +1,7 @@
 from abc import abstractmethod
 from asyncio.tasks import Task
 from configparser import ConfigParser
-from logging import getLogger, DEBUG, INFO, WARNING, ERROR, NOTSET
+from logging import getLogger, DEBUG, INFO, WARNING, ERROR
 import threading
 import asyncio
 import queue
@@ -25,7 +25,7 @@ from .unique_brain.constants import *
 from .packet import *
 from .transport import Transport
 
-from .util import now, info, debug
+from .util import now, short_id
 from .pack import PackTuple, PackType, jdpack, jdunpack
 
 EV_CHANGE = "change"
@@ -155,9 +155,9 @@ class EventEmitter:
     def _add_log_report(self, priority: int, text: str, *args: object):
         prefix = self._log_report_prefix()
         msg = prefix + text
-        logger = self.bus.logger
-        if logger:
-            logger.report(priority, msg, *args)
+        logger_server = self.bus.logger_server
+        if not logger_server is None:
+            logger_server.report(priority, msg, *args)
 
     def info(self, text: str, *args: object):
         self._add_log_report(LoggerPriority.LOG, text, *args)
@@ -216,7 +216,8 @@ class Bus(EventEmitter):
                  hf2_portname: Optional[str] = None,
                  transport_cmd: Optional[str] = None,
                  default_logger_min_priority: Optional[int] = None,
-                 storage_dir: Optional[str] = None
+                 storage_dir: Optional[str] = None,
+                 logger_name: Optional[str] = None
                  ) -> None:
         """Creates a new Jacdac bus.
 
@@ -237,6 +238,7 @@ class Bus(EventEmitter):
             hf2_portname (str, optional): port name exposing HF2 packets.
             transport_cmd (str, optional): name of executable to run as a transport.
             spi (bool, optional): use SPI for transport. Enabled by default if Raspberry Pi and spi is None.
+            logger_name (str, optional): custom logger name.
         """
         super().__init__(self)
 
@@ -244,7 +246,7 @@ class Bus(EventEmitter):
         self.unattached_clients: List['Client'] = []
         self.all_clients: List['Client'] = []
         self.servers: List['Server'] = []
-        self.logger: Optional[LoggerServer] = None
+        self.logger_server: Optional[LoggerServer] = None
         self.role_manager: Optional[RoleManagerServer] = None
         self.pipes: List['InPipe'] = []
         self._event_counter = 0
@@ -258,6 +260,8 @@ class Bus(EventEmitter):
         cfg = config["jacdac"]
         device_id = device_id or cfg.get(
             "device_id", rand_u64().hex())
+        logger_name = logger_name or cfg.get("logger_name", "jacdac.{}".format(short_id(device_id)))
+        self.logger = getLogger(logger_name)
         self.product_identifier: Optional[int] = product_identifier or cfg.getint(
             "product_identifier", None)
         self.firmware_version: Optional[str] = firmware_version or cfg.get(
@@ -318,7 +322,7 @@ class Bus(EventEmitter):
 
         self.process_thread.start()
 
-        info("starting jacdac, self device {}".format(self.self_device))
+        self.logger.info("starting jacdac, self device {}".format(self.self_device))
 
     def run(self, cb: Callable[..., None], *args: Any):
         if self.process_thread is threading.current_thread():
@@ -343,7 +347,7 @@ class Bus(EventEmitter):
         ctrls = ControlServer(self)  # attach control server
 
         if not self.disable_logger:
-            self.logger = LoggerServer(self)
+            self.logger_server = LoggerServer(self)
 
         if self.storage_dir and not self.disable_role_manager:
             self.role_manager = RoleManagerServer(self)
@@ -397,7 +401,7 @@ class Bus(EventEmitter):
             while ptr < 12 + frame[2]:
                 sz = frame[ptr] + 4
                 pktbytes = frame[0:12] + frame[ptr:ptr+sz]
-                # info("PKT: {}-{} / {}", ptr, len(frame), pktbytes.hex())
+                # self.logger.debug("PKT: {}-{} / {}", ptr, len(frame), pktbytes.hex())
                 pkt = JDPacket(frombytes=pktbytes, sender=sender)
                 if ptr > 12:
                     pkt.requires_ack = False  # only ack once
@@ -511,7 +515,7 @@ class Bus(EventEmitter):
                         break
 
     def process_packet(self, pkt: JDPacket):
-        debug("route: {}", pkt)
+        # self.debug("route: {}", pkt)
         dev_id = pkt.device_id
         multi_command_class = pkt.multicommand_class
         service_index = pkt.service_index
@@ -547,7 +551,7 @@ class Bus(EventEmitter):
         elif dev_id == self.self_device.device_id and pkt.is_command:
             h = self.servers[pkt.service_index]
             if h:
-                # info(`handle pkt at ${h.name} cmd=${pkt.service_command}`)
+                # self.logger.debug(`handle pkt at ${h.name} cmd=${pkt.service_command}`)
                 h.handle_packet_outer(pkt)
         else:
             if pkt.is_command:
@@ -1018,7 +1022,7 @@ class ControlServer(Server):
         self.auto_bind_cnt = 0
 
     def queue_announce(self):
-        debug("announce: %d " % self.restart_counter)
+        # self.debug("announce: %d " % self.restart_counter)
         self.restart_counter += 1
         ids = [s.service_class for s in self.bus. servers]
         rest = self.restart_counter
@@ -1115,9 +1119,21 @@ class LoggerServer(Server):
         return super().handle_packet(pkt)
 
     def report(self, priority: int, msg: str, *args: object):
-        if priority >= self.min_priority:
-            info(msg, *args)
+        if priority < LoggerPriority.SILENT:
+            severity = DEBUG
+            if priority == LoggerPriority.WARNING:
+                severity = WARNING
+            elif priority == LoggerPriority.ERROR:
+                severity = ERROR
+            elif priority == LoggerPriority.LOG:
+                severity = INFO
+            if len(args) > 0:
+                self.bus.logger.log(severity, msg.format(*args))
+            else:
+                self.bus.logger.log(severity, msg)
 
+        if priority >= self.min_priority:
+            return
         cmd: int = -1
         if priority == LoggerPriority.DEBUG:
             cmd = JD_LOGGER_CMD_DEBUG
@@ -1702,7 +1718,7 @@ class Device(EventEmitter):
 
     @ property
     def short_id(self):
-        return util.short_id(self.device_id)
+        return short_id(self.device_id)
 
     def __str__(self) -> str:
         return self.short_id

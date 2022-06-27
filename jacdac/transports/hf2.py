@@ -4,7 +4,7 @@ import queue
 import random
 import struct
 from typing import List
-
+from logging import getLogger
 from jacdac.transport import Transport
 
 HF2_CMD_INFO = 0x0002
@@ -54,7 +54,7 @@ class HF2Transport(Transport):
             pos += l
 
     def _on_serial(self, buf: bytes, is_error: bool):
-        self.log("serial: %s" % buf.decode("utf-8"))
+        self.logger.debug("serial: %s" % buf.decode("utf-8"))
 
     def _on_jd_pkt(self, buf: bytes):
         # self.log("jd: " + buf.hex())
@@ -66,7 +66,7 @@ class HF2Transport(Transport):
         if evid == HF2_EV_JDS_PACKET:
             self._on_jd_pkt(buf[4:])
         else:
-            self.log("unknown event: 0x%x" % evid)
+            self.logger.debug("unknown event: 0x%x" % evid)
 
     def _read_loop(self):
         frames: List[bytes] = []
@@ -90,12 +90,9 @@ class HF2Transport(Transport):
                 else:
                     self._msgs.put(r)
 
-    def log(self, msg: str):
-        print("HF2: %s" % msg)
-
     def _error(self, msg: str):
-        self.log("error: %s" % msg)
-        raise HF2Error("HF2: %s" % msg)
+        self.logger.error(msg)
+        raise HF2Error("hf2: %s" % msg)
 
     def _talk(self, cmd: int, data: bytes = b'') -> bytes:
         with self._talk_lock:
@@ -110,7 +107,7 @@ class HF2Transport(Transport):
                     self._error("timeout for 0x%d" % cmd)
                 (seq2, status, info) = struct.unpack("<HBB", resp[0:4])
                 if seq != seq2:
-                    self.log("packet out of sync (exp: %d, got: %d)" %
+                    self.logger.debug("packet out of sync (exp: %d, got: %d)" %
                              (seq, seq2))
                 elif status == 0:
                     return resp[4:]
@@ -121,7 +118,7 @@ class HF2Transport(Transport):
 
     def _connect(self):
         info = self._talk(HF2_CMD_INFO)
-        self.log("connected to '%s'" % info.decode("utf8"))
+        self.logger.info("connected to '%s'" % info.decode("utf8"))
         self._talk(HF2_CMD_JDS_CONFIG, struct.pack("<I", 1))
 
     def send(self, pkt: bytes):
@@ -129,6 +126,7 @@ class HF2Transport(Transport):
 
     def __init__(self, portname: str) -> None:
         import serial # pyright: ignore
+        self.logger = getLogger("jacdac.hf2." % portname)
         self.serial: serial.Serial = serial.Serial(portname, 4_000_000)
         self._msgs: queue.Queue[bytes] = queue.Queue()
         self._cmd_seq = random.randint(0x1000, 0xffff)

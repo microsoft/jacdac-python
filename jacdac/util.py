@@ -9,22 +9,6 @@ _hex = "0123456789abcdef"
 def now():
     return int(time.monotonic() * 1000)
 
-
-logger = getLogger(__name__)
-
-
-def info(msg: str, *args: object):
-    if len(args):
-        msg = msg.format(*args)
-    logger.info(msg)
-
-
-def debug(msg: str, *args: object):
-    if len(args):
-        msg = msg.format(*args)
-    logger.debug(msg)
-
-
 def hex_num(n: int, len: int = 8):
     r = "0x"
     for i in range(len):

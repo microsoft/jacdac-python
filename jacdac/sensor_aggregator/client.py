@@ -12,7 +12,7 @@ class SensorAggregatorClient(SensorClient):
 
     """
 
-    def __init__(self, bus: Bus, role: str, *, missing_current_sample_value: bytes = None) -> None:
+    def __init__(self, bus: Bus, role: str, *, missing_current_sample_value: Optional[bytes] = None) -> None:
         super().__init__(bus, JD_SERVICE_CLASS_SENSOR_AGGREGATOR, JD_SENSOR_AGGREGATOR_PACK_FORMATS, role)
         self.missing_current_sample_value = missing_current_sample_value
 

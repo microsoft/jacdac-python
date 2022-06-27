@@ -11,7 +11,7 @@ class SoilMoistureClient(SensorClient):
 
     """
 
-    def __init__(self, bus: Bus, role: str, *, missing_moisture_value: float = None) -> None:
+    def __init__(self, bus: Bus, role: str, *, missing_moisture_value: Optional[float] = None) -> None:
         super().__init__(bus, JD_SERVICE_CLASS_SOIL_MOISTURE, JD_SOIL_MOISTURE_PACK_FORMATS, role, preferred_interval = 1000)
         self.missing_moisture_value = missing_moisture_value
 

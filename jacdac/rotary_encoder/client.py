@@ -11,7 +11,7 @@ class RotaryEncoderClient(SensorClient):
 
     """
 
-    def __init__(self, bus: Bus, role: str, *, missing_position_value: int = None) -> None:
+    def __init__(self, bus: Bus, role: str, *, missing_position_value: Optional[int] = None) -> None:
         super().__init__(bus, JD_SERVICE_CLASS_ROTARY_ENCODER, JD_ROTARY_ENCODER_PACK_FORMATS, role)
         self.missing_position_value = missing_position_value
 

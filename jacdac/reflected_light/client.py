@@ -11,7 +11,7 @@ class ReflectedLightClient(SensorClient):
 
     """
 
-    def __init__(self, bus: Bus, role: str, *, missing_brightness_value: float = None) -> None:
+    def __init__(self, bus: Bus, role: str, *, missing_brightness_value: Optional[float] = None) -> None:
         super().__init__(bus, JD_SERVICE_CLASS_REFLECTED_LIGHT, JD_REFLECTED_LIGHT_PACK_FORMATS, role)
         self.missing_brightness_value = missing_brightness_value
 

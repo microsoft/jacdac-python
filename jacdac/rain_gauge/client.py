@@ -11,7 +11,7 @@ class RainGaugeClient(SensorClient):
 
     """
 
-    def __init__(self, bus: Bus, role: str, *, missing_precipitation_value: float = None) -> None:
+    def __init__(self, bus: Bus, role: str, *, missing_precipitation_value: Optional[float] = None) -> None:
         super().__init__(bus, JD_SERVICE_CLASS_RAIN_GAUGE, JD_RAIN_GAUGE_PACK_FORMATS, role, preferred_interval = 60000)
         self.missing_precipitation_value = missing_precipitation_value
 

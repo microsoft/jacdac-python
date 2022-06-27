@@ -11,7 +11,7 @@ class DistanceClient(SensorClient):
 
     """
 
-    def __init__(self, bus: Bus, role: str, *, missing_distance_value: float = None) -> None:
+    def __init__(self, bus: Bus, role: str, *, missing_distance_value: Optional[float] = None) -> None:
         super().__init__(bus, JD_SERVICE_CLASS_DISTANCE, JD_DISTANCE_PACK_FORMATS, role)
         self.missing_distance_value = missing_distance_value
 

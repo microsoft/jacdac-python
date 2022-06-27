@@ -13,7 +13,7 @@ class PulseOximeterClient(SensorClient):
 
     """
 
-    def __init__(self, bus: Bus, role: str, *, missing_oxygen_value: float = None) -> None:
+    def __init__(self, bus: Bus, role: str, *, missing_oxygen_value: Optional[float] = None) -> None:
         super().__init__(bus, JD_SERVICE_CLASS_PULSE_OXIMETER, JD_PULSE_OXIMETER_PACK_FORMATS, role)
         self.missing_oxygen_value = missing_oxygen_value
 

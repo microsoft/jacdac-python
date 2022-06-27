@@ -14,7 +14,7 @@ class HeartRateClient(SensorClient):
 
     """
 
-    def __init__(self, bus: Bus, role: str, *, missing_heart_rate_value: float = None) -> None:
+    def __init__(self, bus: Bus, role: str, *, missing_heart_rate_value: Optional[float] = None) -> None:
         super().__init__(bus, JD_SERVICE_CLASS_HEART_RATE, JD_HEART_RATE_PACK_FORMATS, role, preferred_interval = 1000)
         self.missing_heart_rate_value = missing_heart_rate_value
 

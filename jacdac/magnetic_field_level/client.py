@@ -11,7 +11,7 @@ class MagneticFieldLevelClient(SensorClient):
 
     """
 
-    def __init__(self, bus: Bus, role: str, *, missing_strength_value: float = None) -> None:
+    def __init__(self, bus: Bus, role: str, *, missing_strength_value: Optional[float] = None) -> None:
         super().__init__(bus, JD_SERVICE_CLASS_MAGNETIC_FIELD_LEVEL, JD_MAGNETIC_FIELD_LEVEL_PACK_FORMATS, role)
         self.missing_strength_value = missing_strength_value
 

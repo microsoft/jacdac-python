@@ -11,7 +11,7 @@ class MotionClient(SensorClient):
 
     """
 
-    def __init__(self, bus: Bus, role: str, *, missing_moving_value: bool = None) -> None:
+    def __init__(self, bus: Bus, role: str, *, missing_moving_value: Optional[bool] = None) -> None:
         super().__init__(bus, JD_SERVICE_CLASS_MOTION, JD_MOTION_PACK_FORMATS, role, preferred_interval = 1000)
         self.missing_moving_value = missing_moving_value
 

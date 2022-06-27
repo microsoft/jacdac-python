@@ -11,7 +11,7 @@ class RealTimeClockClient(SensorClient):
 
     """
 
-    def __init__(self, bus: Bus, role: str, *, missing_local_time_value: Tuple[int, int, int, int, int, int, int] = None) -> None:
+    def __init__(self, bus: Bus, role: str, *, missing_local_time_value: Optional[Tuple[int, int, int, int, int, int, int]] = None) -> None:
         super().__init__(bus, JD_SERVICE_CLASS_REAL_TIME_CLOCK, JD_REAL_TIME_CLOCK_PACK_FORMATS, role, preferred_interval = 1000)
         self.missing_local_time_value = missing_local_time_value
 

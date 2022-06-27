@@ -11,7 +11,7 @@ class GyroscopeClient(SensorClient):
 
     """
 
-    def __init__(self, bus: Bus, role: str, *, missing_rotation_rates_value: Tuple[float, float, float] = None) -> None:
+    def __init__(self, bus: Bus, role: str, *, missing_rotation_rates_value: Optional[Tuple[float, float, float]] = None) -> None:
         super().__init__(bus, JD_SERVICE_CLASS_GYROSCOPE, JD_GYROSCOPE_PACK_FORMATS, role)
         self.missing_rotation_rates_value = missing_rotation_rates_value
 

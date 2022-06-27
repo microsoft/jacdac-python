@@ -11,7 +11,7 @@ class AccelerometerClient(SensorClient):
 
     """
 
-    def __init__(self, bus: Bus, role: str, *, missing_forces_value: Tuple[float, float, float] = None) -> None:
+    def __init__(self, bus: Bus, role: str, *, missing_forces_value: Optional[Tuple[float, float, float]] = None) -> None:
         super().__init__(bus, JD_SERVICE_CLASS_ACCELEROMETER, JD_ACCELEROMETER_PACK_FORMATS, role)
         self.missing_forces_value = missing_forces_value
 

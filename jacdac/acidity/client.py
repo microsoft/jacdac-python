@@ -11,7 +11,7 @@ class AcidityClient(SensorClient):
 
     """
 
-    def __init__(self, bus: Bus, role: str, *, missing_acidity_value: float = None) -> None:
+    def __init__(self, bus: Bus, role: str, *, missing_acidity_value: Optional[float] = None) -> None:
         super().__init__(bus, JD_SERVICE_CLASS_ACIDITY, JD_ACIDITY_PACK_FORMATS, role, preferred_interval = 5000)
         self.missing_acidity_value = missing_acidity_value
 

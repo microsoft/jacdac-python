@@ -11,7 +11,7 @@ class TemperatureClient(SensorClient):
 
     """
 
-    def __init__(self, bus: Bus, role: str, *, missing_temperature_value: float = None) -> None:
+    def __init__(self, bus: Bus, role: str, *, missing_temperature_value: Optional[float] = None) -> None:
         super().__init__(bus, JD_SERVICE_CLASS_TEMPERATURE, JD_TEMPERATURE_PACK_FORMATS, role, preferred_interval = 1000)
         self.missing_temperature_value = missing_temperature_value
 

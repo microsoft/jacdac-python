@@ -11,7 +11,7 @@ class ECO2Client(SensorClient):
 
     """
 
-    def __init__(self, bus: Bus, role: str, *, missing_e_CO2_value: float = None) -> None:
+    def __init__(self, bus: Bus, role: str, *, missing_e_CO2_value: Optional[float] = None) -> None:
         super().__init__(bus, JD_SERVICE_CLASS_E_CO2, JD_E_CO2_PACK_FORMATS, role, preferred_interval = 1000)
         self.missing_e_CO2_value = missing_e_CO2_value
 

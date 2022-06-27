@@ -11,7 +11,7 @@ class SoundLevelClient(SensorClient):
 
     """
 
-    def __init__(self, bus: Bus, role: str, *, missing_sound_level_value: float = None) -> None:
+    def __init__(self, bus: Bus, role: str, *, missing_sound_level_value: Optional[float] = None) -> None:
         super().__init__(bus, JD_SERVICE_CLASS_SOUND_LEVEL, JD_SOUND_LEVEL_PACK_FORMATS, role)
         self.missing_sound_level_value = missing_sound_level_value
 

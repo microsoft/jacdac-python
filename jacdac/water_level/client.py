@@ -11,7 +11,7 @@ class WaterLevelClient(SensorClient):
 
     """
 
-    def __init__(self, bus: Bus, role: str, *, missing_level_value: float = None) -> None:
+    def __init__(self, bus: Bus, role: str, *, missing_level_value: Optional[float] = None) -> None:
         super().__init__(bus, JD_SERVICE_CLASS_WATER_LEVEL, JD_WATER_LEVEL_PACK_FORMATS, role)
         self.missing_level_value = missing_level_value
 

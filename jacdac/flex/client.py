@@ -11,7 +11,7 @@ class FlexClient(SensorClient):
 
     """
 
-    def __init__(self, bus: Bus, role: str, *, missing_bending_value: float = None) -> None:
+    def __init__(self, bus: Bus, role: str, *, missing_bending_value: Optional[float] = None) -> None:
         super().__init__(bus, JD_SERVICE_CLASS_FLEX, JD_FLEX_PACK_FORMATS, role)
         self.missing_bending_value = missing_bending_value
 

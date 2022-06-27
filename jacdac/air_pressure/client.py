@@ -11,7 +11,7 @@ class AirPressureClient(SensorClient):
 
     """
 
-    def __init__(self, bus: Bus, role: str, *, missing_pressure_value: float = None) -> None:
+    def __init__(self, bus: Bus, role: str, *, missing_pressure_value: Optional[float] = None) -> None:
         super().__init__(bus, JD_SERVICE_CLASS_AIR_PRESSURE, JD_AIR_PRESSURE_PACK_FORMATS, role, preferred_interval = 60000)
         self.missing_pressure_value = missing_pressure_value
 

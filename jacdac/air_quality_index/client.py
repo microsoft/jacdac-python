@@ -12,7 +12,7 @@ class AirQualityIndexClient(SensorClient):
 
     """
 
-    def __init__(self, bus: Bus, role: str, *, missing_aqi_index_value: float = None) -> None:
+    def __init__(self, bus: Bus, role: str, *, missing_aqi_index_value: Optional[float] = None) -> None:
         super().__init__(bus, JD_SERVICE_CLASS_AIR_QUALITY_INDEX, JD_AIR_QUALITY_INDEX_PACK_FORMATS, role, preferred_interval = 60000)
         self.missing_aqi_index_value = missing_aqi_index_value
 

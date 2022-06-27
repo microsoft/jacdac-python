@@ -11,7 +11,7 @@ class SwitchClient(SensorClient):
 
     """
 
-    def __init__(self, bus: Bus, role: str, *, missing_active_value: bool = None) -> None:
+    def __init__(self, bus: Bus, role: str, *, missing_active_value: Optional[bool] = None) -> None:
         super().__init__(bus, JD_SERVICE_CLASS_SWITCH, JD_SWITCH_PACK_FORMATS, role)
         self.missing_active_value = missing_active_value
 

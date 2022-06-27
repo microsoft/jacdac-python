@@ -14,7 +14,7 @@ class ServoClient(SensorClient):
 
     """
 
-    def __init__(self, bus: Bus, role: str, *, missing_actual_angle_value: float = None) -> None:
+    def __init__(self, bus: Bus, role: str, *, missing_actual_angle_value: Optional[float] = None) -> None:
         super().__init__(bus, JD_SERVICE_CLASS_SERVO, JD_SERVO_PACK_FORMATS, role)
         self.missing_actual_angle_value = missing_actual_angle_value
 

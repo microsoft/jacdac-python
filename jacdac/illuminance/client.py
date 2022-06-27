@@ -13,7 +13,7 @@ class IlluminanceClient(SensorClient):
 
     """
 
-    def __init__(self, bus: Bus, role: str, *, missing_illuminance_value: float = None) -> None:
+    def __init__(self, bus: Bus, role: str, *, missing_illuminance_value: Optional[float] = None) -> None:
         super().__init__(bus, JD_SERVICE_CLASS_ILLUMINANCE, JD_ILLUMINANCE_PACK_FORMATS, role)
         self.missing_illuminance_value = missing_illuminance_value
 

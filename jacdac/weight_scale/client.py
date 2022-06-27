@@ -11,7 +11,7 @@ class WeightScaleClient(SensorClient):
 
     """
 
-    def __init__(self, bus: Bus, role: str, *, missing_weight_value: float = None) -> None:
+    def __init__(self, bus: Bus, role: str, *, missing_weight_value: Optional[float] = None) -> None:
         super().__init__(bus, JD_SERVICE_CLASS_WEIGHT_SCALE, JD_WEIGHT_SCALE_PACK_FORMATS, role)
         self.missing_weight_value = missing_weight_value
 

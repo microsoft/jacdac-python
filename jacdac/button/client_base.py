@@ -11,7 +11,7 @@ class ButtonClientBase(SensorClient):
 
     """
 
-    def __init__(self, bus: Bus, role: str, *, missing_pressure_value: float = None) -> None:
+    def __init__(self, bus: Bus, role: str, *, missing_pressure_value: Optional[float] = None) -> None:
         super().__init__(bus, JD_SERVICE_CLASS_BUTTON, JD_BUTTON_PACK_FORMATS, role)
         self.missing_pressure_value = missing_pressure_value
 

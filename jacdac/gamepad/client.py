@@ -11,7 +11,7 @@ class GamepadClient(SensorClient):
 
     """
 
-    def __init__(self, bus: Bus, role: str, *, missing_direction_value: Tuple[GamepadButtons, float, float] = None) -> None:
+    def __init__(self, bus: Bus, role: str, *, missing_direction_value: Optional[Tuple[GamepadButtons, float, float]] = None) -> None:
         super().__init__(bus, JD_SERVICE_CLASS_GAMEPAD, JD_GAMEPAD_PACK_FORMATS, role)
         self.missing_direction_value = missing_direction_value
 

@@ -11,7 +11,7 @@ class HumidityClient(SensorClient):
 
     """
 
-    def __init__(self, bus: Bus, role: str, *, missing_humidity_value: float = None) -> None:
+    def __init__(self, bus: Bus, role: str, *, missing_humidity_value: Optional[float] = None) -> None:
         super().__init__(bus, JD_SERVICE_CLASS_HUMIDITY, JD_HUMIDITY_PACK_FORMATS, role, preferred_interval = 5000)
         self.missing_humidity_value = missing_humidity_value
 

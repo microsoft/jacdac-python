@@ -11,7 +11,7 @@ class DcCurrentMeasurementClient(SensorClient):
 
     """
 
-    def __init__(self, bus: Bus, role: str, *, missing_measurement_value: float = None) -> None:
+    def __init__(self, bus: Bus, role: str, *, missing_measurement_value: Optional[float] = None) -> None:
         super().__init__(bus, JD_SERVICE_CLASS_DC_CURRENT_MEASUREMENT, JD_DC_CURRENT_MEASUREMENT_PACK_FORMATS, role)
         self.missing_measurement_value = missing_measurement_value
 

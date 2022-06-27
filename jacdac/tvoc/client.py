@@ -11,7 +11,7 @@ class TvocClient(SensorClient):
 
     """
 
-    def __init__(self, bus: Bus, role: str, *, missing_TVOC_value: float = None) -> None:
+    def __init__(self, bus: Bus, role: str, *, missing_TVOC_value: Optional[float] = None) -> None:
         super().__init__(bus, JD_SERVICE_CLASS_TVOC, JD_TVOC_PACK_FORMATS, role)
         self.missing_TVOC_value = missing_TVOC_value
 

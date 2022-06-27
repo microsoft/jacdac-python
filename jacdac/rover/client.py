@@ -11,7 +11,7 @@ class RoverClient(SensorClient):
 
     """
 
-    def __init__(self, bus: Bus, role: str, *, missing_kinematics_value: Tuple[float, float, float, float, float] = None) -> None:
+    def __init__(self, bus: Bus, role: str, *, missing_kinematics_value: Optional[Tuple[float, float, float, float, float]] = None) -> None:
         super().__init__(bus, JD_SERVICE_CLASS_ROVER, JD_ROVER_PACK_FORMATS, role)
         self.missing_kinematics_value = missing_kinematics_value
 

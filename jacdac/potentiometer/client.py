@@ -11,7 +11,7 @@ class PotentiometerClient(SensorClient):
 
     """
 
-    def __init__(self, bus: Bus, role: str, *, missing_position_value: float = None) -> None:
+    def __init__(self, bus: Bus, role: str, *, missing_position_value: Optional[float] = None) -> None:
         super().__init__(bus, JD_SERVICE_CLASS_POTENTIOMETER, JD_POTENTIOMETER_PACK_FORMATS, role)
         self.missing_position_value = missing_position_value
 

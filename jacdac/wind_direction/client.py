@@ -11,7 +11,7 @@ class WindDirectionClient(SensorClient):
 
     """
 
-    def __init__(self, bus: Bus, role: str, *, missing_wind_direction_value: int = None) -> None:
+    def __init__(self, bus: Bus, role: str, *, missing_wind_direction_value: Optional[int] = None) -> None:
         super().__init__(bus, JD_SERVICE_CLASS_WIND_DIRECTION, JD_WIND_DIRECTION_PACK_FORMATS, role, preferred_interval = 1000)
         self.missing_wind_direction_value = missing_wind_direction_value
 

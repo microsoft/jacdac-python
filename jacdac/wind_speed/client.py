@@ -11,7 +11,7 @@ class WindSpeedClient(SensorClient):
 
     """
 
-    def __init__(self, bus: Bus, role: str, *, missing_wind_speed_value: float = None) -> None:
+    def __init__(self, bus: Bus, role: str, *, missing_wind_speed_value: Optional[float] = None) -> None:
         super().__init__(bus, JD_SERVICE_CLASS_WIND_SPEED, JD_WIND_SPEED_PACK_FORMATS, role, preferred_interval = 60000)
         self.missing_wind_speed_value = missing_wind_speed_value
 

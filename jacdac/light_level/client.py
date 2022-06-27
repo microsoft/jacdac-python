@@ -11,7 +11,7 @@ class LightLevelClient(SensorClient):
 
     """
 
-    def __init__(self, bus: Bus, role: str, *, missing_light_level_value: float = None) -> None:
+    def __init__(self, bus: Bus, role: str, *, missing_light_level_value: Optional[float] = None) -> None:
         super().__init__(bus, JD_SERVICE_CLASS_LIGHT_LEVEL, JD_LIGHT_LEVEL_PACK_FORMATS, role)
         self.missing_light_level_value = missing_light_level_value
 

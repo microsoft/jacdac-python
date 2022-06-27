@@ -11,7 +11,7 @@ class WifiClient(SensorClient):
 
     """
 
-    def __init__(self, bus: Bus, role: str, *, missing_rssi_value: int = None) -> None:
+    def __init__(self, bus: Bus, role: str, *, missing_rssi_value: Optional[int] = None) -> None:
         super().__init__(bus, JD_SERVICE_CLASS_WIFI, JD_WIFI_PACK_FORMATS, role)
         self.missing_rssi_value = missing_rssi_value
 

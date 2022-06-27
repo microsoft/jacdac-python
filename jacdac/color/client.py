@@ -11,7 +11,7 @@ class ColorClient(SensorClient):
 
     """
 
-    def __init__(self, bus: Bus, role: str, *, missing_color_value: Tuple[float, float, float] = None) -> None:
+    def __init__(self, bus: Bus, role: str, *, missing_color_value: Optional[Tuple[float, float, float]] = None) -> None:
         super().__init__(bus, JD_SERVICE_CLASS_COLOR, JD_COLOR_PACK_FORMATS, role)
         self.missing_color_value = missing_color_value
 

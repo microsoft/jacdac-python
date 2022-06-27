@@ -11,7 +11,7 @@ class PowerClient(SensorClient):
 
     """
 
-    def __init__(self, bus: Bus, role: str, *, missing_current_draw_value: int = None) -> None:
+    def __init__(self, bus: Bus, role: str, *, missing_current_draw_value: Optional[int] = None) -> None:
         super().__init__(bus, JD_SERVICE_CLASS_POWER, JD_POWER_PACK_FORMATS, role)
         self.missing_current_draw_value = missing_current_draw_value
 

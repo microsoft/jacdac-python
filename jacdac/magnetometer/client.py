@@ -11,7 +11,7 @@ class MagnetometerClient(SensorClient):
 
     """
 
-    def __init__(self, bus: Bus, role: str, *, missing_forces_value: Tuple[int, int, int] = None) -> None:
+    def __init__(self, bus: Bus, role: str, *, missing_forces_value: Optional[Tuple[int, int, int]] = None) -> None:
         super().__init__(bus, JD_SERVICE_CLASS_MAGNETOMETER, JD_MAGNETOMETER_PACK_FORMATS, role)
         self.missing_forces_value = missing_forces_value
 

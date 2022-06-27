@@ -11,7 +11,7 @@ class SoundSpectrumClient(SensorClient):
 
     """
 
-    def __init__(self, bus: Bus, role: str, *, missing_frequency_bins_value: bytes = None) -> None:
+    def __init__(self, bus: Bus, role: str, *, missing_frequency_bins_value: Optional[bytes] = None) -> None:
         super().__init__(bus, JD_SERVICE_CLASS_SOUND_SPECTRUM, JD_SOUND_SPECTRUM_PACK_FORMATS, role)
         self.missing_frequency_bins_value = missing_frequency_bins_value
 

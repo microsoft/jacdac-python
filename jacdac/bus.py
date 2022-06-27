@@ -769,12 +769,12 @@ class RawRegisterClient(EventEmitter):
         else:
             return values[0]
 
-    def bool_value(self, default_value: bool = None) -> Optional[bool]:
+    def bool_value(self, default_value: Optional[bool] = None) -> Optional[bool]:
         """Extracts the value of the first field as a boolean."""
         value = self.value()
         return bool(value) if not value is None else default_value
 
-    def float_value(self, default_value: float = None, scale: int = 1) -> Optional[float]:
+    def float_value(self, default_value: Optional[float] = None, scale: int = 1) -> Optional[float]:
         value = self.value()
         return float(value) * scale if not value is None else default_value
 

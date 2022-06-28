@@ -260,7 +260,7 @@ class Bus(EventEmitter):
         cfg = config["jacdac"]
         device_id = device_id or cfg.get(
             "device_id", rand_u64().hex())
-        logger_name = logger_name or cfg.get("logger_name", "jacdac.{}".format(short_id(device_id)))
+        logger_name = logger_name or cfg.get("logger_name", "jacdac")
         self.logger = getLogger(logger_name)
         self.product_identifier: Optional[int] = product_identifier or cfg.getint(
             "product_identifier", None)

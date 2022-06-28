@@ -44,44 +44,46 @@ class SpiTransport(Transport):
             self._finalizer = finalize(self, self._cleanup, self.chip, self.spi)
 
     def _open(self) -> None:
-        self.logger.info("spi: open")
+        self.logger.debug("open")
         self.sendQueue: List[bytes] = []
-        self.logger.debug("spi: select chip")
+        self.logger.debug("select chip")
         self.chip = Chip(RPI_CHIP)
         # monitor rx,tx in bulk
-        self.logger.debug("spi: request rx,tx")
+        self.logger.debug("request rx,tx")
         self.rxtx = self.chip.get_lines([RPI_PIN_RX_READY, RPI_PIN_TX_READY])
         self.rxtx.request(consumer = CONSUMER, type = LINE_REQ_EV_RISING_EDGE)
         self._flip_reset()
-        self.logger.debug("spi: open device")
+        self.logger.debug("open device")
         self.spi = SpiDev()
         self.spi.open(0, 0)
         self.spi.max_speed_hz = 15600000
         self.spi.bits_per_word = 8
-        self.logger.debug("spi: start read loop")
-        t = threading.Thread(target=self._read_loop)
-        t.start()
-        t = threading.Thread(target=self._io_wait_loop)
-        t.start()
+        self.logger.debug("start read loop")
+        read_thread = threading.Thread(target=self._read_loop)
+        read_thread.daemon = True
+        read_thread.start()
+        wait_thread = threading.Thread(target=self._io_wait_loop)
+        wait_thread.daemon = True
+        wait_thread.start()
 
     @classmethod
     def _cleanup(cls, chip: Chip, spi: SpiDev):
         if not chip is None:
             try:
                 chip.close()
-                #print("spi: chip closed")
+                #print("chip closed")
             except:
                 print("error: chip failed to close")
 
         if not spi is None:
             try:
                 spi.close()
-                print("spi: device closed")
+                print("device closed")
             except:
                 print("error: device failed to close")
     
     def close(self):
-        self.logger.debug("spi: close")
+        self.logger.debug("close")
         chip = self.chip
         spi = self.spi
         if not chip is None or not spi is None:
@@ -93,7 +95,7 @@ class SpiTransport(Transport):
             self._finalizer.detach()
         
     def _flip_reset(self) -> None:
-        self.logger.debug("spi: reset bridge")
+        self.logger.debug("reset bridge")
         self.sendQueue = []
         rst = self.chip.get_line(RPI_PIN_RST)
         try:
@@ -161,7 +163,7 @@ class SpiTransport(Transport):
         if not sendtx and not rxReady:
             return False
 
-        # debug("spi: transfer rx:" + str(rx) + ", tx: " + str(tx) + ", queue: " + str(len(self.sendQueue)))
+        # debug("transfer rx:" + str(rx) + ", tx: " + str(tx) + ", queue: " + str(len(self.sendQueue)))
 
         # allocate transfer buffers
         txqueue = bytearray(XFER_SIZE)
@@ -183,18 +185,18 @@ class SpiTransport(Transport):
         rxqueue = bytearray(self.spi.xfer2(txqueue))
 
         if rxqueue is None:
-            self.logger.debug("spi: recv failed")
+            self.logger.debug("recv failed")
             return False
         
         framep = 0
         while framep + 4 < len(rxqueue):
             frame2 = rxqueue[framep + 2]
             if frame2 == 0:
-                # print("spi: empty frame")
+                # print("empty frame")
                 break
             sz = frame2 + 12
             if framep + sz > len(rxqueue):
-                self.logger.debug("spi: frame size out of range")
+                self.logger.debug("frame size out of range")
                 break
             frame0 = rxqueue[framep]
             frame1 = rxqueue[framep + 1]

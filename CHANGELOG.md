@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v0.2.11 (2022-06-28)
+### Fix
+* Mark spi threads as daemon ([`46cfe82`](https://github.com/microsoft/jacdac-python/commit/46cfe826c66022e093b30c8b38d8ce800178b93a))
+
 ## v0.2.10 (2022-06-25)
 ### Fix
 * Enable spi automatically on pi ([`e25aba7`](https://github.com/microsoft/jacdac-python/commit/e25aba7e96fc1ee9242eeae2325910ace5840405))

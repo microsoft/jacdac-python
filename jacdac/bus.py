@@ -282,10 +282,12 @@ class Bus(EventEmitter):
         self.storage_dir = storage_dir or cfg.get("storage_dir", "./.jacdac")
         self.hf2_portname = hf2_portname or cfg.get("hf2_portname")
         self.transport_cmd = transport_cmd or cfg.get("transport_cmd")
-        # automatically turn on SPI transport on the Pi
+        if spi is None:
+            spi = cfg.getboolean("spi", None)
+        # automatically turn on SPI transport on the Pi, unless disabled in config
         if spi is None:
             spi = is_raspberrypi()
-        self.spi = spi or cfg.getboolean("spi", None)
+        self.spi = spi
 
         self.self_device = Device(self, device_id, bytearray(4))
         self.process_thread = threading.Thread(target=self._process_task)

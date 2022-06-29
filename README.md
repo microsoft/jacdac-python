@@ -23,7 +23,7 @@ This section explains how to develop this library locally.
 ```
 sudo apt update
 sudo apt upgrade
-sudo apt install python3 python3-pip ipython3 python3-venv python3-libgpiod
+sudo apt install --upgrade -y python3 python3-pip ipython3 python3-venv python3-libgpiod
 ```
 
 ### Codespaces

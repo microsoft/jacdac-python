@@ -5,5 +5,4 @@ setup(
     version=JD_VERSION,
     packages=find_packages(
         include=['jacdac', 'jacdac.*'], exclude=['*test.py'])
-
 )

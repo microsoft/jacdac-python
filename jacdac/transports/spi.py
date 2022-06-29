@@ -9,7 +9,7 @@ import threading
 from typing import List
 from time import sleep, monotonic
 from jacdac.transport import Transport
-from gpiod import Chip, Line, LineBulk, LINE_REQ_EV_RISING_EDGE, LINE_REQ_FLAG_ACTIVE_LOW, LINE_REQ_DIR_OUT # type: ignore
+from gpiod import Chip, Line, LineBulk, LINE_REQ_EV_RISING_EDGE, LINE_REQ_DIR_OUT # type: ignore
 from spidev import SpiDev # type: ignore
 from weakref import finalize
 
@@ -55,7 +55,7 @@ class SpiTransport(Transport):
         self._flip_reset()
         self.logger.debug("open device")
         self.spi = SpiDev()
-        self.spi.open(0, 0)
+        self.spi.open(0, 0)        
         self.spi.max_speed_hz = 15600000
         self.spi.bits_per_word = 8
         self.logger.debug("start read loop")
@@ -97,7 +97,7 @@ class SpiTransport(Transport):
     def _flip_reset(self) -> None:
         self.logger.debug("reset bridge")
         self.sendQueue = []
-        rst = self.chip.get_line(RPI_PIN_RST)
+        rst: Line = self.chip.get_line(RPI_PIN_RST)
         try:
             rst.request(consumer = CONSUMER, type = LINE_REQ_DIR_OUT)
             rst.set_value(0)

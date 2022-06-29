@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v0.2.13 (2022-06-29)
+### Fix
+* Cleanup devtools port constants ([`102b7f7`](https://github.com/microsoft/jacdac-python/commit/102b7f7659fbce135b6577f3c752ac8e201522e0))
+
 ## v0.2.12 (2022-06-28)
 ### Fix
 * Don't use dynamic logger name ([`fde5c28`](https://github.com/microsoft/jacdac-python/commit/fde5c288125bd7f90e8496e8b480f6b65f987ea6))

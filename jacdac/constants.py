@@ -47,8 +47,8 @@ PIPE_COUNTER_MASK = const(0x001f)
 PIPE_CLOSE_MASK = const(0x0020)
 PIPE_METADATA_MASK = (0x0040)
 
-DEVTOOLS_URL = "http://localhost:8081"
-DEVTOOLS_SOCKET_URL = "ws://localhost:8081"
+DEVTOOLS_WS_PORT = 8081
+DEVTOOLS_HTTP_PORT = 8082
 
 def JD_GET(code: int):
     assert 0 <= code and code <= 0xfff

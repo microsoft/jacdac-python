@@ -10,13 +10,12 @@ from http.server import BaseHTTPRequestHandler, HTTPServer
 from requests import get
 from threading import Thread
 from sys import argv
+from jacdac.constants import DEVTOOLS_HTTP_PORT, DEVTOOLS_WS_PORT
 
 print("Jacdac DevTools (Python)")
 
 internet = "--internet" in argv
 HOST = '0.0.0.0' if internet else 'localhost'
-WS_PORT = 8081
-HTTP_PORT = 8082
 clients = []
 proxy_source: bytes
 
@@ -71,14 +70,14 @@ if not resp.ok:
 proxy_source = resp.text.encode('utf-8')
 
 def web():
-    print("local web: http://" + HOST + ":" + str(HTTP_PORT))
-    http_server = HTTPServer( (HOST, HTTP_PORT), Handler )
+    print("local web: http://" + HOST + ":" + str(DEVTOOLS_HTTP_PORT))
+    http_server = HTTPServer( (HOST, DEVTOOLS_HTTP_PORT), Handler )
     http_server.serve_forever()
 
 def ws():
     # start web socket server
-    print("websockets: ws://" + HOST + ":" + str(WS_PORT))
-    ws_server = serve(proxy, HOST, WS_PORT)
+    print("websockets: ws://" + HOST + ":" + str(DEVTOOLS_WS_PORT))
+    ws_server = serve(proxy, HOST, DEVTOOLS_WS_PORT)
     get_event_loop().run_until_complete(ws_server)
     get_event_loop().run_forever()
 

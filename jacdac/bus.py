@@ -295,6 +295,7 @@ class Bus(EventEmitter):
         self.transports: List[Transport] = transports or []
         if not self.disable_dev_tools:
             from .transports.ws import WebSocketTransport
+            DEVTOOLS_SOCKET_URL = "ws://localhost:{}".format(DEVTOOLS_WS_PORT)
             self.transports.append(WebSocketTransport(DEVTOOLS_SOCKET_URL))
         if self.transport_cmd:
             from .transports.exec import ExecTransport

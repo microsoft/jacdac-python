@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v0.2.14 (2022-06-29)
+### Fix
+* Add spi build config ([`3c74323`](https://github.com/microsoft/jacdac-python/commit/3c74323027545cc3689815daef62e97d92947c74))
+
 ## v0.2.13 (2022-06-29)
 ### Fix
 * Cleanup devtools port constants ([`102b7f7`](https://github.com/microsoft/jacdac-python/commit/102b7f7659fbce135b6577f3c752ac8e201522e0))

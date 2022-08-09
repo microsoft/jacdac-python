@@ -258,7 +258,7 @@ class Bus(EventEmitter):
         if not config.has_section("jacdac"):
             cfg = config.add_section("jacdac")
         cfg = config["jacdac"]
-        device_id = device_id or cfg.get(
+        self.device_id : str = device_id or cfg.get(
             "device_id", rand_u64().hex())
         logger_name = logger_name or cfg.get("logger_name", "jacdac")
         self.logger = getLogger(logger_name)
@@ -289,7 +289,7 @@ class Bus(EventEmitter):
             spi = is_raspberrypi()
         self.spi = spi
 
-        self.self_device = Device(self, device_id, bytearray(4))
+        self.self_device = Device(self, self.device_id, bytearray(4))
         self.process_thread = threading.Thread(target=self._process_task)
         self.process_thread.daemon = True
         self.transports: List[Transport] = transports or []

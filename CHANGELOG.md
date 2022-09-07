@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v0.2.15 (2022-09-07)
+### Fix
+* Updated constants ([`3e88928`](https://github.com/microsoft/jacdac-python/commit/3e88928cd85315f55973d7ae882855009a2c32c5))
+
 ## v0.2.14 (2022-06-29)
 ### Fix
 * Add spi build config ([`3c74323`](https://github.com/microsoft/jacdac-python/commit/3c74323027545cc3689815daef62e97d92947c74))

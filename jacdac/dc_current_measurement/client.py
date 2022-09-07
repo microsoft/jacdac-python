@@ -30,4 +30,25 @@ class DcCurrentMeasurementClient(SensorClient):
         self.refresh_reading()
         return self.register(JD_DC_CURRENT_MEASUREMENT_REG_MEASUREMENT).value(self.missing_measurement_value)
 
+    @property
+    def measurement_error(self) -> Optional[float]:
+        """
+        (Optional) Absolute error on the reading value., _: A
+        """
+        return self.register(JD_DC_CURRENT_MEASUREMENT_REG_MEASUREMENT_ERROR).value()
+
+    @property
+    def min_measurement(self) -> Optional[float]:
+        """
+        (Optional) Minimum measurable current, _: A
+        """
+        return self.register(JD_DC_CURRENT_MEASUREMENT_REG_MIN_MEASUREMENT).value()
+
+    @property
+    def max_measurement(self) -> Optional[float]:
+        """
+        (Optional) Maximum measurable current, _: A
+        """
+        return self.register(JD_DC_CURRENT_MEASUREMENT_REG_MAX_MEASUREMENT).value()
+
     

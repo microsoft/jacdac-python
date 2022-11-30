@@ -4,9 +4,9 @@ from .constants import *
 from typing import Optional
 
 
-class JacscriptManagerClient(Client):
+class DeviceScriptManagerClient(Client):
     """
-    Allows for deployment and control over Jacscript virtual machine.
+    Allows for deployment and control over DeviceScript virtual machine.
      * 
      * Programs start automatically after device restart or uploading of new program.
      * You can stop programs until next reset by setting the `running` register to `0`.
@@ -16,12 +16,12 @@ class JacscriptManagerClient(Client):
      * * globals-changed pipe
      * * breakpoint command
      * * some performance monitoring?
-    Implements a client for the `Jacscript Manager <https://microsoft.github.io/jacdac-docs/services/jacscriptmanager>`_ service.
+    Implements a client for the `DeviceScript Manager <https://microsoft.github.io/jacdac-docs/services/devicescriptmanager>`_ service.
 
     """
 
     def __init__(self, bus: Bus, role: str) -> None:
-        super().__init__(bus, JD_SERVICE_CLASS_JACSCRIPT_MANAGER, JD_JACSCRIPT_MANAGER_PACK_FORMATS, role)
+        super().__init__(bus, JD_SERVICE_CLASS_DEVICE_SCRIPT_MANAGER, JD_DEVICE_SCRIPT_MANAGER_PACK_FORMATS, role)
 
 
     @property
@@ -31,11 +31,11 @@ class JacscriptManagerClient(Client):
         To restart the program, stop it (write `0`), read back the register to make sure it's stopped,
         start it, and read back., 
         """
-        return self.register(JD_JACSCRIPT_MANAGER_REG_RUNNING).bool_value()
+        return self.register(JD_DEVICE_SCRIPT_MANAGER_REG_RUNNING).bool_value()
 
     @running.setter
     def running(self, value: bool) -> None:
-        self.register(JD_JACSCRIPT_MANAGER_REG_RUNNING).set_values(value)
+        self.register(JD_DEVICE_SCRIPT_MANAGER_REG_RUNNING).set_values(value)
 
 
     @property
@@ -44,11 +44,11 @@ class JacscriptManagerClient(Client):
         Indicates wheather the program should be re-started upon `reboot()` or `panic()`.
         Defaults to `true`., 
         """
-        return self.register(JD_JACSCRIPT_MANAGER_REG_AUTOSTART).bool_value()
+        return self.register(JD_DEVICE_SCRIPT_MANAGER_REG_AUTOSTART).bool_value()
 
     @autostart.setter
     def autostart(self, value: bool) -> None:
-        self.register(JD_JACSCRIPT_MANAGER_REG_AUTOSTART).set_values(value)
+        self.register(JD_DEVICE_SCRIPT_MANAGER_REG_AUTOSTART).set_values(value)
 
 
     @property
@@ -57,11 +57,11 @@ class JacscriptManagerClient(Client):
         `log_message` reports are only sent when this is `true`.
         It defaults to `false`., 
         """
-        return self.register(JD_JACSCRIPT_MANAGER_REG_LOGGING).bool_value()
+        return self.register(JD_DEVICE_SCRIPT_MANAGER_REG_LOGGING).bool_value()
 
     @logging.setter
     def logging(self, value: bool) -> None:
-        self.register(JD_JACSCRIPT_MANAGER_REG_LOGGING).set_values(value)
+        self.register(JD_DEVICE_SCRIPT_MANAGER_REG_LOGGING).set_values(value)
 
 
     @property
@@ -69,14 +69,21 @@ class JacscriptManagerClient(Client):
         """
         The size of current program., 
         """
-        return self.register(JD_JACSCRIPT_MANAGER_REG_PROGRAM_SIZE).value()
+        return self.register(JD_DEVICE_SCRIPT_MANAGER_REG_PROGRAM_SIZE).value()
 
     @property
     def program_hash(self) -> Optional[int]:
         """
         Return FNV1A hash of the current bytecode., 
         """
-        return self.register(JD_JACSCRIPT_MANAGER_REG_PROGRAM_HASH).value()
+        return self.register(JD_DEVICE_SCRIPT_MANAGER_REG_PROGRAM_HASH).value()
+
+    @property
+    def program_sha256(self) -> Optional[bytes]:
+        """
+        Return 32-byte long SHA-256 hash of the current bytecode., 
+        """
+        return self.register(JD_DEVICE_SCRIPT_MANAGER_REG_PROGRAM_SHA256).value()
 
     def on_program_panic(self, handler: EventHandlerFn) -> UnsubscribeFn:
         """
@@ -84,13 +91,13 @@ class JacscriptManagerClient(Client):
         The byte offset in byte code of the call is given in `program_counter`.
         The program will restart immediately when `panic_code == 0` or in a few seconds otherwise.
         """
-        return self.on_event(JD_JACSCRIPT_MANAGER_EV_PROGRAM_PANIC, handler)
+        return self.on_event(JD_DEVICE_SCRIPT_MANAGER_EV_PROGRAM_PANIC, handler)
 
     def on_program_change(self, handler: EventHandlerFn) -> UnsubscribeFn:
         """
         Emitted after bytecode of the program has changed.
         """
-        return self.on_event(JD_JACSCRIPT_MANAGER_EV_PROGRAM_CHANGE, handler)
+        return self.on_event(JD_DEVICE_SCRIPT_MANAGER_EV_PROGRAM_CHANGE, handler)
 
 
     def deploy_bytecode(self, bytecode_size: int) -> None:
@@ -103,5 +110,5 @@ class JacscriptManagerClient(Client):
         The data payloads, including the last one, should have a size that is a multiple of 32 bytes.
         Thus, the initial bytecode_size also needs to be a multiple of 32.
         """
-        self.send_cmd_packed(JD_JACSCRIPT_MANAGER_CMD_DEPLOY_BYTECODE, bytecode_size)
+        self.send_cmd_packed(JD_DEVICE_SCRIPT_MANAGER_CMD_DEPLOY_BYTECODE, bytecode_size)
     

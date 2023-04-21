@@ -12,7 +12,7 @@ class AirPressureClient(SensorClient):
     """
 
     def __init__(self, bus: Bus, role: str, *, missing_pressure_value: Optional[float] = None) -> None:
-        super().__init__(bus, JD_SERVICE_CLASS_AIR_PRESSURE, JD_AIR_PRESSURE_PACK_FORMATS, role, preferred_interval = 60000)
+        super().__init__(bus, JD_SERVICE_CLASS_AIR_PRESSURE, JD_AIR_PRESSURE_PACK_FORMATS, role, preferred_interval = 1000)
         self.missing_pressure_value = missing_pressure_value
 
     @property
@@ -29,5 +29,19 @@ class AirPressureClient(SensorClient):
         (Optional) The real pressure is between `pressure - pressure_error` and `pressure + pressure_error`., _: hPa
         """
         return self.register(JD_AIR_PRESSURE_REG_PRESSURE_ERROR).value()
+
+    @property
+    def min_pressure(self) -> Optional[float]:
+        """
+        (Optional) Lowest air pressure that can be reported., _: hPa
+        """
+        return self.register(JD_AIR_PRESSURE_REG_MIN_PRESSURE).value()
+
+    @property
+    def max_pressure(self) -> Optional[float]:
+        """
+        (Optional) Highest air pressure that can be reported., _: hPa
+        """
+        return self.register(JD_AIR_PRESSURE_REG_MAX_PRESSURE).value()
 
     

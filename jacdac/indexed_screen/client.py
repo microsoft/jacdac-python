@@ -6,9 +6,9 @@ from typing import Optional
 
 class IndexedScreenClient(Client):
     """
-    A screen with indexed colors.
+    A screen with indexed colors from a palette.
      * 
-     * This is often run over an SPI connection, not regular single-wire Jacdac.
+     * This is often run over an SPI connection or directly on the MCU, not regular single-wire Jacdac.
     Implements a client for the `Indexed screen <https://microsoft.github.io/jacdac-docs/services/indexedscreen>`_ service.
 
     """
@@ -31,10 +31,24 @@ class IndexedScreenClient(Client):
 
 
     @property
+    def palette(self) -> Optional[bytes]:
+        """
+        The current palette. The colors are `[r,g,b, padding]` 32bit color entries.
+        The color entry repeats `1 << bits_per_pixel` times.
+        This register may be write-only., 
+        """
+        return self.register(JD_INDEXED_SCREEN_REG_PALETTE).value()
+
+    @palette.setter
+    def palette(self, value: bytes) -> None:
+        self.register(JD_INDEXED_SCREEN_REG_PALETTE).set_values(value)
+
+
+    @property
     def bits_per_pixel(self) -> Optional[int]:
         """
         Determines the number of palette entries.
-        Typical values are 1, 2, 4, or 8., _: bit
+        Typical values are 1 or 4., _: bit
         """
         return self.register(JD_INDEXED_SCREEN_REG_BITS_PER_PIXEL).value()
 
@@ -55,7 +69,7 @@ class IndexedScreenClient(Client):
     @property
     def width_major(self) -> Optional[bool]:
         """
-        If true, consecutive pixels in the "width" direction are sent next to each other (this is typical for graphics cards).
+        (Optional) If true, consecutive pixels in the "width" direction are sent next to each other (this is typical for graphics cards).
         If false, consecutive pixels in the "height" direction are sent next to each other.
         For embedded screen controllers, this is typically true iff `width < height`
         (in other words, it's only true for portrait orientation screens).
@@ -72,7 +86,7 @@ class IndexedScreenClient(Client):
     @property
     def up_sampling(self) -> Optional[int]:
         """
-        Every pixel sent over wire is represented by `up_sampling x up_sampling` square of physical pixels.
+        (Optional) Every pixel sent over wire is represented by `up_sampling x up_sampling` square of physical pixels.
         Some displays may allow changing this (which will also result in changes to `width` and `height`).
         Typical values are 1 and 2., _: px
         """
@@ -86,7 +100,7 @@ class IndexedScreenClient(Client):
     @property
     def rotation(self) -> Optional[int]:
         """
-        Possible values are 0, 90, 180 and 270 only.
+        (Optional) Possible values are 0, 90, 180 and 270 only.
         Write to this register do not affect `width` and `height` registers,
         and may be ignored by some screens., _: °
         """

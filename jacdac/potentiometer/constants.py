@@ -8,6 +8,7 @@ JD_SERVICE_CLASS_POTENTIOMETER = const(0x1f274746)
 class PotentiometerVariant(IntEnum):
     SLIDER = const(0x1)
     ROTARY = const(0x2)
+    HALL = const(0x3)
 
 
 JD_POTENTIOMETER_REG_POSITION = const(JD_REG_READING)

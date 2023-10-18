@@ -18,10 +18,10 @@ class RealTimeClockClient(SensorClient):
     @property
     def local_time(self) -> Optional[Tuple[int, int, int, int, int, int, int]]:
         """
-        Current time in 24h representation.
+        Current time in 24h representation. Default streaming period is 1 second.
         
         -   `day_of_month` is day of the month, starting at `1`
-        -   `day_of_week` is day of the week, starting at `1` as monday. Default streaming period is 1 second., 
+        -   `day_of_week` is day of the week, starting at `1` as monday. Leave at 0 if unsupported., 
         """
         self.refresh_reading()
         return self.register(JD_REAL_TIME_CLOCK_REG_LOCAL_TIME).value(self.missing_local_time_value)

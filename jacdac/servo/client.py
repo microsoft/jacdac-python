@@ -58,7 +58,7 @@ class ServoClient(SensorClient):
     @property
     def min_angle(self) -> Optional[float]:
         """
-        Lowest angle that can be set, typiclly 0 °., _: °
+        Lowest angle that can be set, typically 0 °., _: °
         """
         return self.register(JD_SERVO_REG_MIN_ANGLE).value()
 
@@ -96,7 +96,7 @@ class ServoClient(SensorClient):
     @property
     def stall_torque(self) -> Optional[float]:
         """
-        (Optional) The servo motor will stop rotating when it is trying to move a ``stall_torque`` weight at a radial distance of ``1.0`` cm., _: kg/cm
+        (Optional) The servo motor will stop rotating when it is trying to move a `stall_torque` weight at a radial distance of `1.0` cm., _: kg/cm
         """
         return self.register(JD_SERVO_REG_STALL_TORQUE).value()
 

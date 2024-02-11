@@ -4,12 +4,15 @@ on:
             - main
 jobs:
     build:
+        permissions:
+          actions: read
+          contents: write
         runs-on: ubuntu-latest
         steps:
-            - uses: actions/checkout@v2
+            - uses: actions/checkout@v4
               with:
                   fetch-depth: 0
-            - uses: actions/setup-python@v2
+            - uses: actions/setup-python@v5
               with:
                   python-version: "3.7" # Version range or exact version of a Python version to use, using SemVer's version range syntax
                   architecture: "x64" # optional x64 or x86. Defaults to x64 if not specified

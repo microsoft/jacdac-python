@@ -1,3 +1,5 @@
+> NOTE: **Jacdac has moved to the organization https://github.com/jacdac**
+
 # Jacdac Python
 
 A Python client and server SDK for Jacdac. This SDK is not compatible with micropython or circuit python.

@@ -38,10 +38,10 @@ class AcidityClient(SensorClient):
         return self.register(JD_ACIDITY_REG_MIN_ACIDITY).value()
 
     @property
-    def max_humidity(self) -> Optional[float]:
+    def max_acidity(self) -> Optional[float]:
         """
         (Optional) Highest acidity that can be reported., _: pH
         """
-        return self.register(JD_ACIDITY_REG_MAX_HUMIDITY).value()
+        return self.register(JD_ACIDITY_REG_MAX_ACIDITY).value()
 
     
